@@ -1,0 +1,29 @@
+diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+index b91e709..e6bbe32 100644
+--- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
++++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+@@ -66,6 +66,11 @@ Required properties (DMA function blocks):
+   argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
+   for details.
+ 
++Optional properties (RDMA function blocks):
++- mediatek,rdma_fifo_size: rdma fifo size may be different even in same SOC, add this
++  property to the corresponding rdma
++  the value is the Max value which defined in hardware data sheet.
++
+ Examples:
+ 
+ mmsys: clock-controller@14000000 {
+@@ -207,3 +212,12 @@ od@14023000 {
+ 	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+ 	clocks = <&mmsys CLK_MM_DISP_OD>;
+ };
++
++rdma1: rdma@1400c000 {
++	compatible = "mediatek,mt8183-disp-rdma";
++	reg = <0 0x1400c000 0 0x1000>;
++	interrupts = <GIC_SPI 229 IRQ_TYPE_LEVEL_LOW>;
++	power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++	clocks = <&mmsys CLK_MM_DISP_RDMA1>;
++	mediatek,rdma_fifo_size = <2048>;
++};

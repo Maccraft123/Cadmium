@@ -4,18 +4,29 @@ TARGET=duet
 
 set -e
 
-./kernel/build $CADMIUMROOT $TARGET nconfig
+sleep 1 # let's give user time if they commit a typo
+
+dd if=/dev/zero of=$1 bs=1M count=64
+sync
+
+# make partition table
+parted --script $1 mklabel gpt
 
 cgpt create $1
 cgpt add -i 1 -t kernel -b 8192 -s 65536 -l Kernel -S 1 -T 5 -P 10 $1
-cgpt add -i 2 -t data -b 73728 -s $(expr $(cgpt show /dev/sdc | grep 'Sec GPT table' | awk '{print $1}') - 73728) -l Root $1
+cgpt add -i 2 -t data -b 73728 -s $(expr $(cgpt show $1 | grep 'Sec GPT table' | awk '{print $1}') - 73728) -l Root $1
+sync
 
+# reread partition table
 partx -a $1
+sync
 
-ls ${1}1
-sudo dd if=tmp/linux/vmlinux.kpart of=${1}1
+# build and write kernel
+./kernel/build $CADMIUMROOT $TARGET nconfig
+dd if=tmp/linux/vmlinux.kpart of=${1}1
 
-sudo ./fs/build $CADMIUMROOT $TARGET ${1}2
+# write filesystem
+./fs/build $CADMIUMROOT $TARGET ${1}2
 
 sync
 

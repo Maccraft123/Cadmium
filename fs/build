@@ -3,8 +3,12 @@ CADMIUMROOT=$1
 TARGET=$2
 PART=$3
 
+set -e
+set -v
+
 cd $CADMIUMROOT/tmp
 mkdir -p root
+mkfs.ext4 $3
 mount $3 root
 cp $(which qemu-aarch64-static) root/
 qemu-debootstrap --arch=arm64 sid root/ https://deb.debian.org/debian/ || true

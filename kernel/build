@@ -12,13 +12,14 @@ cd $CADMIUMROOT/tmp
 
 mkdir -p linux
 
-#rm -rf linux
-if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
+rm -rf linux
+#if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
 #	curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o linux-src
 #	bsdtar xf linux-src --strip-components=1 -C linux
-	git clone https://github.com/Maccraft123/linux-duet linux -b panfrost/duet
+#	git clone https://github.com/Maccraft123/linux-duet linux -b panfrost/duet
+	git clone https://github.com/eballetbo/linux -b topic/chromeos/somewhat-stable-next
 	echo $(date +'%V%y') > kern-dl-date
-fi
+#fi
 
 
 cd linux

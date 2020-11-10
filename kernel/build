@@ -28,6 +28,11 @@ cp $CADMIUMROOT/kernel/config-duet .config
 cp $CADMIUMROOT/kernel/kernel.its kernel.its
 cp $CADMIUMROOT/kernel/cmdline cmdline
 
+pwd
+for x in $(ls $CADMIUMROOT/kernel/patches/); do
+	patch -p1 < $CADMIUMROOT/kernel/patches/$x
+done
+
 make oldconfig
 make nconfig
 

@@ -12,11 +12,12 @@ cd $CADMIUMROOT/tmp
 
 mkdir -p linux
 
-#rm -rf linux
 if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
 #	curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o linux-src
 #	bsdtar xf linux-src --strip-components=1 -C linux
-	git clone https://github.com/Maccraft123/linux-duet linux -b panfrost/duet
+
+#	git clone https://github.com/Maccraft123/linux-duet linux -b panfrost/duet
+#	git clone https://github.com/Maccraft123/linux --depth 1
 	echo $(date +'%V%y') > kern-dl-date
 fi
 
@@ -26,6 +27,11 @@ cd linux
 cp $CADMIUMROOT/kernel/config-duet .config
 cp $CADMIUMROOT/kernel/kernel.its kernel.its
 cp $CADMIUMROOT/kernel/cmdline cmdline
+
+pwd
+for x in $(ls $CADMIUMROOT/kernel/patches/); do
+	patch -p1 < $CADMIUMROOT/kernel/patches/$x
+done
 
 make oldconfig
 make nconfig

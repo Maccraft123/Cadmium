@@ -1,0 +1,36 @@
+#!/bin/bash
+CADMIUMROOT=$1
+DEV=$2
+
+set -e
+set -v
+
+export ARCH=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
+
+mount ${DEV}2 /mnt
+
+cd $CADMIUMROOT/tmp/linux
+
+mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg || true
+
+dd if=/dev/zero of=bootloader.bin bs=512 count=1
+vbutil_kernel --pack vmlinux.kpart \
+	--version 1 \
+	--vmlinuz vmlinux.uimg \
+	--arch aarch64 \
+	--keyblock /usr/share/vboot/devkeys/kernel.keyblock \
+	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
+	--config cmdline \
+	--bootloader bootloader.bin
+
+cp vmlinux.kpart $CADMIUMROOT/
+
+make INSTALL_MOD_PATH=/mnt/ modules_install
+
+umount /mnt
+
+dd if=${DEV}1 of=$CADMIUMROOT/tmp/backup bs=1M count=32
+dd if=$CADMIUMROOT/vmlinux.kpart of=${DEV}1
+
+sync

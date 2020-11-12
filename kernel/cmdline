@@ -1,1 +1,1 @@
-console=tty1 root=/dev/sda2 rootfstype=ext4 rootwait rw
+console=tty1 root=PARTUUID=%U/PARTNROFF=1 rootfstype=ext4 rootwait rw

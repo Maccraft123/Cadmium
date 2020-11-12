@@ -3,16 +3,16 @@ set -e
 
 sleep 1
 
-cgpt add -i 1 -t kernel -b 8192 -s 65536 -l Kernel -S 1 -T 5 -P 10 /dev/mmcblk1
-cgpt add -i 2 -t data -b 73728 -s $(expr $(cgpt show /dev/mmcblk1 | grep 'Sec GPT table' | awk '{print $1}') - 73728) -l Root /dev/mmcblk1
+cgpt add -i 1 -t kernel -b 8192 -s 65536 -l Kernel -S 1 -T 5 -P 10 /dev/mmcblk?
+cgpt add -i 2 -t data -b 73728 -s $(expr $(cgpt show /dev/mmcblk1 | grep 'Sec GPT table' | awk '{print $1}') - 73728) -l Root /dev/mmcblk?
 
 sleep 1
 
-mkfs.ext4 /dev/mmcblk1p2
+mkfs.ext4 /dev/mmcblk?p2
 
 sleep 1
 
-mount /dev/mmcblk1p2 /mnt
+mount /dev/mmcblk?p2 /mnt
 
 debootstrap --arch=arm64 sid /mnt https://deb.debian.org/debian/ || true
 echo duet > /mnt/etc/hostname
@@ -23,7 +23,7 @@ cp -r /lib/firmware/ath10k/QCA6174/hw3.0/* /mnt/lib/firmware/ath10k/QCA6174/hw3.
 mkdir -p /mnt/lib/modules/$(uname -r)/
 cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/
 
-dd if=/vmlinux.kpart.mmc of/dev/mmcblk1p1
+dd if=/vmlinux.kpart.mmc of/dev/mmcblk?p1
 
 chroot /mnt apt update
 chroot /mnt apt install git build-essential network-manager

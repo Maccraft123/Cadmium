@@ -15,12 +15,17 @@ cp $(which qemu-aarch64-static) root/
 
 qemu-debootstrap --arch=arm64 sid root/ https://deb.debian.org/debian/ || true
 echo $TARGET > root/etc/hostname
-
 chroot root/ /qemu-aarch64-static /bin/passwd -d root
 
-mkdir -p /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
-cp $CADMIUMROOT/fs/firmware/* /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
+mkdir -p root/lib/firmware/ath10k/QCA6174/hw3.0/
+cp $CADMIUMROOT/fs/firmware/* root/lib/firmware/ath10k/QCA6174/hw3.0/
 
-cp $CADMIUMROOT/vmlinux.kpart.mmc /mnt/
+cp $CADMIUMROOT/vmlinux.kpart.mnt root/
+
+cp $CADMIUMROOT/fs/install-to-emmc root/root/ # copy to /root/ on sd card
+chmod a+x root/root/install-to-emmc
+
+chroot root/ /qemu-aarch64-static apt update
+chroot root/ /qemu-aarch64-static apt install vim vboot-utils network-manager debootstrap
 
 umount root

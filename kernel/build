@@ -24,6 +24,7 @@ cd linux
 cp $CADMIUMROOT/kernel/config-duet .config
 cp $CADMIUMROOT/kernel/kernel.its kernel.its
 cp $CADMIUMROOT/kernel/cmdline cmdline
+cp $CADMIUMROOT/kernel/cmdline.mmc cmdline.mmc
 
 #for x in $(ls $CADMIUMROOT/kernel/patches/); do
 #	patch -p1 < $CADMIUMROOT/kernel/patches/$x
@@ -50,4 +51,14 @@ vbutil_kernel --pack vmlinux.kpart \
 	--config cmdline \
 	--bootloader bootloader.bin
 
+vbutil_kernel --pack vmlinux.kpart.mmc \
+	--version 1 \
+	--vmlinuz vmlinux.uimg \
+	--arch aarch64 \
+	--keyblock /usr/share/vboot/devkeys/kernel.keyblock \
+	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
+	--config cmdline.mmc \
+	--bootloader bootloader.bin
+
 cp vmlinux.kpart $CADMIUMROOT/
+cp vmlinux.kpart.mmc $CADMIUMROOT/

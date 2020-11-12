@@ -21,4 +21,6 @@ chroot root/ /qemu-aarch64-static /bin/passwd -d root
 mkdir -p /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
 cp $CADMIUMROOT/fs/firmware/* /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
 
+cp $CADMIUMROOT/vmlinux.kpart.mmc /mnt/
+
 umount root

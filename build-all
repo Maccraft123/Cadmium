@@ -18,7 +18,7 @@ cgpt add -i 2 -t data -b 73728 -s $(expr $(cgpt show $1 | grep 'Sec GPT table' |
 sync
 
 # reread partition table
-partx -a $1
+partx -a $1 || true
 sync
 
 # build and write kernel

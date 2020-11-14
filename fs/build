@@ -28,4 +28,4 @@ chmod a+x root/root/install-*
 chroot root/ /qemu-aarch64-static /bin/apt update
 chroot root/ /qemu-aarch64-static /bin/apt install -y vim vboot-utils network-manager debootstrap
 
-umount root
+# umount root # we umount root in build-all

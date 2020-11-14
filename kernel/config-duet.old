@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 5.10.0-rc1 Kernel Configuration
+# Linux/arm64 5.10.0-rc3 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="aarch64-linux-gnu-gcc (Debian 10.2.0-9) 10.2.0"
 CONFIG_CC_IS_GCC=y
@@ -338,6 +338,7 @@ CONFIG_ARM64_WORKAROUND_REPEAT_TLBI=y
 CONFIG_ARM64_ERRATUM_1286807=y
 CONFIG_ARM64_ERRATUM_1463225=y
 CONFIG_ARM64_ERRATUM_1542419=y
+CONFIG_ARM64_ERRATUM_1508412=y
 CONFIG_CAVIUM_ERRATUM_22375=y
 CONFIG_CAVIUM_ERRATUM_23144=y
 CONFIG_CAVIUM_ERRATUM_23154=y
@@ -1605,13 +1606,6 @@ CONFIG_EEPROM_AT25=y
 # CONFIG_SENSORS_LIS3_SPI is not set
 # CONFIG_SENSORS_LIS3_I2C is not set
 # CONFIG_ALTERA_STAPL is not set
-
-#
-# Intel MIC & related support
-#
-# CONFIG_VOP_BUS is not set
-# end of Intel MIC & related support
-
 # CONFIG_ECHO is not set
 # CONFIG_MISC_RTSX_USB is not set
 CONFIG_UACCE=y
@@ -2329,7 +2323,6 @@ CONFIG_I2C_ALGOBIT=y
 # CONFIG_I2C_GPIO is not set
 # CONFIG_I2C_IMX is not set
 # CONFIG_I2C_IMX_LPI2C is not set
-# CONFIG_I2C_MLXBF is not set
 # CONFIG_I2C_MESON is not set
 CONFIG_I2C_MT65XX=y
 # CONFIG_I2C_MV64XXX is not set

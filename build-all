@@ -28,5 +28,9 @@ dd if=tmp/linux/vmlinux.kpart of=${1}1
 # write filesystem
 ./fs/build $CADMIUMROOT $TARGET ${1}2
 
+make -C $CADMIUMROOT/tmp/linux ARCH=arm64 INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
+
+umount $CADMIUMROOT/tmp/root
+
 sync
 

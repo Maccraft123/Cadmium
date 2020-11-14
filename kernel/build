@@ -12,31 +12,31 @@ cd $CADMIUMROOT/tmp
 
 mkdir -p linux
 
-if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
-	rm -rf linux
-	git clone https://github.com/Maccraft123/linux-duet -b panfrost/duet
-	echo $(date +'%V%y') > kern-dl-date
-fi
+#if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
+#	rm -rf linux
+#	git clone https://github.com/Maccraft123/linux-duet -b panfrost/duet
+#	echo $(date +'%V%y') > kern-dl-date
+#fi
 
 
 cd linux
 
-cp $CADMIUMROOT/kernel/config-duet .config
-cp $CADMIUMROOT/kernel/kernel.its kernel.its
-cp $CADMIUMROOT/kernel/cmdline cmdline
-cp $CADMIUMROOT/kernel/cmdline.mmc cmdline.mmc
+#cp $CADMIUMROOT/kernel/config-duet .config
+#cp $CADMIUMROOT/kernel/kernel.its kernel.its
+#cp $CADMIUMROOT/kernel/cmdline cmdline
+#cp $CADMIUMROOT/kernel/cmdline.mmc cmdline.mmc
 
 #for x in $(ls $CADMIUMROOT/kernel/patches/); do
 #	patch -p1 < $CADMIUMROOT/kernel/patches/$x
 #done
 
-make oldconfig
-make nconfig
+#make oldconfig
+#make nconfig
 
-cp $CADMIUMROOT/kernel/config-duet $CADMIUMROOT/kernel/config-duet.old
-cp .config $CADMIUMROOT/kernel/config-duet
+#cp $CADMIUMROOT/kernel/config-duet $CADMIUMROOT/kernel/config-duet.old
+#cp .config $CADMIUMROOT/kernel/config-duet
 
-make -j$(nproc)
+#make -j$(nproc)
 
 # kpart
 # yes this is stolen from solidhal's prawnos

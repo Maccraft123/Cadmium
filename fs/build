@@ -20,12 +20,12 @@ chroot root/ /qemu-aarch64-static /bin/passwd -d root
 mkdir -p root/lib/firmware/ath10k/QCA6174/hw3.0/
 cp $CADMIUMROOT/fs/firmware/* root/lib/firmware/ath10k/QCA6174/hw3.0/
 
-cp $CADMIUMROOT/vmlinux.kpart.mnt root/
+cp $CADMIUMROOT/vmlinux.kpart.mmc root/
 
-cp $CADMIUMROOT/fs/install-to-emmc root/root/ # copy to /root/ on sd card
-chmod a+x root/root/install-to-emmc
+cp $CADMIUMROOT/fs/install-* root/root/ # copy to /root/ on sd card
+chmod a+x root/root/install-*
 
-chroot root/ /qemu-aarch64-static apt update
-chroot root/ /qemu-aarch64-static apt install vim vboot-utils network-manager debootstrap
+chroot root/ /qemu-aarch64-static /bin/apt update
+chroot root/ /qemu-aarch64-static /bin/apt install -y vim vboot-utils network-manager debootstrap
 
 umount root

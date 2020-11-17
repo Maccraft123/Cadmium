@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 5.10.0-rc3 Kernel Configuration
+# Linux/arm64 5.10.0-rc4 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="aarch64-linux-gnu-gcc (Debian 10.2.0-9) 10.2.0"
 CONFIG_CC_IS_GCC=y
@@ -210,7 +210,6 @@ CONFIG_KALLSYMS_ALL=y
 CONFIG_KALLSYMS_BASE_RELATIVE=y
 # CONFIG_BPF_SYSCALL is not set
 CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
-# CONFIG_BPF_PRELOAD is not set
 # CONFIG_USERFAULTFD is not set
 CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE=y
 CONFIG_RSEQ=y

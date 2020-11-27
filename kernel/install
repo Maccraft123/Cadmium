@@ -2,13 +2,20 @@
 CADMIUMROOT=$1
 DEV=$2
 
+shopt -s expand_aliases # needed for aliases
 set -e
 set -v
 
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
 
-mount ${DEV}2 /mnt
+if cat /sys/firmware/devicetree/base/compatible | grep -s krane; then
+	alias areweontarget=true
+else
+	alias areweontarget=false
+fi
+
+areweontarget || mount ${DEV}2 /mnt
 
 cd $CADMIUMROOT/tmp/linux
 
@@ -24,23 +31,21 @@ vbutil_kernel --pack vmlinux.kpart \
 	--config cmdline \
 	--bootloader bootloader.bin
 
-vbutil_kernel --pack vmlinux.kpart.mmc \
-	--version 1 \
-	--vmlinuz vmlinux.uimg \
-	--arch aarch64 \
-	--keyblock /usr/share/vboot/devkeys/kernel.keyblock \
-	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
-	--config cmdline.mmc \
-	--bootloader bootloader.bin
+if areweontarget; then
+	make modules_install
 
-cp vmlinux.kpart $CADMIUMROOT/
-cp vmlinux.kpart.mmc $CADMIUMROOT/
-
-make INSTALL_MOD_PATH=/mnt/ modules_install
-
-umount /mnt
-
-dd if=${DEV}1 of=$CADMIUMROOT/tmp/backup bs=1M count=32
-dd if=$CADMIUMROOT/vmlinux.kpart of=${DEV}1
+	if ls /dev/mmcblk1p1; then
+		dd if=/dev/mmcblk1p1 of=$CADMIUMROOT/tmp/backup bs=1M count=32
+		dd if=$CADMIUMROOT/vmlinux.kpart of=/dev/mmcblk1p1
+	else
+		dd if=/dev/mmcblk0p1 of=$CADMIUMROOT/tmp/backup bs=1M count=32
+		dd if=$CADMIUMROOT/vmlinux.kpart of=/dev/mmcblk0p1
+	fi
+else
+	make INSTALL_MOD_PATH=/mnt/ modules_install
+	umount /mnt
+	dd if=${DEV}1 of=$CADMIUMROOT/tmp/backup bs=1M count=32
+	dd if=$CADMIUMROOT/vmlinux.kpart of=${DEV}1
+fi
 
 sync

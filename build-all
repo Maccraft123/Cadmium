@@ -1,6 +1,7 @@
 #!/bin/bash
 CADMIUMROOT=$(pwd)
-TARGET=duet
+
+. $CADMIUMROOT/config
 
 set -e
 
@@ -10,8 +11,9 @@ dd if=/dev/zero of=$1 bs=1M count=64
 sync
 
 # make partition table
-parted --script $1 mklabel gpt
+parted --script $1 mklabel gpt # cgpt dislikes if i don't do that, so do that
 
+# now this is _real_ partition table
 cgpt create $1
 cgpt add -i 1 -t kernel -b 8192 -s 65536 -l Kernel -S 1 -T 5 -P 10 $1
 cgpt add -i 2 -t data -b 73728 -s $(expr $(cgpt show $1 | grep 'Sec GPT table' | awk '{print $1}') - 73728) -l Root $1
@@ -22,14 +24,16 @@ partx -a $1 || true
 sync
 
 # build and write kernel
-./kernel/build $CADMIUMROOT $TARGET nconfig
+./kernel/build $CADMIUMROOT $TARGET
 dd if=tmp/linux/vmlinux.kpart of=${1}1
 
 # write filesystem
 ./fs/build $CADMIUMROOT $TARGET ${1}2
 
+# install modules
 make -C $CADMIUMROOT/tmp/linux ARCH=arm64 INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
 
+# we don't umount it in fs/build
 umount $CADMIUMROOT/tmp/root
 
 sync

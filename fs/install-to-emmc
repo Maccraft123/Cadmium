@@ -1,31 +1,60 @@
 #!/bin/bash
 set -e
 
-sleep 1
-
-cgpt add -i 1 -t kernel -b 8192 -s 65536 -l Kernel -S 1 -T 5 -P 10 /dev/mmcblk?
-cgpt add -i 2 -t data -b 73728 -s $(expr $(cgpt show /dev/mmcblk1 | grep 'Sec GPT table' | awk '{print $1}') - 73728) -l Root /dev/mmcblk?
+DEV=/dev/mmcblk?
 
 sleep 1
 
-mkfs.ext4 /dev/mmcblk?p2
+cgpt add -i 1 -t kernel -b 8192 -s 65536 -l Kernel -S 1 -T 5 -P 10 ${DEV}
+cgpt add -i 2 -t data -b 73728 -s $(expr $(cgpt show /dev/mmcblk1 | grep 'Sec GPT table' | awk '{print $1}') - 73728) -l Root ${DEV}
 
 sleep 1
 
-mount /dev/mmcblk?p2 /mnt
+# kernel randomly swaps internal emmc between mmcblk1 and mmcblk0
+# since there is no sd card, just put a wildcard there...
+mkfs.ext4 ${DEV}p2
+
+sleep 1
+
+mount ${DEV}p2 /mnt
 
 debootstrap --arch=arm64 sid /mnt https://deb.debian.org/debian/ || true
 echo duet > /mnt/etc/hostname
 
+# QCA6174 dislikes upstream firmware, copy one that i stole from chromeos
 mkdir -p /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
 cp -r /lib/firmware/ath10k/QCA6174/hw3.0/* /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
 
+# copy modules over
 mkdir -p /mnt/lib/modules/$(uname -r)/
 cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/
 
-dd if=/vmlinux.kpart.mmc of/dev/mmcblk?p1
+# copy kernel from usb pendrive/hdd to internal emmc
+dd if=/dev/sda1 of=${DEV}p1
 
-chroot /mnt apt update
+# install packages needed to get wifi working and to be ready to compile stuff
 chroot /mnt apt install git build-essential network-manager
 
+# this is last, because if user walks away during install they go back,
+# configure their system and have it ready immediately
+chroot /mnt dpkg-reconfigure tzdata
+
+echo "Enter root password:"
+chroot /mnt passwd
+
+read -p "Enter username, no spaces or big letters: "
+chroot /mnt useradd -G wheel,sudo,video,audio -m $REPLY
+
+echo "Enter user password:"
+chroot /mnt passwd $REPLY
+
+# TODO: mesa compilation and tell user about it.
+
+# default libinput config for touchpad is bad
+# let's override it
+mkdir -p /mnt/etc/libinput
+cp /etc/libinput/local-overrides.quirks /mnt/etc/libinput/local-overrides.quirks
+
 umount /mnt
+
+echo "Done! :D, Don't forget to install your favourite DE/WM"

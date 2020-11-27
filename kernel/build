@@ -1,23 +1,31 @@
 #!/bin/bash
 CADMIUMROOT=$1
 
+[ -z "$CADMIUMROOT" ] && echo "$0: First parameter has to be root dir of Cadmium" && exit 1
+
 set -e
 set -v
 
+# set env vars
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
 
 mkdir -p tmp
 cd $CADMIUMROOT/tmp
 
-mkdir -p linux
 
-#if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
-#	rm -rf linux
-#	git clone https://github.com/Maccraft123/linux-duet -b panfrost/duet
-#	echo $(date +'%V%y') > kern-dl-date
-#fi
-
+# check if kernel has been downloaded this week, if not download/update it
+if [ "$(date +'%V%y')" != "$(cat kern-dl-date || true)" ]; then
+	if [ -d "$CADMIUMROOT/tmp/linux" ]; then
+		cd linux
+		git pull
+		echo $(date +'%V%y') > kern-dl-date
+	else
+		git clone https://github.com/Maccraft123/linux-duet -b panfrost/duet linux
+		echo $(date +'%V%y') > kern-dl-date
+		cd linux
+	fi
+fi
 
 cd linux
 
@@ -30,16 +38,19 @@ cp $CADMIUMROOT/kernel/cmdline.mmc cmdline.mmc
 #	patch -p1 < $CADMIUMROOT/kernel/patches/$x
 #done
 
-make oldconfig
-#make nconfig
+#make nconfig # if you want to customize config just uncomment this
 
-cp $CADMIUMROOT/kernel/config-duet $CADMIUMROOT/kernel/config-duet.old
-cp .config $CADMIUMROOT/kernel/config-duet
+# backup old config if it's different, and copy new custom config
+if [ "$(sha1sum $CADMIUMROOT/kernel/config-duet)" = "$(sha1sum .config)" ]; then
+	cp $CADMIUMROOT/kernel/config-duet $CADMIUMROOT/kernel/config-duet.old
+	cp .config $CADMIUMROOT/kernel/config-duet
+fi
 
-make -j$(nproc)
+echo Bulding in $(pwd) with $(nproc) threads
+time make -j$(nproc)
 
-# kpart
-# yes this is stolen from solidhal's prawnos
+# make kernel partition
+# yes this is stolen from solidhal's prawnos, that's how open source works :D
 mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg || true
 dd if=/dev/zero of=bootloader.bin bs=512 count=1
 vbutil_kernel --pack vmlinux.kpart \
@@ -51,14 +62,4 @@ vbutil_kernel --pack vmlinux.kpart \
 	--config cmdline \
 	--bootloader bootloader.bin
 
-vbutil_kernel --pack vmlinux.kpart.mmc \
-	--version 1 \
-	--vmlinuz vmlinux.uimg \
-	--arch aarch64 \
-	--keyblock /usr/share/vboot/devkeys/kernel.keyblock \
-	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
-	--config cmdline.mmc \
-	--bootloader bootloader.bin
-
 cp vmlinux.kpart $CADMIUMROOT/
-cp vmlinux.kpart.mmc $CADMIUMROOT/

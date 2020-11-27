@@ -11,21 +11,35 @@ mkdir -p root
 mkfs.ext4 $PART
 mount $PART root
 
-cp $(which qemu-aarch64-static) root/
+# if we are on arm64 machine, don't use qemu to execute arm64 code
+if [ "$(uname -m)" = "aarch64" ]; then
+	debootstrap --arch=arm64 sid root/ https://deb.debian.org/debian/ || true
+else
+	cp $(which qemu-aarch64-static) root/
+	qemu-debootstrap --arch=arm64 sid root/ https://deb.debian.org/debian/ || true
+	qemu=/qemu-aarch64-static
+fi
 
-qemu-debootstrap --arch=arm64 sid root/ https://deb.debian.org/debian/ || true
-echo $TARGET > root/etc/hostname
-chroot root/ /qemu-aarch64-static /bin/passwd -d root
+echo $TARGET > root/etc/hostname # set default hostname in kernel?
 
+# remove root password, this is install medium so it's ok
+chroot root/ $qemu /bin/passwd -d root
+
+# copy ath10k firmware, qca6174 doesn't like upstream
 mkdir -p root/lib/firmware/ath10k/QCA6174/hw3.0/
-cp $CADMIUMROOT/fs/firmware/* root/lib/firmware/ath10k/QCA6174/hw3.0/
+cp $CADMIUMROOT/fs/firmware/qcom/* root/lib/firmware/ath10k/QCA6174/hw3.0/
+cp $CADMIUMROOT/fs/firmware/scp.img root/lib/firmware/
 
-cp $CADMIUMROOT/vmlinux.kpart.mmc root/
-
-cp $CADMIUMROOT/fs/install-* root/root/ # copy to /root/ on sd card
+# copy installation scripts, double root is not a typo
+cp $CADMIUMROOT/fs/install-* root/root/
 chmod a+x root/root/install-*
 
-chroot root/ /qemu-aarch64-static /bin/apt update
-chroot root/ /qemu-aarch64-static /bin/apt install -y vim vboot-utils network-manager debootstrap
+# copy libinput config
+mkdir -p root/etc/libinput
+cp $CADMIUMROOT/fs/local-overrides-$TARGET.quirks root/etc/libinput/local-overrides.quirks
 
-# umount root # we umount root in build-all
+# preinstall packages
+chroot root/ $qemu /bin/apt update
+chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap
+
+#umount root

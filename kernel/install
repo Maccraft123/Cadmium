@@ -9,6 +9,7 @@ set -v
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
 
+# set up alias areweontarget so "if areweontarget; then X" works fine
 if cat /sys/firmware/devicetree/base/compatible | grep -s krane; then
 	alias areweontarget=true
 else
@@ -44,7 +45,7 @@ if areweontarget; then
 else
 	make INSTALL_MOD_PATH=/mnt/ modules_install
 	umount /mnt
-	dd if=${DEV}1 of=$CADMIUMROOT/tmp/backup bs=1M count=32
+	dd if=${DEV}1 of=$CADMIUMROOT/tmp/backup bs=1M count=32 # backup kernel partition, just in case
 	dd if=$CADMIUMROOT/vmlinux.kpart of=${DEV}1
 fi
 

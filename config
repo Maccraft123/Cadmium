@@ -6,4 +6,5 @@ TARGET=duet
 
 # Whether to build the kernel or not
 # One of: premade, build
-KERNEL=premade
+#KERNEL=premade
+#TODO

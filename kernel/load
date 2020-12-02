@@ -1,0 +1,22 @@
+#!/bin/bash
+CADMIUMROOT=$1
+
+shopt -s expand_aliases # needed for aliases
+set -e
+set -v
+
+# set up alias areweontarget so "if areweontarget; then X" works fine
+if cat /sys/firmware/devicetree/base/compatible | grep -s krane; then
+	alias areweontarget=true
+else
+	alias areweontarget=false
+fi
+
+areweontarget || exit 1
+
+cd $CADMIUMROOT/tmp/linux
+
+kexec -s -l --reuse-cmdline --dtb=arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dtb  arch/arm64/boot/Image
+echo 'Now execute systemctl kexec to reboot to test kernel'
+
+sync

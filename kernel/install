@@ -11,7 +11,11 @@ export CROSS_COMPILE=aarch64-linux-gnu-
 
 # set up alias areweontarget so "if areweontarget; then X" works fine
 if cat /sys/firmware/devicetree/base/compatible | grep -s krane; then
-	alias areweontarget=true
+	if [ -z "$DEV" ]; then
+		alias areweontarget=true
+	else
+		alias areweontarget=false
+	fi
 else
 	alias areweontarget=false
 fi

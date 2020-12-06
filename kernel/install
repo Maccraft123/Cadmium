@@ -4,7 +4,6 @@ DEV=$2
 
 shopt -s expand_aliases # needed for aliases
 set -e
-set -v
 
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
@@ -45,7 +44,7 @@ if areweontarget; then
 
 	INSHA=$(sha1sum vmlinux.kpart.pad)
 
-	if ls /dev/mmcblk1p1; then
+	if ls /dev/mmcblk1p1 2>/dev/null; then
 		MMCDEV=/dev/mmcblk1p1
 	else
 		MMCDEV=/dev/mmcblk0p1

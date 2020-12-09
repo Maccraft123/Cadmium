@@ -66,7 +66,7 @@ else
 	make INSTALL_MOD_PATH=/mnt/ modules_install
 	umount /mnt
 	dd if=${DEV}1 of=$CADMIUMROOT/tmp/backup bs=1M count=32 # backup kernel partition, just in case
-	dd if=$CADMIUMROOT/vmlinux.kpart.pad of=${DEV}1
+	dd if=$CADMIUMROOT/tmp/linux/vmlinux.kpart.pad of=${DEV}1
 fi
 
 sync

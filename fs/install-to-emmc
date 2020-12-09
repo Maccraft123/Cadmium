@@ -33,11 +33,12 @@ cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/
 dd if=/dev/sda1 of=${DEV}p1
 
 # install packages needed to get wifi working and to be ready to compile stuff
-chroot /mnt apt install git build-essential network-manager
+chroot /mnt apt install git build-essential network-manager locales
 
 # this is last, because if user walks away during install they go back,
 # configure their system and have it ready immediately
 chroot /mnt dpkg-reconfigure tzdata
+chroot /mnt dpkg-reconfigure locales
 
 echo "Enter root password:"
 chroot /mnt passwd

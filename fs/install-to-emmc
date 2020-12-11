@@ -48,7 +48,7 @@ echo "Enter root password:"
 chroot /mnt passwd
 
 read -p "Enter username, no spaces or big letters: "
-chroot /mnt useradd -G wheel,sudo,video,audio -m $REPLY
+chroot /mnt useradd -G sudo,video,audio -m $REPLY
 
 echo "Enter user password:"
 chroot /mnt passwd $REPLY
@@ -62,4 +62,4 @@ cp /etc/libinput/local-overrides.quirks /mnt/etc/libinput/local-overrides.quirks
 
 umount /mnt
 
-echo "Done! :D, Don't forget to install your favourite DE/WM"
+echo "Done! :D, Don't forget to install your favourite DE/WM after rebooting"

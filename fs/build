@@ -1,10 +1,10 @@
 #!/bin/bash
 CADMIUMROOT=$1
-TARGET=$2
 PART=$3
 
 set -e
-set -v
+
+source $CADMIUMROOT/config
 
 cd $CADMIUMROOT/tmp
 mkdir -p root
@@ -14,10 +14,12 @@ mount $PART root
 # if we are on arm64 machine, don't use qemu to execute arm64 code
 if [ "$(uname -m)" = "aarch64" ]; then
 	debootstrap --arch=arm64 sid root/ https://deb.debian.org/debian/ || true
+	echo "Running on ARM64 machine"
 else
 	cp $(which qemu-aarch64-static) root/
 	qemu-debootstrap --arch=arm64 sid root/ https://deb.debian.org/debian/ || true
 	qemu=/qemu-aarch64-static
+	echo "Running on not-ARM64 machine"
 fi
 
 echo $TARGET > root/etc/hostname # set default hostname in kernel?
@@ -25,21 +27,29 @@ echo $TARGET > root/etc/hostname # set default hostname in kernel?
 # remove root password, this is install medium so it's ok
 chroot root/ $qemu /bin/passwd -d root
 
-# copy ath10k firmware, qca6174 doesn't like upstream
-mkdir -p root/lib/firmware/ath10k/QCA6174/hw3.0/
-cp $CADMIUMROOT/fs/firmware/qcom/* root/lib/firmware/ath10k/QCA6174/hw3.0/
-cp $CADMIUMROOT/fs/firmware/scp.img root/lib/firmware/
+# board-specific setup
+
+case "$TARGET" in
+	duet)
+		# qca6174 doesn't like upstream
+		mkdir -p root/lib/firmware/ath10k/QCA6174/hw3.0/
+		cp $CADMIUMROOT/fs/firmware/qcom/* root/lib/firmware/ath10k/QCA6174/hw3.0/
+		cp $CADMIUMROOT/fs/firmware/scp.img root/lib/firmware/
+		
+		# copy libinput config
+		mkdir -p root/etc/libinput
+		cp $CADMIUMROOT/fs/local-overrides-duet.quirks root/etc/libinput/local-overrides.quirks	
+	;;
+esac
 
 # copy installation scripts, double root is not a typo
 cp $CADMIUMROOT/fs/install-* root/root/
 chmod a+x root/root/install-*
 
-# copy libinput config
-mkdir -p root/etc/libinput
-cp $CADMIUMROOT/fs/local-overrides-$TARGET.quirks root/etc/libinput/local-overrides.quirks
+
 
 # preinstall packages
 chroot root/ $qemu /bin/apt update
 chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap
 
-#umount root
+#umount root # done elsewhere

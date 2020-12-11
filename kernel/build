@@ -6,6 +6,8 @@ CADMIUMROOT=$1
 set -e
 set -v
 
+source $CADMIUMROOT/config
+
 # set env vars
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
@@ -16,34 +18,43 @@ cd $CADMIUMROOT/tmp
 
 # check if kernel has been downloaded this week, if not download/update it
 if [ "$(date +'%V%y')" != "$(cat kern-dl-date || true)" ]; then
-	if [ -d "$CADMIUMROOT/tmp/linux" ]; then
-		cd linux
-		git pull
+	case $TARGET in	
+	duet)
+		if [ -d "$CADMIUMROOT/tmp/linux" ]; then
+			cd linux
+			git pull
+			echo $(date +'%V%y') > kern-dl-date
+		else
+			git clone https://github.com/Maccraft123/linux-duet -b panfrost/duet linux
+			echo $(date +'%V%y') > kern-dl-date
+			cd linux
+		fi
+	;;
+	*)
+		rm -rf linux
+		curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+		mkdir linux
+		bsdtar xf Linux-archive --strip-components=1 -C linux
 		echo $(date +'%V%y') > kern-dl-date
-	else
-		git clone https://github.com/Maccraft123/linux-duet -b panfrost/duet linux
-		echo $(date +'%V%y') > kern-dl-date
-		cd linux
-	fi
+	esac
 fi
 
 cd linux
 
-cp $CADMIUMROOT/kernel/config-duet .config
-cp $CADMIUMROOT/kernel/kernel.its kernel.its
+cp $CADMIUMROOT/kernel/config-$TARGET .config
+cp $CADMIUMROOT/kernel/kernel-$TARGET.its kernel.its
 cp $CADMIUMROOT/kernel/cmdline cmdline
-cp $CADMIUMROOT/kernel/cmdline.mmc cmdline.mmc
 
 #for x in $(ls $CADMIUMROOT/kernel/patches/); do
 #	patch -p1 < $CADMIUMROOT/kernel/patches/$x
 #done
 
-#make nconfig # if you want to customize config just uncomment this
+make nconfig # if you want to customize config just uncomment this
 
 # backup old config if it's different, and copy new custom config
-if [ "$(sha1sum $CADMIUMROOT/kernel/config-duet)" = "$(sha1sum .config)" ]; then
-	cp $CADMIUMROOT/kernel/config-duet $CADMIUMROOT/kernel/config-duet.old
-	cp .config $CADMIUMROOT/kernel/config-duet
+if [ "$(sha1sum $CADMIUMROOT/kernel/config-$TARGET)" = "$(sha1sum .config)" ]; then
+	cp $CADMIUMROOT/kernel/config-$TARGET $CADMIUMROOT/kernel/config-$TARGET.old
+	cp .config $CADMIUMROOT/kernel/config-$TARGET
 fi
 
 echo Bulding in $(pwd) with $(nproc) threads

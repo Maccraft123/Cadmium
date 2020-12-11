@@ -5,6 +5,10 @@ DEV=/dev/mmcblk?
 
 sleep 1
 
+dd if=/dev/zero of=${DEV} bs=1M count=64
+
+parted --script ${DEV} mklabel gpt
+cgpt create ${DEV}
 cgpt add -i 1 -t kernel -b 8192 -s 65536 -l Kernel -S 1 -T 5 -P 10 ${DEV}
 cgpt add -i 2 -t data -b 73728 -s $(expr $(cgpt show /dev/mmcblk1 | grep 'Sec GPT table' | awk '{print $1}') - 73728) -l Root ${DEV}
 

@@ -2,3 +2,4 @@ tmp/*
 vmlinux.kpart
 vmlinux.kpart.mmc
 *.img
+*.img.xz

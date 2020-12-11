@@ -1,6 +1,6 @@
 #!/bin/bash
 CADMIUMROOT=$1
-PART=$3
+ROOTPART=$2
 
 set -e
 
@@ -8,16 +8,16 @@ source $CADMIUMROOT/config
 
 cd $CADMIUMROOT/tmp
 mkdir -p root
-mkfs.ext4 $PART
-mount $PART root
+mkfs.ext4 $ROOTPART
+mount $ROOTPART root
 
 # if we are on arm64 machine, don't use qemu to execute arm64 code
 if [ "$(uname -m)" = "aarch64" ]; then
-	debootstrap --arch=arm64 sid root/ https://deb.debian.org/debian/ || true
+	debootstrap --arch=arm64 sid $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ || true
 	echo "Running on ARM64 machine"
 else
 	cp $(which qemu-aarch64-static) root/
-	qemu-debootstrap --arch=arm64 sid root/ https://deb.debian.org/debian/ || true
+	qemu-debootstrap --arch=arm64 sid $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ || true
 	qemu=/qemu-aarch64-static
 	echo "Running on not-ARM64 machine"
 fi

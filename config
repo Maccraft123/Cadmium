@@ -1,6 +1,7 @@
 #!/bin/false
 
 # Target device
+# It is sorta using codenames, but "kukui" sounds stupid so i won't use it
 # One of: duet, kevin
 TARGET=duet
 

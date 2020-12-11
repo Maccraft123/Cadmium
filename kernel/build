@@ -17,29 +17,33 @@ cd $CADMIUMROOT/tmp
 
 
 # check if kernel has been downloaded this week, if not download/update it
-if [ "$(date +'%V%y')" != "$(cat kern-dl-date || true)" ]; then
+if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
 	case $TARGET in	
-	duet)
-		if [ -d "$CADMIUMROOT/tmp/linux" ]; then
-			cd linux
-			git pull
+		duet)
+			if [ -d "$CADMIUMROOT/tmp/linux-duet" ]; then
+				echo "Updating kernel for duet"
+				cd linux-duet
+				git pull
+				echo $(date +'%V%y') > kern-dl-date
+			else
+				echo "Downloading kernel for duet"
+				git clone https://github.com/Maccraft123/linux-duet -b panfrost/duet linux-duet
+				echo $(date +'%V%y') > kern-dl-date
+				cd linux-duet
+			fi
+		;;
+		*)
+			echo "Downloading kernel for kevin"
+			rm -rf linux-kevin
+			curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+			mkdir linux-kevin
+			bsdtar xf Linux-archive --strip-components=1 -C linux-kevin
 			echo $(date +'%V%y') > kern-dl-date
-		else
-			git clone https://github.com/Maccraft123/linux-duet -b panfrost/duet linux
-			echo $(date +'%V%y') > kern-dl-date
-			cd linux
-		fi
-	;;
-	*)
-		rm -rf linux
-		curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
-		mkdir linux
-		bsdtar xf Linux-archive --strip-components=1 -C linux
-		echo $(date +'%V%y') > kern-dl-date
+		;;
 	esac
 fi
 
-cd linux
+cd $CADMIUMROOT/tmp/linux-$TARGET
 
 cp $CADMIUMROOT/kernel/config-$TARGET .config
 cp $CADMIUMROOT/kernel/kernel-$TARGET.its kernel.its
@@ -49,7 +53,7 @@ cp $CADMIUMROOT/kernel/cmdline cmdline
 #	patch -p1 < $CADMIUMROOT/kernel/patches/$x
 #done
 
-make nconfig # if you want to customize config just uncomment this
+#make nconfig # if you want to customize config just uncomment this
 
 # backup old config if it's different, and copy new custom config
 if [ "$(sha1sum $CADMIUMROOT/kernel/config-$TARGET)" = "$(sha1sum .config)" ]; then
@@ -72,5 +76,6 @@ vbutil_kernel --pack vmlinux.kpart \
 	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
 	--config cmdline \
 	--bootloader bootloader.bin
+rm vmlinux.uimg
 
 cp vmlinux.kpart $CADMIUMROOT/

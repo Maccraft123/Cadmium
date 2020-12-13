@@ -1,8 +1,8 @@
 # Cadmium, Linux for MT8183-based Lenovo Chromebook Duet
 
 ## Installation
+- ``` ./build-all <pendrive> ``` On a Linux machine(ChromeOS doesn't count)
 - Enable developer mode
-- ``` ./build-all <pendrive> ```
 - Plug <pendrive> into duet via usb-c to usb-a adapter
 - Boot from USB
 - After running ``` ./install-to-emmc ``` after connecting to internet, Debian _should_ be installed on internal emmc memory
@@ -10,7 +10,7 @@
 
 ### OR
 - Enable developer mode
-- Write uncompressed release image
+- Write uncompressed release image to pendrive
 - Boot from USB
 - Run ```./install-to-emmc```
 

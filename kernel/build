@@ -4,7 +4,6 @@ CADMIUMROOT=$1
 [ -z "$CADMIUMROOT" ] && echo "$0: First parameter has to be root dir of Cadmium" && exit 1
 
 set -e
-set -v
 
 source $CADMIUMROOT/config
 
@@ -45,7 +44,7 @@ fi
 
 cd $CADMIUMROOT/tmp/linux-$TARGET
 
-cp $CADMIUMROOT/kernel/config-$TARGET .config
+[ -f .config ] || cp $CADMIUMROOT/kernel/config-$TARGET .config
 cp $CADMIUMROOT/kernel/kernel-$TARGET.its kernel.its
 cp $CADMIUMROOT/kernel/cmdline cmdline
 

@@ -50,6 +50,6 @@ chmod a+x root/root/install-*
 
 # preinstall packages
 chroot root/ $qemu /bin/apt update
-chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap
+chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted
 
 #umount root # done elsewhere

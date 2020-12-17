@@ -18,7 +18,7 @@ export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
 
 # set up alias areweontarget so "if areweontarget; then X" works fine
-if cat /sys/firmware/devicetree/base/compatible 2>/dev/null | grep -s krane; then
+if cat /sys/firmware/devicetree/base/compatible 2>/dev/null | egrep -si 'krane|kevin'; then
 	if [ -z "$DEV" ]; then
 		alias areweontarget=true
 	else
@@ -60,11 +60,11 @@ if areweontarget; then
 	fi
 
 	dd if=$MMCDEV of=$CADMIUMROOT/tmp/backup bs=1M count=32 status=none
-	dd if=$CADMIUMROOT/tmp/linux/vmlinux.kpart.pad of=$MMCDEV status=none
+	dd if=$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart.pad of=$MMCDEV status=none
 	OUTSHA=$(sha1sum $MMCDEV)
 
 
-	if cmp -s -- "$CADMIUMROOT/tmp/linux/vmlinux.kpart.pad" "$MMCDEV"; then
+	if cmp -s -- "$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart.pad" "$MMCDEV"; then
 		echo "Written correctly!"
 	else
 		echo "Oops, $MMCDEV doesn't match linux kernel image!"

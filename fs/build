@@ -3,41 +3,88 @@ CADMIUMROOT=$1
 ROOTPART=$2
 
 set -e
+set -v
 
 source $CADMIUMROOT/config
 
 cd $CADMIUMROOT/tmp
 mkdir -p root
-mkfs.f2fs $ROOTPART
+mkfs.f2fs -f $ROOTPART
 mount $ROOTPART root
 
 # if we are on arm64 machine, don't use qemu to execute arm64 code
 if [ "$(uname -m)" = "aarch64" ]; then
-	debootstrap --arch=arm64 sid $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ || true
 	echo "Running on ARM64 machine"
+	foreign=''
 else
 	cp $(which qemu-aarch64-static) root/
-	qemu-debootstrap --arch=arm64 sid $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ || true
 	qemu=/qemu-aarch64-static
+	foreign='--foreign'
 	echo "Running on not-ARM64 machine"
 fi
 
-echo $TARGET > root/etc/hostname # set default hostname in kernel?
+cd $CADMIUMROOT/tmp
+
+# rootfs-specific setup
+case "$ROOTFS" in
+	debian)
+		echo "Installing Debian"
+		# debootstrap randomly exits with 1, so there's that || true
+		debootstrap $foreign --arch=arm64 sid $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ || true
+		# probably it can be ran on target device with little shim that does that and then execs init
+		chroot root/ /debootstrap/debootstrap --second-stage
+		# preinstall packages to have wifi
+		chroot root/ $qemu /bin/apt update
+		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools
+	;;
+	manjaro)
+		echo "Installing Manjaro ARM"
+#		wget 'https://osdn.net/projects/manjaro-arm/storage/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz'
+#		bsdtar -xpf Manjaro-ARM-aarch64-latest.tar.gz -C root
+#		# nameserver info
+#		cp /etc/resolv.conf root/etc/resolv.conf
+#		# set up pacman keys and mirrors
+#		chroot root/ /bin/pacman-key --init || true # pacman-key is a script
+#		chroot root/ /bin/pacman-key --populate archlinuxarm manjaro manjaro-arm || true
+#		chroot root/ $qemu /bin/pacman-mirrors -f10
+#		# install base packages
+#		chroot root/ $qemu /usr/bin/pacman -Syyu base manjaro-system manjaro-release systemd systemd-libs --noconfirm
+#		# enable services that manjaro-arm-installer enables
+#		chroot root/ $qemu /usr/bin/systemctl enable getty.target haveged.service
+#		# make sure that ping is suid
+#		chroot root/ $qemu /bin/chmod u+s /usr/bin/ping
+#		# copy over some stuff from host system
+#		rm -f root/etc/ssl/certs/ca-certificates.crt
+#		rm -f root/etc/ca-certificates/extracted/tls-ca-bundle.pem
+#		cp -a /etc/ssl/certs/ca-certificates.crt root/etc/ssl/certs/
+#		cp -a /etc/ca-certificates/extracted/tls-ca-bundle.pem root/etc/ca-certificates/extracted/
+#		chroot root/ $qemu ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
+#		# locales too
+#		echo "LANG=$LOCALE" | tee --append root/etc/locale.conf
+#		chroot root/ $qemu /bin/locale-gen
+#		echo "KEYMAP=$CLIKEYMAP" | tee --append root/etc/vconsole.conf
+		echo "WIP"
+		exit 1
+	;;
+esac
 
 # remove root password, this is install medium so it's ok
 chroot root/ $qemu /bin/passwd -d root
 
-# board-specific setup
 
+echo $TARGET > root/etc/hostname # set default hostname in kernel?
+
+
+# board-specific setup
 case "$TARGET" in
 	duet)
 		# qca6174 doesn't like upstream
-		mkdir -p root/lib/firmware/ath10k/QCA6174/hw3.0/
+		mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/ath10k/QCA6174/hw3.0/
 		cp $CADMIUMROOT/fs/firmware/qcom/* root/lib/firmware/ath10k/QCA6174/hw3.0/
 		cp $CADMIUMROOT/fs/firmware/scp.img root/lib/firmware/
 		
 		# copy libinput config
-		mkdir -p root/etc/libinput
+		mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 		cp $CADMIUMROOT/fs/local-overrides-duet.quirks root/etc/libinput/local-overrides.quirks	
 	;;
 esac
@@ -46,10 +93,5 @@ esac
 cp $CADMIUMROOT/fs/install-* root/root/
 chmod a+x root/root/install-*
 
-
-
-# preinstall packages
-chroot root/ $qemu /bin/apt update
-chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools
 
 #umount root # done elsewhere

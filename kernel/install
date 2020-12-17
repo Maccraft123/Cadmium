@@ -6,7 +6,7 @@ ROOTPART=$4
 
 if [ -z "$4" ]; then
 	KERNPART=${DEVICE}1
-	ROOTPART=${DEVICE}2
+	ROOTPART=${DEVICE}3
 fi
 
 shopt -s expand_aliases # needed for aliases

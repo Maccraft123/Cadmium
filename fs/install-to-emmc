@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+# let's put a wildcard because kernel randomly swaps emmc between mmcblk1 and mmcblk0 on duet
 DEV=/dev/mmcblk?
 
 sleep 1
@@ -9,18 +10,18 @@ dd if=/dev/zero of=${DEV} bs=1M count=64
 
 parted --script ${DEV} mklabel gpt
 cgpt create ${DEV}
-cgpt add -i 1 -t kernel -b 8192 -s 65536 -l Kernel -S 1 -T 5 -P 10 ${DEV}
-cgpt add -i 2 -t data -b 73728 -s $(expr $(cgpt show /dev/mmcblk1 | grep 'Sec GPT table' | awk '{print $1}') - 73728) -l Root ${DEV}
+cgpt add -i 1 -t kernel	-b 8192		-s 65536 -l Kernel -S 1 -T 2 -P 10 ${DEV}
+cgpt add -i 2 -t kernel	-b 73728	-s 65536 -l Kernel -S 0 -T 2 -P 5 ${DEV}
+cgpt add -i 3 -t data	-b 139264	-s $(expr $(cgpt show /dev/mmcblk1 | grep 'Sec GPT table' | awk '{print $1}') - 139264) -l Root ${DEV}
 
 sleep 1
 
-# kernel randomly swaps internal emmc between mmcblk1 and mmcblk0
-# since there is no sd card, just put a wildcard there...
-mkfs.ext4 ${DEV}p2
+# f2fs time boiii
+mkfs.f2fs ${DEV}p3
 
 sleep 1
 
-mount ${DEV}p2 /mnt
+mount ${DEV}p3 /mnt
 
 debootstrap --arch=arm64 sid /mnt https://deb.debian.org/debian/ || true
 echo duet > /mnt/etc/hostname
@@ -37,7 +38,7 @@ cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/
 dd if=/dev/sda1 of=${DEV}p1
 
 # install packages needed to get wifi working and to be ready to compile stuff
-chroot /mnt apt install git build-essential network-manager locales
+chroot /mnt apt install f2fs-tools git build-essential network-manager locales
 
 # this is last, because if user walks away during install they go back,
 # configure their system and have it ready immediately

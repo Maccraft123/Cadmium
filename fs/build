@@ -8,7 +8,7 @@ source $CADMIUMROOT/config
 
 cd $CADMIUMROOT/tmp
 mkdir -p root
-mkfs.ext4 $ROOTPART
+mkfs.f2fs $ROOTPART
 mount $ROOTPART root
 
 # if we are on arm64 machine, don't use qemu to execute arm64 code
@@ -50,6 +50,6 @@ chmod a+x root/root/install-*
 
 # preinstall packages
 chroot root/ $qemu /bin/apt update
-chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted
+chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools
 
 #umount root # done elsewhere

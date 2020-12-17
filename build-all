@@ -11,6 +11,8 @@ sleep 1 # let's give user time if they commit a typo
 # build-all <device>
 # build-all <file> <size>
 
+[ -z "$1" ] && exit 1
+
 if [ -n "$2" ]; then # if $2 is set, it means that user wants a file
 	echo "Making file $1 with size of $2"
 	fallocate $CADMIUMROOT/$1 -l $2
@@ -18,11 +20,13 @@ if [ -n "$2" ]; then # if $2 is set, it means that user wants a file
 	losetup $DEVICE $CADMIUMROOT/$1
 
 	KERNPART=${DEVICE}p1
-	ROOTPART=${DEVICE}p2
+	KERNPART_B=${DEVICE}p2
+	ROOTPART=${DEVICE}p3
 else
 	DEVICE=$1
 	KERNPART=${DEVICE}1
-	ROOTPART=${DEVICE}2
+	KERNPART_B=${DEVICE}2
+	ROOTPART=${DEVICE}3
 	dd if=/dev/zero of=$DEVICE bs=1M count=64
 fi
 
@@ -33,9 +37,12 @@ sync
 parted --script $DEVICE mklabel gpt # cgpt dislikes if i don't do that, so do that
 
 # now this is _real_ partition table
+# 73728 comes from: size of kernel partition(65536) + beginning of kernel partition(8192)
+# 139264 comes from: size of B kernel partition(65536) + beginning of B kernel partition(73728)
 cgpt create $1
-cgpt add -i 1 -t kernel -b 8192 -s 65536 -l Kernel -S 1 -T 5 -P 10 $DEVICE
-cgpt add -i 2 -t data -b 73728 -s $(expr $(cgpt show $1 | grep 'Sec GPT table' | awk '{print $1}') - 73728) -l Root $DEVICE
+cgpt add -i 1 -t kernel -b 8192 -s 65536 -l Kernel -S 1 -T 2 -P 10 $DEVICE
+cgpt add -i 2 -t kernel -b 73728 -s 65536 -l Kernel -S 0 -T 2 -P 5 $DEVICE
+cgpt add -i 3 -t data -b 139264 -s $(expr $(cgpt show $1 | grep 'Sec GPT table' | awk '{print $1}') - 139264) -l Root $DEVICE
 sync
 
 # reread partition table
@@ -55,7 +62,8 @@ make -C $CADMIUMROOT/tmp/linux-$TARGET ARCH=arm64 INSTALL_MOD_PATH=$CADMIUMROOT/
 # we don't umount it in fs/build
 umount $CADMIUMROOT/tmp/root
 
-losetup -d $DEVICE || true
+# yes, this fails when device is pendrive or sth
+losetup -d $DEVICE 2>/dev/null || true
 
 sync
 

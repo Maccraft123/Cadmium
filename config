@@ -9,3 +9,8 @@ TARGET=duet
 # One of: premade, build
 #KERNEL=premade
 #TODO
+
+
+# RootFS type
+# One of: debian
+ROOTFS=DEBIAN

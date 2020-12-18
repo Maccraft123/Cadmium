@@ -46,7 +46,7 @@ case "$ROOTFS" in
 		echo "Installing Void Linux"
 		ROOTFS="$(curl -s -L https://voidlinux.org/download/ | grep aarch64 | tr '"' ' ' | awk '{print $3}' | grep $V musl)"
 		if [ ! -f "$ROOTFS" ]; then
-			rm void-aarch64$Vtar.xz || true
+			rm void-aarch64${V}tar.xz || true
 			wget $ROOTFS -O void-aarch64$V.tar.xz # musl: void-aarch64, non-musl: void-aarch64-v
 
 		fi

@@ -16,18 +16,18 @@ cd $CADMIUMROOT/tmp
 
 
 # check if kernel has been downloaded this week, if not download/update it
-if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
+if [ "$(date +'%V%y')" != "$(cat kern-dl-date-$TARGET)" ]; then
 	case $TARGET in	
 		duet)
 			if [ -d "$CADMIUMROOT/tmp/linux-duet" ]; then
 				echo "Updating kernel for duet"
 				cd linux-duet
 				git pull
-				echo $(date +'%V%y') > kern-dl-date
+				echo $(date +'%V%y') > kern-dl-date-$TARGET
 			else
 				echo "Downloading kernel for duet"
 				git clone https://github.com/Maccraft123/linux-duet -b panfrost/duet linux-duet
-				echo $(date +'%V%y') > kern-dl-date
+				echo $(date +'%V%y') > kern-dl-date-$TARGET
 				cd linux-duet
 			fi
 		;;
@@ -37,7 +37,7 @@ if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
 			curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
 			mkdir linux-kevin
 			bsdtar xf Linux-archive --strip-components=1 -C linux-kevin
-			echo $(date +'%V%y') > kern-dl-date
+			echo $(date +'%V%y') > kern-dl-date-$TARGET
 		;;
 	esac
 fi

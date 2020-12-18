@@ -12,5 +12,5 @@ TARGET=duet
 
 
 # RootFS type
-# One of: debian, manjaro
-ROOTFS=debian
+# One of: debian, void, void-musl
+ROOTFS=void

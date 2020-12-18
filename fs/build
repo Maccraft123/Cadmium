@@ -37,34 +37,26 @@ case "$ROOTFS" in
 		chroot root/ $qemu /bin/apt update
 		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools
 	;;
-	manjaro)
-		echo "Installing Manjaro ARM"
-#		wget 'https://osdn.net/projects/manjaro-arm/storage/.rootfs/Manjaro-ARM-aarch64-latest.tar.gz'
-#		bsdtar -xpf Manjaro-ARM-aarch64-latest.tar.gz -C root
-#		# nameserver info
-#		cp /etc/resolv.conf root/etc/resolv.conf
-#		# set up pacman keys and mirrors
-#		chroot root/ /bin/pacman-key --init || true # pacman-key is a script
-#		chroot root/ /bin/pacman-key --populate archlinuxarm manjaro manjaro-arm || true
-#		chroot root/ $qemu /bin/pacman-mirrors -f10
-#		# install base packages
-#		chroot root/ $qemu /usr/bin/pacman -Syyu base manjaro-system manjaro-release systemd systemd-libs --noconfirm
-#		# enable services that manjaro-arm-installer enables
-#		chroot root/ $qemu /usr/bin/systemctl enable getty.target haveged.service
-#		# make sure that ping is suid
-#		chroot root/ $qemu /bin/chmod u+s /usr/bin/ping
-#		# copy over some stuff from host system
-#		rm -f root/etc/ssl/certs/ca-certificates.crt
-#		rm -f root/etc/ca-certificates/extracted/tls-ca-bundle.pem
-#		cp -a /etc/ssl/certs/ca-certificates.crt root/etc/ssl/certs/
-#		cp -a /etc/ca-certificates/extracted/tls-ca-bundle.pem root/etc/ca-certificates/extracted/
-#		chroot root/ $qemu ln -sf /usr/share/zoneinfo/"$TIMEZONE" /etc/localtime
-#		# locales too
-#		echo "LANG=$LOCALE" | tee --append root/etc/locale.conf
-#		chroot root/ $qemu /bin/locale-gen
-#		echo "KEYMAP=$CLIKEYMAP" | tee --append root/etc/vconsole.conf
-		echo "WIP"
-		exit 1
+	# let's explain this: when void is set, $V is set to -v, so it does 'grep -v musl', printing link without musl
+	# when $V is not set, grep is 'grep musl', printing only link with musl
+	void)
+		V='-v'
+	;& # fall-through
+	void-musl)
+		echo "Installing Void Linux"
+		ROOTFS="$(curl -s -L https://voidlinux.org/download/ | grep aarch64 | tr '"' ' ' | awk '{print $3}' | grep $V musl)"
+		if [ ! -f "$ROOTFS" ]; then
+			rm void-aarch64$Vtar.xz || true
+			wget $ROOTFS -O void-aarch64$V.tar.xz # musl: void-aarch64, non-musl: void-aarch64-v
+
+		fi
+		tar xvfp void-aarch64$V.tar.xz -C $CADMIUMROOT/tmp/root
+		cp /etc/resolv.conf root/etc/resolv.conf
+		chroot root/ $qemu /bin/xbps-install -Syu xbps
+		chroot root/ $qemu /bin/xbps-install -yu
+		chroot root/ $qemu /bin/xbps-install -y base-system
+		chroot root/ $qemu /bin/xbps-remove -y base-voidstrap
+		chroot root/ $qemu /bin/xbps-install -y vim NetworkManager parted f2fs-tools
 	;;
 esac
 

@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+
+# let's put a wildcard because kernel randomly swaps emmc between mmcblk1 and mmcblk0 on duet
+[ -b /dev/mmcblk1 ] && MMCDEV=/dev/mmcblk1 || MMCDEV=/dev/mmcblk0
+
+sleep 1
+
+dd if=/dev/zero of=${MMCDEV} bs=1M count=64
+
+parted --script ${MMCDEV} mklabel gpt
+cgpt create ${MMCDEV}
+cgpt add -i 1 -t kernel	-b 8192		-s 65536 -l Kernel -S 1 -T 2 -P 10	${MMCDEV}
+cgpt add -i 2 -t kernel	-b 73728	-s 65536 -l Kernel -S 0 -T 2 -P 5	${MMCDEV}
+cgpt add -i 3 -t data	-b 139264	-s $(expr $(cgpt show /dev/mmcblk1 | grep 'Sec GPT table' | awk '{print $1}') - 139264) -l Root ${MMCDEV}
+
+sleep 1
+
+partx -a ${MMCDEV} || true
+
+sleep 1
+
+# f2fs time boiii
+mkfs.f2fs -f ${MMCDEV}p3
+mount ${MMCDEV}p3 /mnt
+
+mkdir -p /mnt/etc/
+echo duet > /mnt/etc/hostname
+
+# QCA6174 dislikes upstream firmware, copy one that i stole from chromeos
+mkdir -p /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
+cp -r /lib/firmware/ath10k/QCA6174/hw3.0/* /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
+
+# copy modules over
+mkdir -p /mnt/lib/modules/$(uname -r)/
+cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/
+
+# copy kernel from usb pendrive/hdd to internal emmc
+dd if=/dev/zero of=${MMCDEV}p1 || true
+dd if=/dev/sda1 of=${MMCDEV}p1
+
+# end of install-to-emmc-begin

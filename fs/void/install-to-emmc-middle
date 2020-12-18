@@ -1,0 +1,16 @@
+# start of install-to-emmc-middle
+
+# debootstrap randomly just fails for no reason, but system turns out fine
+tar xvpf /voidlinux.tar.xz -C /mnt/
+
+cp /etc/resolv.conf /mnt/etc/resolv.conf
+
+chroot /mnt/ /bin/xbps-install -Syu xbps
+chroot /mnt/ /bin/xbps-install -yu
+chroot /mnt/ /bin/xbps-install -y base-system
+chroot /mnt/ /bin/xbps-remove -y base-voidstrap
+chroot /mnt/ /bin/xbps-install -y vim NetworkManager parted f2fs-tools
+
+export EXTRAPRINT="In case of Void RootFS you need to manually do timezone and locale configuration"
+
+# end of install-to-emmc-middle

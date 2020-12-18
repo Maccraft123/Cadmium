@@ -13,4 +13,4 @@ TARGET=duet
 
 # RootFS type
 # One of: debian, void, void-musl
-ROOTFS=debian
+ROOTFS=void

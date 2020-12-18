@@ -16,25 +16,23 @@ cd $CADMIUMROOT/tmp
 
 
 # check if kernel has been downloaded this week, if not download/update it
-if [ "$(date +'%V%y')" != "$(cat kern-dl-date-$TARGET)" ]; then
-	case $TARGET in	
-		duet)
-			echo "Patching kernel with duet-specific patches"
-			patch -p1 < $CADMIUMROOT/kernel/patches/01-add-mt8183.patch
-			patch -p1 < $CADMIUMROOT/kernel/patches/02-add-it6505.patch
-			patch -p1 < $CADMIUMROOT/kernel/patches/03-mmu-context-lifetime.patch
-		;& # yes i am going to use this everywhere
+#if [ "$(date +'%V%y')" != "$(cat kern-dl-date-$TARGET)" ]; then
+	echo "Downloading kernel for $TARGET"
+	rm -rf linux-$TARGET
+	curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+	mkdir linux-$TARGET
+	bsdtar xf Linux-archive --strip-components=1 -C linux-$TARGET
+	echo $(date +'%V%y') > kern-dl-date-$TARGET
 
-		*)
-			echo "Downloading kernel for $TARGET"
-			rm -rf linux
-			curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
-			mkdir linu
-			bsdtar xf Linux-archive --strip-components=1 -C linux-$TARGET
-			echo $(date +'%V%y') > kern-dl-date-$TARGET
-		;;
-	esac
-fi
+	cd linux-$TARGET
+
+	if [ "$TARGET" = "duet" ]; then
+		echo "Patching kernel with duet-specific patches"
+		patch -p1 < $CADMIUMROOT/kernel/patches/01-add-mt8183.patch
+		patch -p1 < $CADMIUMROOT/kernel/patches/02-add-it6505.patch
+		patch -p1 < $CADMIUMROOT/kernel/patches/03-mmu-context-lifetime.patch
+	fi
+#fi
 
 cd $CADMIUMROOT/tmp/linux-$TARGET
 
@@ -47,12 +45,6 @@ cp $CADMIUMROOT/kernel/cmdline cmdline
 #done
 
 #make nconfig # if you want to customize config just uncomment this
-
-# backup old config if it's different, and copy new custom config
-if [ "$(sha1sum $CADMIUMROOT/kernel/config-$TARGET)" = "$(sha1sum .config)" ]; then
-	cp $CADMIUMROOT/kernel/config-$TARGET $CADMIUMROOT/kernel/config-$TARGET.old
-	cp .config $CADMIUMROOT/kernel/config-$TARGET
-fi
 
 echo Bulding in $(pwd) with $(nproc) threads
 time make -j$(nproc)

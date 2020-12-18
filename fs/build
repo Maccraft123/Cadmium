@@ -44,13 +44,13 @@ case "$ROOTFS" in
 	;& # fall-through
 	void-musl)
 		echo "Installing Void Linux"
-		ROOTFS="$(curl -s -L https://voidlinux.org/download/ | grep aarch64 | tr '"' ' ' | awk '{print $3}' | grep $V musl)"
-		if [ ! -f "$ROOTFS" ]; then
+		ROOTFS_TAR="$(curl -s -L https://voidlinux.org/download/ | grep aarch64 | tr '"' ' ' | awk '{print $3}' | grep $V musl)"
+		if [ ! -f "$ROOTFS_TAR" ]; then
 			rm void-aarch64${V}tar.xz || true
-			wget $ROOTFS -O void-aarch64$V.tar.xz # musl: void-aarch64, non-musl: void-aarch64-v
+			wget $ROOTFS_TAR -O void-aarch64$V.tar.xz # musl: void-aarch64, non-musl: void-aarch64-v
 
 		fi
-		tar xvfp void-aarch64$V.tar.xz -C $CADMIUMROOT/tmp/root
+		tar xfp void-aarch64$V.tar.xz -C $CADMIUMROOT/tmp/root
 		cp /etc/resolv.conf root/etc/resolv.conf
 		chroot root/ $qemu /bin/xbps-install -Syu xbps
 		chroot root/ $qemu /bin/xbps-install -yu
@@ -82,8 +82,8 @@ case "$TARGET" in
 esac
 
 # copy installation scripts, double root is not a typo
-cp $CADMIUMROOT/fs/install-* root/root/
-chmod a+x root/root/install-*
+cat $CADMIUMROOT/fs/install-to-emmc-begin $CADMIUMROOT/fs/$ROOTFS/install-to-emmc-middle $CADMIUMROOT/fs/install-to-emmc-end > root/root/install-to-emmc
+chmod a+x root/root/install-to-emmc
 
 
 #umount root # done elsewhere

@@ -1,0 +1,21 @@
+# start of install-to-emmc-end
+
+echo "Enter root password"
+chroot /mnt passwd
+
+read -p "Enter username, no spaces or big letters: "
+chroot /mnt useradd -G sudo,video,audio -m $REPLY
+
+echo "Enter user password:"
+chroot /mnt passwd $REPLY
+
+# default libinput config for touchpad is bad
+# let's override it
+mkdir -p /mnt/etc/libinput
+cp /etc/libinput/local-overrides.quirks /mnt/etc/libinput/local-overrides.quirks
+
+umount /mnt
+
+echo "Done! :D, Don't forget to install your favourite DE/WM after rebooting"
+
+echo "$EXTRAPRINT"

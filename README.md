@@ -1,7 +1,7 @@
 # Cadmium, Linux for MT8183-based Lenovo Chromebook Duet
 
 ## Installation
-- ``` ./build-all <pendrive> ``` On a Linux machine(ChromeOS doesn't count)
+- ``` ./build-all <pendrive> ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt(if host isn't aarch64) and debootstrap need to work correctly.
 - Enable developer mode
 - Plug <pendrive> into duet via usb-c to usb-a adapter
 - Boot from USB
@@ -14,8 +14,8 @@
 - Boot from USB
 - Run ```./install-to-emmc```
 
-#### Due to GPU working only in mesa-git, only llvmpipe driver is available until there is a release with support for Mali G72 in Panfrost
-#### *Binary drivers are unsupported in Cadmium*
+#### Due to GPU working correctly only in 21.0.0 mesa, only llvmpipe driver is available until there is a release with support for Mali G72 in Panfrost
+#### *Binary drivers are unsupported in Cadmium and never will be*
 
 ## Dependencies on build machine
 - Recent Linux distribution

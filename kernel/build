@@ -48,6 +48,9 @@ cp $CADMIUMROOT/kernel/cmdline cmdline
 
 echo Bulding in $(pwd) with $(nproc) threads
 time make -j$(nproc)
+make tarxz-pkg
+
+REL="$(make kernelrelease)"
 
 # make kernel partition
 # yes this is stolen from solidhal's prawnos, that's how open source works :D
@@ -64,3 +67,24 @@ vbutil_kernel --pack vmlinux.kpart \
 rm vmlinux.uimg
 
 cp vmlinux.kpart $CADMIUMROOT/
+
+# clean the tree, just in case
+#rm -rf $CADMIUMROOT/tmp/kernel-repack
+#mkdir -p $CADMIUMROOT/tmp/kernel-repack/
+
+# by default make tarxz-pkg doesn't include vmlinux.kpart, add it manually
+#bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux-*cadmium-arm64.tar.xz  -C $CADMIUMROOT/tmp/kernel-repack
+#cp $CADMIUMROOT/vmlinux.kpart $CADMIUMROOT/tmp/kernel-repack/boot/vmlinux.kpart
+
+# put release info for script on target machine to compare its uname -r to
+#echo "$REL" > $CADMIUMROOT/tmp/kernel-repack/release
+
+# and add target information
+#echo "$TARGET" > $CADMIUMROOT/tmp/kernel-repack/target
+
+# make archive *including* vmlinux.kpart
+#tar cJf $CADMIUMROOT/kernel-$TARGET.tar.xz $CADMIUMROOT/tmp/kernel-repack
+
+# checksum to be 100% sure on target device that file downloaded correctly
+#sha1sum $CADMIUMROOT/kernel-$TARGET.tar.xz | awk '{print $1}' > $CADMIUMROOT/kernel-$TARGET.sha1
+

@@ -1,1 +1,0 @@
-console=tty1 root=PARTUUID=%U/PARTNROFF=1 rootfstype=ext4 quiet rw rootwait

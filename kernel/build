@@ -26,23 +26,17 @@ if [ "$(date +'%V%y')" != "$(cat kern-dl-date-$TARGET)" ]; then
 
 	cd linux-$TARGET
 
-	if [ "$TARGET" = "duet" ]; then
-		echo "Patching kernel with duet-specific patches"
-		patch -p1 < $CADMIUMROOT/kernel/patches/01-add-mt8183.patch
-		patch -p1 < $CADMIUMROOT/kernel/patches/02-add-it6505.patch
-		patch -p1 < $CADMIUMROOT/kernel/patches/03-mmu-context-lifetime.patch
-	fi
+	for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch); do
+		echo "Applying $x"
+		patch -p1 < $x
+	done
 fi
 
 cd $CADMIUMROOT/tmp/linux-$TARGET
 
-[ -f .config ] || cp $CADMIUMROOT/kernel/config-$TARGET .config
-cp $CADMIUMROOT/kernel/kernel-$TARGET.its kernel.its
+[ -f .config ] || cp $CADMIUMROOT/board/$TARGET/kernel-config .config
+cp $CADMIUMROOT/board/$TARGET/kernel.its kernel.its
 cp $CADMIUMROOT/kernel/cmdline cmdline
-
-#for x in $(ls $CADMIUMROOT/kernel/patches/); do
-#	patch -p1 < $CADMIUMROOT/kernel/patches/$x
-#done
 
 #make nconfig # if you want to customize config just uncomment this
 
@@ -69,22 +63,22 @@ rm vmlinux.uimg
 cp vmlinux.kpart $CADMIUMROOT/
 
 # clean the tree, just in case
-#rm -rf $CADMIUMROOT/tmp/kernel-repack
-#mkdir -p $CADMIUMROOT/tmp/kernel-repack/
+rm -rf $CADMIUMROOT/tmp/kernel-repack
+mkdir -p $CADMIUMROOT/tmp/kernel-repack/
 
 # by default make tarxz-pkg doesn't include vmlinux.kpart, add it manually
-#bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux-*cadmium-arm64.tar.xz  -C $CADMIUMROOT/tmp/kernel-repack
-#cp $CADMIUMROOT/vmlinux.kpart $CADMIUMROOT/tmp/kernel-repack/boot/vmlinux.kpart
+bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux-*cadmium-arm64.tar.xz  -C $CADMIUMROOT/tmp/kernel-repack
+cp $CADMIUMROOT/vmlinux.kpart $CADMIUMROOT/tmp/kernel-repack/boot/vmlinux.kpart
 
 # put release info for script on target machine to compare its uname -r to
-#echo "$REL" > $CADMIUMROOT/tmp/kernel-repack/release
+echo "$REL" > $CADMIUMROOT/tmp/kernel-repack/release
 
 # and add target information
-#echo "$TARGET" > $CADMIUMROOT/tmp/kernel-repack/target
+echo "$TARGET" > $CADMIUMROOT/tmp/kernel-repack/target
 
 # make archive *including* vmlinux.kpart
-#tar cJf $CADMIUMROOT/kernel-$TARGET.tar.xz $CADMIUMROOT/tmp/kernel-repack
+tar cJf $CADMIUMROOT/kernel-$TARGET.tar.xz $CADMIUMROOT/tmp/kernel-repack
 
 # checksum to be 100% sure on target device that file downloaded correctly
-#sha1sum $CADMIUMROOT/kernel-$TARGET.tar.xz | awk '{print $1}' > $CADMIUMROOT/kernel-$TARGET.sha1
+sha1sum $CADMIUMROOT/kernel-$TARGET.tar.xz | awk '{print $1}' > $CADMIUMROOT/kernel-$TARGET.sha1
 

@@ -73,13 +73,26 @@ case "$TARGET" in
 		# qca6174 doesn't like upstream
 		mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/ath10k/QCA6174/hw3.0/
 		cp $CADMIUMROOT/fs/firmware/qcom/* root/lib/firmware/ath10k/QCA6174/hw3.0/
-		cp $CADMIUMROOT/fs/firmware/scp.img root/lib/firmware/
+		cp $CADMIUMROOT/fs/firmware/mtk_scp.img root/lib/firmware/
 		
 		# copy libinput config
 		mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 		cp $CADMIUMROOT/fs/local-overrides-duet.quirks root/etc/libinput/local-overrides.quirks	
 	;;
+	kevin)
+		# wifi firmware
+		mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/mrvl
+		cp $CADMIUMROOT/fs/firmware/pcieusb8997_combo_v4.bin $CADMIUMROOT/tmp/root/lib/firmware/mrvl/
+
+		# rockchip displayport firmware
+		mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/rockchip
+		cp $CADMIUMROOT/fs/firmware/rkdptx.bin $CADMIUMROOT/tmp/root/lib/firmware/rockchip/dptx.bin
+	;;
 esac
+
+# install sway config
+mkdir -p $CADMIUMROOT/tmp/root/etc/sway
+cp $CADMIUMROOT/board/$BOARD/sway-config $CADMIUMROOT/tmp/root/etc/sway/config
 
 # copy installation scripts, double root is not a typo
 cat $CADMIUMROOT/fs/install-to-emmc-begin $CADMIUMROOT/fs/$ROOTFS/install-to-emmc-middle $CADMIUMROOT/fs/install-to-emmc-end > root/root/install-to-emmc

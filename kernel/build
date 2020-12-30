@@ -78,7 +78,7 @@ echo "$REL" > $CADMIUMROOT/tmp/kernel-repack/release
 echo "$TARGET" > $CADMIUMROOT/tmp/kernel-repack/target
 
 # make archive *including* vmlinux.kpart
-tar cJf $CADMIUMROOT/kernel-$TARGET.tar.xz -C $CADMIUMROOT/tmp/kernel-repack
+tar cJf $CADMIUMROOT/kernel-$TARGET.tar.xz -C $CADMIUMROOT/tmp kernel-repack
 
 # checksum to be 100% sure on target device that file downloaded correctly
 sha1sum $CADMIUMROOT/kernel-$TARGET.tar.xz | awk '{print $1}' > $CADMIUMROOT/kernel-$TARGET.sha1

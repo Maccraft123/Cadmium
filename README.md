@@ -21,5 +21,6 @@
 - Recent Linux distribution
 - Binfmt when Debian rootfs is used
 - ```debootstrap``` when Debian rootfs is used
-- ```qemu-user-static vboot_utils u-boot-tools```
+- ```qemu-user-static``` when build machine is not aarch64
+- ```vboot_utils u-boot-tools``` (vbutil_kernel, cgpt and mkimage) to pack kernel into format understandable by depthcharge
 - Build dependencies for kernel compilation

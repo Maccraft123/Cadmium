@@ -31,6 +31,8 @@ echo duet > /mnt/etc/hostname
 mkdir -p /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
 cp -r /lib/firmware/ath10k/QCA6174/hw3.0/* /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
 
+[ -f /lib/firmware/scp.img ] && cp /lib/firmware/scp.img /mnt/lib/firmware/scp.img
+
 # copy modules over
 mkdir -p /mnt/lib/modules/$(uname -r)/
 cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/

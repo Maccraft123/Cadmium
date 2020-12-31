@@ -73,7 +73,7 @@ case "$TARGET" in
 		# qca6174 doesn't like upstream
 		mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/ath10k/QCA6174/hw3.0/
 		cp $CADMIUMROOT/fs/firmware/qcom/* root/lib/firmware/ath10k/QCA6174/hw3.0/
-		cp $CADMIUMROOT/fs/firmware/mtk_scp.img root/lib/firmware/
+		cp $CADMIUMROOT/fs/firmware/mtk_scp.img root/lib/firmware/scp.img
 		
 		# copy libinput config
 		mkdir -p $CADMIUMROOT/tmp/root/etc/libinput

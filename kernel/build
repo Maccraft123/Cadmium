@@ -35,6 +35,8 @@ fi
 
 cd $CADMIUMROOT/tmp/linux-$TARGET
 
+# TODO:
+# make cadmium defconfig from: common-defconfig, soc-defconfig and board-defconfig
 [ -f .config ] || cp $CADMIUMROOT/board/$TARGET/kernel-config .config
 cp $CADMIUMROOT/board/$TARGET/kernel.its kernel.its
 cp $CADMIUMROOT/kernel/cmdline cmdline

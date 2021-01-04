@@ -32,7 +32,7 @@ case "$ROOTFS" in
 		# debootstrap randomly exits with 1, so there's that || true
 		debootstrap $foreign --arch=arm64 sid $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ || true
 		# probably it can be ran on target device with little shim that does that and then execs init
-		chroot root/ /debootstrap/debootstrap --second-stage
+		[ -n "$foreign" ] && chroot root/ /debootstrap/debootstrap --second-stage
 		# preinstall packages to have wifi
 		chroot root/ $qemu /bin/apt update
 		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools
@@ -70,33 +70,28 @@ echo $TARGET > root/etc/hostname # set default hostname in kernel?
 # board-specific setup
 case "$TARGET" in
 	duet)
-		# qca6174 doesn't like upstream
-		mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/ath10k/QCA6174/hw3.0/
-		cp $CADMIUMROOT/fs/firmware/qcom/* root/lib/firmware/ath10k/QCA6174/hw3.0/
-		cp $CADMIUMROOT/fs/firmware/mtk_scp.img root/lib/firmware/scp.img
-		
 		# copy libinput config
 		mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 		cp $CADMIUMROOT/fs/local-overrides-duet.quirks root/etc/libinput/local-overrides.quirks	
 	;;
 	kevin)
-		# wifi firmware
-		mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/mrvl
-		cp $CADMIUMROOT/fs/firmware/pcieusb8997_combo_v4.bin $CADMIUMROOT/tmp/root/lib/firmware/mrvl/
-
-		# rockchip displayport firmware
-		mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/rockchip
-		cp $CADMIUMROOT/fs/firmware/rkdptx.bin $CADMIUMROOT/tmp/root/lib/firmware/rockchip/dptx.bin
+		# TODO: local-overrides-kevin.quirks, because touchpad is worse on kevin than it is on duet
+		true
 	;;
 esac
 
+# copy over firmware
+mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
+cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/root/lib/firmware/
+
 # install sway config
 mkdir -p $CADMIUMROOT/tmp/root/etc/sway
-cp $CADMIUMROOT/board/$BOARD/sway-config $CADMIUMROOT/tmp/root/etc/sway/config
+cp $CADMIUMROOT/board/$TARGET/sway-config $CADMIUMROOT/tmp/root/etc/sway/config
 
 # copy installation scripts, double root is not a typo
+# -begin sets up partition and fs, -middle installs distro, -end sets up distro
 cat $CADMIUMROOT/fs/install-to-emmc-begin $CADMIUMROOT/fs/$ROOTFS/install-to-emmc-middle $CADMIUMROOT/fs/install-to-emmc-end > root/root/install-to-emmc
 chmod a+x root/root/install-to-emmc
 
 
-#umount root # done elsewhere
+#umount root # done in /build-all

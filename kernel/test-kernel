@@ -7,7 +7,7 @@ export CADMIUMROOT=$1
 
 source $CADMIUMROOT/config
 
-cd $CADMIUMROOT/tmp/linux-$TARGET/
+cd $CADMIUMROOT/tmp/linux-test/
 
 # if anything fails, bail out
 set -e

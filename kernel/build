@@ -72,6 +72,7 @@ mkdir -p $CADMIUMROOT/tmp/kernel-repack/
 # by default make tarxz-pkg doesn't include vmlinux.kpart, add it manually
 bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux-*cadmium-arm64.tar.xz  -C $CADMIUMROOT/tmp/kernel-repack
 cp $CADMIUMROOT/vmlinux.kpart $CADMIUMROOT/tmp/kernel-repack/boot/vmlinux.kpart
+cp $CADMIUMROOT/tmp/linux-$TARGET/arch/arm64/boot/Image $CADMIUMROOT/tmp/kernel-repack/boot/Image-$TARGET
 
 # put release info for script on target machine to compare its uname -r to
 echo "$REL" > $CADMIUMROOT/tmp/kernel-repack/release

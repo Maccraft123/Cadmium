@@ -24,3 +24,6 @@
 - ```qemu-user-static``` when build machine is not aarch64
 - ```vboot_utils u-boot-tools``` (vbutil_kernel, cgpt and mkimage) to pack kernel into format understandable by depthcharge
 - Build dependencies for kernel compilation
+
+#### A Note about kevin:
+##### Although there are files in Cadmium about it, kevin was used to seprate board-specific files and kevin isn't as well supported

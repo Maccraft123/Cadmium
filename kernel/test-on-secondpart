@@ -1,4 +1,7 @@
 #!/bin/bash
+# if anything fails bail out
+set -e 
+
 # partlabels boiiiiiiiiii
 export KERNA=/dev/disk/by-partlabel/MMCKernelA
 export KERNB=/dev/disk/by-partlabel/MMCKernelB
@@ -7,10 +10,9 @@ export CADMIUMROOT=$1
 
 source $CADMIUMROOT/config
 
-cd $CADMIUMROOT/tmp/linux-test/
+cd $CADMIUMROOT
+cd $CADMIUMROOT/tmp/linux-test/ || cd $CADMIUMROOT/tmp/linux-$TARGET
 
-# if anything fails, bail out
-set -e
 
 # repack kernel
 [ -f 'vmlinux.uimg' ] && rm vmlinux.uimg

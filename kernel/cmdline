@@ -1,1 +1,1 @@
-console=tty1 root=PARTLABEL=Root rootfstype=f2fs rootwait rw
+console=tty1 root=PARTLABEL=Root rootfstype=f2fs rootwait rw mem_sleep_default=s2idle

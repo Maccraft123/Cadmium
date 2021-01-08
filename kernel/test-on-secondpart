@@ -35,6 +35,6 @@ make modules_install
 
 # write new kernel
 
-dd if=./vmlinux.kpart of=$KERNB
+dd if=$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart of=$KERNB
 
 echo "Save all data and reboot"

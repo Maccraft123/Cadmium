@@ -1,0 +1,30 @@
+#!/bin/bash
+# if anything fails bail out
+set -e 
+
+# partlabels boiiiiiiiiii
+export KERNA=/dev/disk/by-partlabel/MMCKernelA
+export KERNB=/dev/disk/by-partlabel/MMCKernelB
+
+
+dd if=$KERNA of=/kernel-backup.bin bs=32M status=none
+dd if=/dev/zero of=$KERNA bs=32M status=none count=1
+dd if=$KERNB of=$KERNA bs=32M status=none
+
+if cmp $KERNA $KERNB; then
+	echo "Everything is correctly written"
+else
+	dd if=$KERNB of=$KERNA bs=32M status=none
+	if cmp $KERNA $KERNB; then
+		echo "Everything is correctly written after second attempt"
+	else
+		dd if=/kernel-backup.bin of=$KERNA
+		if cmp $KERNA /kernel-backup.bin; then
+			echo "Rolled back to old kernel, as new kernel couldnt be written"
+		else
+			echo "Nothing worked. You are on your own"
+			echo "Kernel backup is at /kernel-backup.bin"
+			echo "But it couldnt be written correctly"
+		fi
+	fi
+fi

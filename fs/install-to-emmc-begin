@@ -28,8 +28,9 @@ mkdir -p /mnt/etc/
 echo duet > /mnt/etc/hostname
 
 # QCA6174 dislikes upstream firmware, copy one that i stole from chromeos
-mkdir -p /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
-cp -r /lib/firmware/ath10k/QCA6174/hw3.0/* /mnt/lib/firmware/ath10k/QCA6174/hw3.0/
+mkdir -p /mnt/lib/firmware/
+cp -r /lib/firmware/* /mnt/lib/firmware/
+
 
 [ -f /lib/firmware/scp.img ] && cp /lib/firmware/scp.img /mnt/lib/firmware/scp.img
 

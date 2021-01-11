@@ -1,7 +1,7 @@
 # Cadmium, Linux for MT8183-based Lenovo Chromebook Duet
 
 <p align="center">
-<img src="/pics/duet.png" alt="Lenovo Duet running Linux" data-canonical-src="/pics/duet.png"/></p>
+<img src="/pics/duet_small.png" alt="Lenovo Duet running Linux" data-canonical-src="/pics/duet_small.png"/></p>
 
 ## Installation
 - ``` ./build-all <pendrive> ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt(if host isn't aarch64) and debootstrap need to work correctly.

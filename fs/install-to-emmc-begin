@@ -31,8 +31,11 @@ echo duet > /mnt/etc/hostname
 mkdir -p /mnt/lib/firmware/
 cp -r /lib/firmware/* /mnt/lib/firmware/
 
-
-[ -f /lib/firmware/scp.img ] && cp /lib/firmware/scp.img /mnt/lib/firmware/scp.img
+# sway config
+if [ -f /etc/sway/config ]; then
+	mkdir -p /mnt/etc/sway
+	cp /etc/sway/config /mnt/etc/sway/config
+fi
 
 # copy modules over
 mkdir -p /mnt/lib/modules/$(uname -r)/

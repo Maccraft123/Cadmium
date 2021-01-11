@@ -4,7 +4,7 @@
 debootstrap --arch=arm64 sid /mnt https://deb.debian.org/debian/ || true
 
 # install packages needed to get wifi working and to be ready to compile stuff
-chroot /mnt apt install -y f2fs-tools git build-essential network-manager locales
+chroot /mnt apt install -y f2fs-tools git build-essential network-manager locales sudo vim
 
 # this is last, because if user walks away during install they go back,
 # configure their system and have it ready immediately

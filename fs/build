@@ -70,6 +70,9 @@ echo $TARGET > root/etc/hostname # set default hostname in kernel?
 mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 [ -f $CADMIUMROOT/board/$TARGET/libinput-quirk ] && cp $CADMIUMROOT/board/$TARGET/libinput-quirk root/etc/libinput/local-overrides.quirks
 
+# copy iio sensor proxy accel file
+[ -f $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb ] && cp $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb root/
+
 # copy over firmware
 mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
 cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/

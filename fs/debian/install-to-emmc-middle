@@ -1,5 +1,8 @@
 # start of install-to-emmc-middle
 
+export SYSTEMD=1
+export EUDEV=0
+
 # debootstrap randomly just fails for no reason, but system turns out fine
 debootstrap --arch=arm64 sid /mnt https://deb.debian.org/debian/ || true
 

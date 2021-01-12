@@ -14,8 +14,22 @@ chroot /mnt passwd $REPLY
 mkdir -p /mnt/etc/libinput
 cp /etc/libinput/local-overrides.quirks /mnt/etc/libinput/local-overrides.quirks
 
+# eudev has hwdb in different place
+if [ "$EUDEV" = "1" ]; then
+	export HWDBPATH=/usr/lib/udev
+else
+	export HWDBPATH=/etc/udev/hwdb.d
+fi
+
+# fix iio-sensor-proxy screen rotation
+mkdir -p /mnt/$HWDBPATH
+cp /accel-matrix.hwdb /mnt/$HWDBPATH/61-sensor-local.hwdb
+
+# apply the changes
+[ "$SYSTEMD" = "1" ] && chroot /mnt systemd-hwdb update
+chroot /mnt udevadm trigger
+
 umount /mnt
 
 echo "Done! :D, Don't forget to install your favourite DE/WM after rebooting"
-
 echo "$EXTRAPRINT"

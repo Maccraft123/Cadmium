@@ -1,5 +1,8 @@
 # start of install-to-emmc-middle
 
+export SYSTEMD=0
+export EUDEV=1
+
 tar xvpf /void.tar.xz -C /mnt/
 
 cp /etc/resolv.conf /mnt/etc/resolv.conf
@@ -10,7 +13,8 @@ chroot /mnt/ /bin/xbps-install -y base-system
 chroot /mnt/ /bin/xbps-remove -y base-voidstrap
 chroot /mnt/ /bin/xbps-install -y sudo vim NetworkManager parted f2fs-tools
 
-ln -s /etc/sv/NetworkManager /var/service/
+ln -s /etc/sv/dbus		/var/service/
+ln -s /etc/sv/NetworkManager	/var/service/
 
 export EXTRAPRINT="In case of Void RootFS you need to manually do timezone and locale configuration"
 

@@ -28,5 +28,17 @@
 - ```vboot_utils u-boot-tools``` (vbutil_kernel, cgpt and mkimage) to pack kernel into format understandable by depthcharge
 - Build dependencies for kernel compilation
 
-#### A Note about kevin:
-##### Although there are files in Cadmium about it, kevin was used to seprate board-specific files and kevin isn't as well supported
+| Hardware support        	| Duet               	| Kevin          	|
+|-------------------------	|--------------------	|----------------	|
+| Display                 	| Y(needs patches)   	| Y(DP needs FW) 	|
+| Display autorotation    	| Y                  	| N              	|
+| Touchscreen             	| Y                  	| Y              	|
+| WiFi                    	| Y(FW)              	| Y(FW)          	|
+| 3D Acceleration         	| P                  	| Y              	|
+| Audio                   	| P(speakers broken) 	| Y              	|
+| Bluetooth               	| Y                  	| ?              	|
+| Camera                  	| N                  	| Y              	|
+| USB                     	| Y                  	| Y              	|
+| USB Gadget              	| P                  	| ?              	|
+| Suspending and resuming 	| N                  	| Y              	|
+| eMMC installation       	| Y                  	| N              	|

@@ -19,18 +19,33 @@ cd $CADMIUMROOT/tmp
 if [ "$(date +'%V%y')" != "$(cat kern-dl-date-$TARGET)" ]; then
 	echo "Downloading kernel for $TARGET"
 	rm -rf linux-$TARGET
-	#curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
-	curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.3.tar.xz -o Linux-archive
-	mkdir linux-$TARGET
-	bsdtar xf Linux-archive --strip-components=1 -C linux-$TARGET
-	echo $(date +'%V%y') > kern-dl-date-$TARGET
 
-	cd linux-$TARGET
+	case "$TARGET" in
+		duet) # <-- i feel bad about this
+			# we don't want to redownload repo
+			if [ -d linux-duet ]; then
+				cd linux-duet
+				git pull
+			else
+				git clone https://github.com/Maccraft123/linux --depth 1 --single-branch -b topic/chromeos/somewhat-stable-next linux-duet
+			fi		
+		;;
+		
+		*)
+			#curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+			curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.3.tar.xz -o Linux-archive
+			mkdir linux-$TARGET
+			bsdtar xf Linux-archive --strip-components=1 -C linux-$TARGET
+			echo $(date +'%V%y') > kern-dl-date-$TARGET
 
-	for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch); do
-		echo "Applying $x"
-		patch -p1 < $x
-	done
+			cd linux-$TARGET
+
+			for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch); do
+			echo "Applying $x"
+				patch -p1 < $x
+			done
+		;;
+	esac	
 fi
 
 cd $CADMIUMROOT/tmp/linux-$TARGET
@@ -70,7 +85,7 @@ rm -rf $CADMIUMROOT/tmp/kernel-repack
 mkdir -p $CADMIUMROOT/tmp/kernel-repack/
 
 # by default make tarxz-pkg doesn't include vmlinux.kpart, add it manually
-bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux-*cadmium-arm64.tar.xz  -C $CADMIUMROOT/tmp/kernel-repack
+bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux-*cadmium*.tar.xz  -C $CADMIUMROOT/tmp/kernel-repack
 cp $CADMIUMROOT/vmlinux.kpart $CADMIUMROOT/tmp/kernel-repack/boot/vmlinux.kpart
 cp $CADMIUMROOT/tmp/linux-$TARGET/arch/arm64/boot/Image $CADMIUMROOT/tmp/kernel-repack/boot/Image-$TARGET
 

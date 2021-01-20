@@ -27,7 +27,7 @@ if [ "$(date +'%V%y')" != "$(cat kern-dl-date-$TARGET)" ]; then
 				cd linux-duet
 				git pull
 			else
-				git clone https://github.com/Maccraft123/linux --depth 1 --single-branch -b topic/chromeos/somewhat-stable-next linux-duet
+				git clone https://github.com/Maccraft123/linux --depth 1 --single-branch -b master linux-duet
 			fi		
 		;;
 		

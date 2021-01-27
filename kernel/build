@@ -8,6 +8,7 @@ set -e
 [ -z "$TARGET" ] && source $CADMIUMROOT/config
 
 # set env vars
+# TODO: do it per-arch basis, as armv7l boards still exist
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
 
@@ -16,27 +17,39 @@ cd $CADMIUMROOT/tmp
 
 
 # check if kernel has been downloaded this week, if not download/update it
-if [ "$(date +'%V%y')" != "$(cat kern-dl-date-$TARGET)" ]; then
+if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$TARGET)" ]; then
 	echo "Downloading kernel for $TARGET"
 	rm -rf linux-$TARGET
 
-	case "$TARGET" in
-		duet) # <-- i feel bad about this
-			# we don't want to redownload repo
-			if [ -d linux-duet ]; then
-				cd linux-duet
-				git pull
-			else
-				git clone https://github.com/Maccraft123/linux --depth 1 --single-branch -b master linux-duet
-			fi		
+	case "$KERNEL" in # TODO: cros kernel for blob tracing?
+		testing) # <-- HACK
+			case "$TARGET" in
+				duet)
+					# we don't want to redownload repo
+					if [ -d linux-$TARGET ]; then
+						cd linux-$TARGET
+						git pull
+					else
+						git clone https://github.com/Maccraft123/linux --depth 1 --single-branch -b master linux-$TARGET
+					fi
+					echo "$(date +'%V%y') $KERNEL" > $CADMIUMROOT/tmp/kern-dl-date-$TARGET
+				;;
+				*)
+					echo "testing kernel is unsupported for $TARGET"
+					exit 1
+				;;
+			esac	
 		;;
 		
-		*)
-			#curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
-			curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.3.tar.xz -o Linux-archive
+		stable)
+			if [ "$TARGET" = "duet" ]; then #      -.-
+				curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.3.tar.xz -o Linux-archive
+			else
+				curl -L curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+			fi
 			mkdir linux-$TARGET
 			bsdtar xf Linux-archive --strip-components=1 -C linux-$TARGET
-			echo $(date +'%V%y') > kern-dl-date-$TARGET
+			echo "$(date +'%V%y') $KERNEL" > kern-dl-date-$TARGET
 
 			cd linux-$TARGET
 
@@ -66,7 +79,7 @@ REL="$(make kernelrelease)"
 
 # make kernel partition
 # yes this is stolen from solidhal's prawnos, that's how open source works :D
-mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg || true
+mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg || true # HACK, kernel.its needs fixing
 dd if=/dev/zero of=bootloader.bin bs=512 count=1
 vbutil_kernel --pack vmlinux.kpart \
 	--version 1 \

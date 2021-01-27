@@ -1,13 +1,14 @@
 #!/bin/false
+# TODO: fancy menu?
 
 # Target device
 # It is sorta using codenames, but "kukui" sounds stupid so i won't use it
 # One of: duet, kevin
 TARGET=duet
 
-# Whether to build the kernel or not
-# One of: premade, build
-#KERNEL=premade
+# Kernel variant
+# One of: stable, testing
+KERNEL=stable
 #TODO
 
 

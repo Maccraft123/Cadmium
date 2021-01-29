@@ -42,7 +42,7 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$TARGET)" ]; then
 			if [ "$TARGET" = "duet" ]; then #      -.-
 				curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.3.tar.xz -o Linux-archive
 			else
-				curl -L curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+				curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
 			fi
 			mkdir linux-$TARGET
 			bsdtar xf Linux-archive --strip-components=1 -C linux-$TARGET

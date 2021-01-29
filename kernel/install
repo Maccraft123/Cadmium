@@ -13,12 +13,10 @@ shopt -s expand_aliases # needed for aliases
 set -e
 
 source $CADMIUMROOT/config
-
-export ARCH=arm64
-export CROSS_COMPILE=aarch64-linux-gnu-
+source $CADMIUMROOT/board/$TARGET/boardinfo
 
 # set up alias areweontarget so "if areweontarget; then X" works fine
-if cat /sys/firmware/devicetree/base/compatible 2>/dev/null | egrep -si 'krane|kevin'; then
+if cat /sys/firmware/devicetree/base/compatible 2>/dev/null | egrep -si "$BASEBOARD|$BOARD" ; then
 	if [ -z "$DEV" ]; then
 		alias areweontarget=true
 	else
@@ -38,7 +36,7 @@ dd if=/dev/zero of=bootloader.bin bs=512 count=1
 vbutil_kernel --pack vmlinux.kpart \
 	--version 1 \
 	--vmlinuz vmlinux.uimg \
-	--arch aarch64 \
+	--arch $ARCH \
 	--keyblock /usr/share/vboot/devkeys/kernel.keyblock \
 	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
 	--config cmdline \

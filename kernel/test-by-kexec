@@ -6,9 +6,10 @@ set -e
 set -v
 
 source $CADMIUMROOT/config
+source $CADMIUMROOT/board/$TARGET/boardinfo
 
 # set up alias areweontarget so "if areweontarget; then X" works fine
-if cat /sys/firmware/devicetree/base/compatible | egrep -si 'krane|kevin'; then
+if cat /sys/firmware/devicetree/base/compatible | egrep -si "$BASEBOARD|$BOARD" then
 
 	alias areweontarget=true
 else
@@ -23,6 +24,7 @@ cd $CADMIUMROOT/tmp/linux-$TARGET
 
 make modules_install
 
+# FIXME: board-specific, maybe add $DTB to boardinfo?
 if [ "$TARGET" = "duet" ]; then
 	echo "loading duet dtb"
 	kexec -s -l --reuse-cmdline --dtb=arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dtb  arch/arm64/boot/Image

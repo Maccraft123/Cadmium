@@ -6,6 +6,7 @@ set -e
 set -v
 
 source $CADMIUMROOT/config
+source $CADMIUMROOT/board/$TARGET/boardinfo
 
 cd $CADMIUMROOT/tmp
 mkdir -p root
@@ -13,14 +14,14 @@ mkfs.f2fs -f $ROOTPART
 mount $ROOTPART root
 
 # if we are on arm64 machine, don't use qemu to execute arm64 code
-if [ "$(uname -m)" = "aarch64" ]; then
-	echo "Running on ARM64 machine"
+if [ "$(uname -m)" = "$ARCH_UNAME" ]; then
+	echo "Running on $ARCH machine"
 	foreign=''
 else
-	cp $(which qemu-aarch64-static) root/
-	qemu=/qemu-aarch64-static
+	cp $(which qemu-$ARCH-static) root/
+	qemu=/qemu-$ARCH-static
 	foreign='--foreign'
-	echo "Running on not-ARM64 machine"
+	echo "Running on not-$ARCH machine"
 fi
 
 cd $CADMIUMROOT/tmp
@@ -30,7 +31,7 @@ case "$ROOTFS" in
 	debian)
 		echo "Installing Debian"
 		# debootstrap randomly exits with 1, so there's that || true
-		debootstrap $foreign --arch=arm64 sid $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ || true
+		debootstrap $foreign --arch=$ARCH_DEB sid $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ || true
 		# probably it can be ran on target device with little shim that does that and then execs init
 		[ -n "$foreign" ] && chroot root/ /debootstrap/debootstrap --second-stage
 		# preinstall packages to have wifi
@@ -44,20 +45,20 @@ case "$ROOTFS" in
 	;& # fall-through
 	void-musl)
 		echo "Installing Void Linux"
-		ROOTFS_TAR="$(curl -s -L https://voidlinux.org/download/ | grep aarch64 | tr '"' ' ' | awk '{print $3}' | grep $V musl)"
+		ROOTFS_TAR="$(curl -s -L https://voidlinux.org/download/ | grep $ARCH_UNAME | tr '"' ' ' | awk '{print $3}' | grep $V musl)"
 		if [ ! -f "$ROOTFS_TAR" ]; then
-			rm void-aarch64${V}tar.xz || true
+			rm void-${ARCH_UNAME}${V}tar.xz || true
 			wget $ROOTFS_TAR -O void-aarch64$V.tar.xz # musl: void-aarch64, non-musl: void-aarch64-v
 
 		fi
-		tar xfp void-aarch64$V.tar.xz -C $CADMIUMROOT/tmp/root
+		tar xfp void-${ARCH_UNAME}${V}.tar.xz -C $CADMIUMROOT/tmp/root
 		cp /etc/resolv.conf root/etc/resolv.conf
 		chroot root/ $qemu /bin/xbps-install -Syu xbps
 		chroot root/ $qemu /bin/xbps-install -yu
 		chroot root/ $qemu /bin/xbps-install -y base-system
 		chroot root/ $qemu /bin/xbps-remove -y base-voidstrap
 		chroot root/ $qemu /bin/xbps-install -y vim NetworkManager parted f2fs-tools
-		cp void-aarch64$V.tar.xz root/void.tar.xz
+		cp void-${ARCH_UNAME}${V}.tar.xz root/void.tar.xz
 	;;
 esac
 

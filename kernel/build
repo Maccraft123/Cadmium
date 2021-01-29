@@ -7,10 +7,7 @@ set -e
 
 [ -z "$TARGET" ] && source $CADMIUMROOT/config
 
-# set env vars
-# TODO: do it per-arch basis, as armv7l boards still exist
-export ARCH=arm64
-export CROSS_COMPILE=aarch64-linux-gnu-
+source $CADMIUMROOT/board/$TARGET/boardinfo
 
 mkdir -p tmp
 cd $CADMIUMROOT/tmp
@@ -89,7 +86,7 @@ dd if=/dev/zero of=bootloader.bin bs=512 count=1
 vbutil_kernel --pack vmlinux.kpart \
 	--version 1 \
 	--vmlinuz vmlinux.uimg \
-	--arch aarch64 \
+	--arch $ARCH \
 	--keyblock /usr/share/vboot/devkeys/kernel.keyblock \
 	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
 	--config cmdline \
@@ -105,7 +102,7 @@ mkdir -p $CADMIUMROOT/tmp/kernel-repack/
 # by default make tarxz-pkg doesn't include vmlinux.kpart, add it manually
 bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux-*cadmium*.tar.xz  -C $CADMIUMROOT/tmp/kernel-repack
 cp $CADMIUMROOT/vmlinux.kpart $CADMIUMROOT/tmp/kernel-repack/boot/vmlinux.kpart
-cp $CADMIUMROOT/tmp/linux-$TARGET/arch/arm64/boot/Image $CADMIUMROOT/tmp/kernel-repack/boot/Image-$TARGET
+cp $CADMIUMROOT/tmp/linux-$TARGET/arch/$ARCH/boot/Image $CADMIUMROOT/tmp/kernel-repack/boot/Image-$TARGET #FIXME: armv7 has image in this place too?
 
 # put release info for script on target machine to compare its uname -r to
 echo "$REL" > $CADMIUMROOT/tmp/kernel-repack/release

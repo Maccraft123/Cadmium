@@ -19,3 +19,15 @@
 
 # Random notes:
 - MMSYS sits between *everything* related to multimedia
+
+# ```boardinfo``` file:
+- ```ARCH``` uses kernel's naming, ```arm```, ```arm64``` etc.
+- ```ARCH_UNAME``` is what appears in uname -m, ```armv7l```, ```aarch64``` etc.
+- ```ARCH_DEB``` is whatever debian calls the architecture of device, ```armhf```, ```arm64```
+- YES ALL THIS ARCH STUFF IS A GIANT MESS
+- ```CROSS_COMPILE``` is self-explanatory
+- ```BASEBOARD``` is "reference" board for family of chromebooks, for example: veyron or gru
+- ```BOARD``` is the target board, for example: ```kevin```, ```krane```
+- ```TYPE``` is type of device, ```laptop```, ```tablet```, ```convertible-laptop``` is laptop with 360° hinge, ```convertible-tablet``` is tablet with keyboard attachment
+- ```SOC``` - self explanatory
+- ```BOOTFW``` is boot firmware of device, chromebooks use ```depthcharge```

@@ -1,0 +1,15 @@
+#!/bin/false
+
+# explanation is in HACKING.md
+ARCH=arm64
+ARCH_UNAME=aarch64
+ARCH_DEB=arm64
+CROSS_COMPILE=aarch64-linux-gnu-
+
+BASEBOARD=gru
+BOARD=kevin
+TYPE=convertible-laptop
+
+SOC=rk3399
+
+BOOTFW=depthcharge

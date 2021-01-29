@@ -1,0 +1,15 @@
+#!/bin/false
+
+# explanation is in HACKING.md
+ARCH=arm64
+ARCH_UNAME=aarch64
+ARCH_DEB=arm64
+CROSS_COMPILE=aarch64-linux-gnu-
+
+BASEBOARD=kukui
+BOARD=krane
+TYPE=convertible-tablet
+
+SOC=mt8183
+
+BOOTFW=depthcharge

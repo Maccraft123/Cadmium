@@ -52,7 +52,7 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$TARGET)" ]; then
 
 			for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch); do
 				echo "Applying $x"
-				patch -p1 < $x
+				patch -p1 --forward < $x || true
 			done
 		;;
 	esac	
@@ -62,7 +62,7 @@ cd $CADMIUMROOT/tmp/linux-$TARGET
 
 for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do
 	echo "Applying $x"
-	patch -p1 < $x
+	patch -p1 --forward < $x || true
 done
 
 # TODO:

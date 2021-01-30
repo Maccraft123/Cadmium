@@ -18,10 +18,20 @@ if [ "$(uname -m)" = "$ARCH_UNAME" ]; then
 	echo "Running on $ARCH machine"
 	foreign=''
 else
-	cp $(which qemu-$ARCH-static) root/
-	qemu=/qemu-$ARCH-static
-	foreign='--foreign'
-	echo "Running on not-$ARCH machine"
+	case "$ARCH_UNAME" in
+		armv7l)
+			if [ "$(uname -m)" = "aarch64" ]; then
+				echo "Running on arm64 machine capable of executing armv7l programs"
+				foreign=''
+			fi
+		;;
+		*)
+			cp $(which qemu-$ARCH-static) root/
+			qemu=/qemu-$ARCH-static
+			foreign='--foreign'
+			echo "Running on not-$ARCH machine"
+		;;
+	esac
 fi
 
 cd $CADMIUMROOT/tmp

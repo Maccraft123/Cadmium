@@ -1,4 +1,4 @@
-# Cadmium, Linux for MT8183-based Lenovo Chromebook Duet
+# Cadmium, Linux for MT8183-based Lenovo Chromebook Duet and other ARM chromebooks
 
 <p align="center">
 <img src="/pics/duet_small.png" alt="Lenovo Duet running Linux" data-canonical-src="/pics/duet_small.png"/></p>
@@ -27,17 +27,18 @@
 - ```vboot_utils u-boot-tools``` (vbutil_kernel, cgpt and mkimage) to pack kernel into format understandable by depthcharge
 - Build dependencies for kernel compilation
 
-| Hardware support        	| Duet               	| Kevin          	|
-|-------------------------	|--------------------	|----------------	|
-| Display                 	| Y(needs patches)   	| Y(DP needs FW) 	|
-| Display autorotation    	| Y                  	| N              	|
-| Touchscreen             	| Y                  	| Y              	|
-| WiFi                    	| Y(FW)              	| Y(FW)          	|
-| 3D Acceleration         	| P                  	| Y              	|
-| Audio                   	| P(speakers broken) 	| Y              	|
-| Bluetooth               	| Y                  	| ?              	|
-| Camera                  	| N                  	| Y              	|
-| USB                     	| Y                  	| Y              	|
-| USB Gadget              	| P                  	| ?              	|
-| Suspending and resuming 	| N                  	| Y              	|
-| eMMC installation       	| Y                  	| N              	|
+| Hardware support        	| Duet               	| Kevin          	| Asus C100PA			|
+|-------------------------	|--------------------	|----------------	|-------------------------	|
+| Display                 	| Y(needs patches)   	| Y(DP needs FW) 	| Y				|
+| Display autorotation    	| Y                  	| N              	| N				|
+| Hardware video decoding	| N			| P			| P				|
+| Touchscreen             	| Y                  	| Y              	| Y				|
+| WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				|
+| 3D Acceleration         	| P                  	| Y              	| Y				|
+| Audio                   	| P(speakers broken) 	| Y              	| ?				|
+| Bluetooth               	| Y                  	| ?              	| ?				|
+| Camera                  	| N                  	| Y              	| ?				|
+| USB                     	| Y                  	| Y              	| Y				|
+| USB Gadget              	| P                  	| ?              	| ?				|
+| Suspending and resuming 	| N                  	| Y              	| P(Dislikes USB booting)	|
+| eMMC installation       	| Y                  	| N              	| N				|

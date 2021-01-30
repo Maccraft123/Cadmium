@@ -2,6 +2,7 @@
 CADMIUMROOT=$(pwd)
 
 . $CADMIUMROOT/config
+. $CADMIUMROOT/board/$TARGET/boardinfo
 
 set -e
 set -v
@@ -58,7 +59,7 @@ dd if=$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart of=$KERNPART
 ./fs/build $CADMIUMROOT $ROOTPART
 
 # install modules
-make -C $CADMIUMROOT/tmp/linux-$TARGET ARCH=arm64 INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
+make -C $CADMIUMROOT/tmp/linux-$TARGET INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
 
 # we don't umount it in fs/build
 umount $CADMIUMROOT/tmp/root

@@ -41,4 +41,4 @@
 | USB                     	| Y                  	| Y              	| Y				|
 | USB Gadget              	| P                  	| ?              	| ?				|
 | Suspending and resuming 	| N                  	| Y              	| P(Dislikes USB booting)	|
-| eMMC installation       	| Y                  	| N              	| N				|
+| eMMC installation       	| Y                  	| Y              	| Y				|

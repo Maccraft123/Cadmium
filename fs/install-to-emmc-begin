@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 
-# let's put a wildcard because kernel randomly swaps emmc between mmcblk1 and mmcblk0 on duet
-[ -b /dev/mmcblk1 ] && MMCDEV=/dev/mmcblk1 || MMCDEV=/dev/mmcblk0
+MMCDEV=$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')
 
 sleep 1
 
@@ -24,10 +23,6 @@ sleep 1
 mkfs.f2fs -f ${MMCDEV}p3
 mount ${MMCDEV}p3 /mnt
 
-mkdir -p /mnt/etc/
-echo duet > /mnt/etc/hostname
-
-# QCA6174 dislikes upstream firmware, copy one that i stole from chromeos
 mkdir -p /mnt/lib/firmware/
 cp -r /lib/firmware/* /mnt/lib/firmware/
 
@@ -43,6 +38,6 @@ cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/
 
 # copy kernel from usb pendrive/hdd to internal emmc
 dd if=/dev/zero of=${MMCDEV}p1 || true
-dd if=/dev/sda1 of=${MMCDEV}p1
+dd if=/dev/disk/by-partlabel/SDKernelA of=${MMCDEV}p1
 
 # end of install-to-emmc-begin

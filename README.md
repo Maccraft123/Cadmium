@@ -4,15 +4,15 @@
 <img src="/pics/duet_small.png" alt="Lenovo Duet running Linux" data-canonical-src="/pics/duet_small.png"/></p>
 
 ## Installation
-- ``` ./build-all /dev/sdX ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt(if host isn't aarch64) and debootstrap are needed to work correctly.
+- ``` ./build-all /dev/sdX ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt and debootstrap are needed to work correctly.
 - Enable developer mode
 - Plug pendrive into duet via usb-c to usb-a adapter
 - Boot from USB
-- After running ``` ./install-to-emmc ``` after connecting to internet, Debian _should_ be installed on internal emmc memory
+- After running ``` ./install-to-emmc ``` after connecting to internet, Cadmium _should_ be installed on internal emmc memory
 - To update kernel on eMMC memory run: ```./install-kernel``` from pendrive
 
 ### OR
-- Enable developer mode(instructions are in the wiki)
+- Enable developer mode(instructions are in the wiki for duet)
 - Write uncompressed release image to pendrive
 - Boot from USB
 - Run ```./install-to-emmc```
@@ -23,7 +23,7 @@
 - Recent Linux distribution
 - Binfmt when Debian rootfs is used
 - ```debootstrap``` when Debian rootfs is used
-- ```qemu-user-static``` when build machine is not aarch64
+- ```qemu-user-static``` when build machine can't run binaries for target machine
 - ```vboot_utils u-boot-tools``` (vbutil_kernel, cgpt and mkimage) to pack kernel into format understandable by depthcharge
 - Build dependencies for kernel compilation
 

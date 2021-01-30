@@ -73,7 +73,7 @@ cp $CADMIUMROOT/kernel/cmdline cmdline
 
 #make nconfig # if you want to customize config just uncomment this
 
-echo Bulding in $(pwd) with $(nproc) threads
+echo Bulding $KERNEL kernel for $TARGET/$ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
 time make -j$(nproc)
 make tarxz-pkg
 

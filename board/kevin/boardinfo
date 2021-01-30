@@ -1,15 +1,15 @@
 #!/bin/false
 
 # explanation is in HACKING.md
-ARCH=arm64
-ARCH_UNAME=aarch64
-ARCH_DEB=arm64
-CROSS_COMPILE=aarch64-linux-gnu-
+export ARCH=arm64
+export ARCH_UNAME=aarch64
+export ARCH_DEB=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
 
-BASEBOARD=gru
-BOARD=kevin
-TYPE=convertible-laptop
+export BASEBOARD=gru
+export BOARD=kevin
+export TYPE=convertible-laptop
 
-SOC=rk3399
+export SOC=rk3399
 
-BOOTFW=depthcharge
+export BOOTFW=depthcharge

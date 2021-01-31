@@ -1,0 +1,41 @@
+#!/bin/bash
+# if anything fails bail out
+set -e 
+
+export CADMIUMROOT=$1
+export DEVICE=$2
+
+source $CADMIUMROOT/config
+
+cd $CADMIUMROOT/tmp/linux-test/ || cd $CADMIUMROOT/tmp/linux-$TARGET
+
+
+# repack kernel
+[ -f 'vmlinux.uimg' ] && rm vmlinux.uimg
+mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg || true
+dd if=/dev/zero of=bootloader.bin bs=512 count=1
+vbutil_kernel --pack vmlinux.kpart \
+        --version 1 \
+        --vmlinuz vmlinux.uimg \
+        --arch aarch64 \
+        --keyblock /usr/share/vboot/devkeys/kernel.keyblock \
+        --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
+        --config cmdline \
+        --bootloader bootloader.bin
+rm vmlinux.uimg
+
+# make sure mount dir exists
+mkdir -p $CADMIUMROOT/tmp/root
+
+# mount root partition
+mount ${DEVICE}3 $CADMIUMROOT/tmp/root
+
+# install modules
+make -C $CADMIUMROOT/tmp/linux-$TARGET ARCH=arm64 INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
+
+# write new kernel
+dd if=$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart of=${DEVICE}1
+
+umount $CADMIUMROOT/tmp/root
+
+sync

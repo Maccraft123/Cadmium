@@ -3,8 +3,9 @@
 
 # Target device
 # It is sorta using codenames, but "kukui" sounds stupid so i won't use it
-# One of: duet, kevin, minnie
-TARGET=duet
+# TODO: maybe this should be baseboard? veyron, gru, kukui or whatever?
+# One of: duet, kevin, minnie, speedy
+TARGET=speedy
 
 # Kernel variant
 # One of: stable, testing
@@ -14,4 +15,4 @@ KERNEL=stable
 
 # RootFS type
 # One of: debian, void, void-musl, ubports
-ROOTFS=debian
+ROOTFS=ubports

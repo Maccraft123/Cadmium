@@ -25,11 +25,14 @@ else
 				foreign=''
 			fi
 		;;
-		*)
-			cp $(which qemu-$ARCH-static) root/
-			qemu=/qemu-$ARCH-static
+		aarch64)
+			cp "$(which qemu-aarch64-static)" root/
+			qemu="/qemu-aarch64-static"
 			foreign='--foreign'
-			echo "Running on not-$ARCH machine"
+			echo "Running on not-aarch64 machine"
+		;;
+		*)
+			exit 1
 		;;
 	esac
 fi
@@ -70,10 +73,15 @@ case "$ROOTFS" in
 		chroot root/ $qemu /bin/xbps-install -y vim NetworkManager parted f2fs-tools
 		cp void-${ARCH_UNAME}${V}.tar.xz root/void.tar.xz
 	;;
+	ubports)
+		echo "Installing UBports"
+		wget https://ci.ubports.com/job/xenial-mainline-edge-rootfs-$ARCH_DEB/lastSuccessfulBuild/artifact/out/ubuntu-touch-xenial-edge-$ARCH_DEB-rootfs.tar.gz
+		tar xfp ubuntu-touch-xenial-edge-$ARCH_DEB-rootfs.tar.gz -C $CADMIUMROOT/tmp/root
+	;;
 esac
 
-# remove root password, this is install medium so it's ok
-chroot root/ $qemu /bin/passwd -d root
+# remove root password, this is install medium so it's ok, not needed in ubports
+[ ! "$ROOTFS" = "ubports" ] && chroot root/ $qemu /bin/passwd -d root
 
 echo $TARGET > root/etc/hostname # set default hostname in kernel?
 
@@ -92,11 +100,13 @@ cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
 mkdir -p $CADMIUMROOT/tmp/root/etc/sway
 cp $CADMIUMROOT/board/$TARGET/sway-config $CADMIUMROOT/tmp/root/etc/sway/config
 
-# copy installation scripts, double root is not a typo
-# -begin sets up partition and fs, -middle installs distro, -end sets up distro
-[ "$ROOTFS" = "void-musl" ] && export ROOTFS=void # those 2 are the same in cadmium
-cat $CADMIUMROOT/fs/install-to-emmc-begin $CADMIUMROOT/fs/$ROOTFS/install-to-emmc-middle $CADMIUMROOT/fs/install-to-emmc-end > root/root/install-to-emmc
-chmod a+x root/root/install-to-emmc
+# copy installation scripts if not ubports, double root is not a typo
+if [ ! "$ROOTFS" = "ubports" ]; then
+	# -begin sets up partition and fs, -middle installs distro, -end sets up distro
+	[ "$ROOTFS" = "void-musl" ] && export ROOTFS=void # those 2 are the same in cadmium
+	cat $CADMIUMROOT/fs/install-to-emmc-begin $CADMIUMROOT/fs/$ROOTFS/install-to-emmc-middle $CADMIUMROOT/fs/install-to-emmc-end > root/root/install-to-emmc
+	chmod a+x root/root/install-to-emmc
+fi
 
 
 #umount root # done in /build-all

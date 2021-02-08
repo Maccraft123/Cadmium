@@ -27,7 +27,7 @@
 - ```vboot_utils u-boot-tools``` (vbutil_kernel, cgpt and mkimage) to pack kernel into format understandable by depthcharge
 - Build dependencies for kernel compilation
 
-| Hardware support        	| Duet               	| Kevin          	| Asus C100PA			|
+| Hardware support        	| Duet               	| Kevin          	| Asus C100PA and C201PA	|
 |-------------------------	|--------------------	|----------------	|-------------------------	|
 | Display                 	| Y(needs patches)   	| Y(DP needs FW) 	| Y				|
 | Display autorotation    	| Y                  	| N              	| N				|

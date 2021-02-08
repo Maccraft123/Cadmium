@@ -1,0 +1,15 @@
+#!/bin/false
+
+# explanation is in HACKING.md
+export ARCH=arm
+export ARCH_UNAME=armv7l
+export ARCH_DEB=armhf
+export CROSS_COMPILE=arm-linux-gnueabihf-
+
+export BASEBOARD=veyron
+export BOARD=minnie
+export TYPE=convertible-laptop
+
+export SOC=rk3288
+
+export BOOTFW=depthcharge

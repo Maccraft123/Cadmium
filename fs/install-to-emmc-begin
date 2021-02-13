@@ -37,7 +37,8 @@ mkdir -p /mnt/lib/modules/$(uname -r)/
 cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/
 
 # copy kernel from usb pendrive/hdd to internal emmc
-dd if=/dev/zero of=${MMCDEV}p1 || true
+dd if=/dev/zero of=${MMCDEV}p1 >/dev/null 2>&1 || true
+echo "Out of space error that may have just happened is to be expected and Cadmium will work fine"
 dd if=/dev/disk/by-partlabel/SDKernelA of=${MMCDEV}p1
 
 # end of install-to-emmc-begin

@@ -10,8 +10,6 @@ TARGET=duet
 # Kernel variant
 # One of: stable, testing
 KERNEL=stable
-#TODO
-
 
 # RootFS type
 # One of: debian, void, void-musl, ubports

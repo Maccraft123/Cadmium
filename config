@@ -12,5 +12,5 @@ TARGET=duet
 KERNEL=stable
 
 # RootFS type
-# One of: debian, void, void-musl, ubports
+# One of: debian, void, void-musl
 ROOTFS=debian

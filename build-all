@@ -47,12 +47,13 @@ cgpt add -i 2 -t kernel -b 73728	-s 65536 -l SDKernelB -S 0 -T 2 -P 5 $DEVICE
 cgpt add -i 3 -t data -b 139264 -s $(expr $(cgpt show $1 | grep 'Sec GPT table' | awk '{print $1}') - 139264) -l Root $DEVICE
 sync
 
-# reread partition table
-partx -a $DEVICE || true
+# reread partition table. yes this fails sometimes.
+partx -a $DEVICE >/dev/null 2>&1 || true
 sync
 
-# build and write kernel
+# build, package and write kernel
 ./kernel/build $CADMIUMROOT
+#./bootfw/$BOOTFW/package $CADMIUMROOT $DEVICE $ROOTPART
 dd if=$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart of=$KERNPART
 
 # write filesystem

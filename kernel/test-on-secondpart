@@ -10,6 +10,7 @@ export CADMIUMROOT=$1
 
 source $CADMIUMROOT/config
 source $CADMIUMROOT/board/$TARGET/boardinfo
+source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
 cd $CADMIUMROOT
 cd $CADMIUMROOT/tmp/linux-test/ || cd $CADMIUMROOT/tmp/linux-$TARGET

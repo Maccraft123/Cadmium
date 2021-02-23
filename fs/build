@@ -7,6 +7,7 @@ set -v
 
 source $CADMIUMROOT/config
 source $CADMIUMROOT/board/$TARGET/boardinfo
+source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
 cd $CADMIUMROOT/tmp
 mkdir -p root

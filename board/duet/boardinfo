@@ -1,15 +1,8 @@
 #!/bin/false
 
 # explanation is in HACKING.md
-export ARCH=arm64
-export ARCH_UNAME=aarch64
-export ARCH_DEB=arm64
-export CROSS_COMPILE=aarch64-linux-gnu-
+# arch missing? go to baseboard/$BASEBOARD/boardinfo
 
 export BASEBOARD=kukui
 export BOARD=krane
 export TYPE=convertible-tablet
-
-export SOC=mt8183
-
-export BOOTFW=depthcharge

@@ -3,6 +3,7 @@ CADMIUMROOT=$(pwd)
 
 . $CADMIUMROOT/config
 . $CADMIUMROOT/board/$TARGET/boardinfo
+. $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
 set -e
 set -v

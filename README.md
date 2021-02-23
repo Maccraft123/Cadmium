@@ -1,4 +1,5 @@
-# Cadmium, Linux for MT8183-based Lenovo Chromebook Duet and other ARM chromebooks
+# Cadmium, Linux for ARM chromebooks that don't get attention elsewhere
+### It also doesn't suck!
 
 <p align="center">
 <img src="/pics/duet_small.png" alt="Lenovo Duet running Linux" data-canonical-src="/pics/duet_small.png"/></p>
@@ -8,7 +9,7 @@
 - Enable developer mode
 - Plug pendrive into duet via usb-c to usb-a adapter
 - Boot from USB
-- After running ``` ./install-to-emmc ``` after connecting to internet, Cadmium _should_ be installed on internal emmc memory
+- After running ``` ./install-to-emmc ``` after connecting to internet, Cadmium will be installed on internal emmc memory
 - To update kernel on eMMC memory run: ```./install-kernel``` from pendrive
 
 ### OR

@@ -8,6 +8,7 @@ set -e
 [ -z "$TARGET" ] && source $CADMIUMROOT/config
 
 source $CADMIUMROOT/board/$TARGET/boardinfo
+source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
 mkdir -p tmp
 cd $CADMIUMROOT/tmp

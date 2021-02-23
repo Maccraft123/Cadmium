@@ -1,0 +1,35 @@
+#!/bin/bash
+CADMIUMROOT=$1
+
+set -e
+set -v
+
+echo "Packaging kernel for depthcharge machines"
+
+[ -z "$CADMIUMROOT" ] && exit 1
+
+source $CADMIUMROOT/config
+source $CADMIUMROOT/board/$TARGET/boardinfo
+
+# sanity check
+[ "$BOOTFW" != "depthcharge" ] && exit 1
+
+cd $CADMIUMROOT/tmp/linux-$TARGET
+
+cp $CADMIUMROOT/board/$TARGET/kernel.its kernel.its
+
+# make kernel partition
+# yes this is stolen from solidhal's prawnos, that's how open source works :D
+mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg || true # HACK, kernel.its needs fixing
+dd if=/dev/zero of=bootloader.bin bs=512 count=1
+vbutil_kernel --pack vmlinux.kpart \
+        --version 1 \
+        --vmlinuz vmlinux.uimg \
+        --arch $ARCH \
+        --keyblock /usr/share/vboot/devkeys/kernel.keyblock \
+        --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
+        --config cmdline \
+        --bootloader bootloader.bin
+rm vmlinux.uimg
+
+cp vmlinux.kpart $CADMIUMROOT/

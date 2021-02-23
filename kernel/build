@@ -60,59 +60,46 @@ fi
 
 cd $CADMIUMROOT/tmp/linux-$TARGET
 
-for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do
-	echo "Applying $x"
-	patch -p1 --forward < $x || true
-done
+if [ $TARGET != duet ]; then
+	for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do
+		echo "Applying $x"
+		patch -p1 < $x || true
+	done
+fi
 
 # TODO:
 # make cadmium defconfig from: common-defconfig, soc-defconfig and board-defconfig
 [ -f .config ] || cp $CADMIUMROOT/board/$TARGET/kernel-config .config
-cp $CADMIUMROOT/board/$TARGET/kernel.its kernel.its
 cp $CADMIUMROOT/kernel/cmdline cmdline
 
 #make nconfig # if you want to customize config just uncomment this
 
-echo Bulding $KERNEL kernel for $TARGET/$ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
+echo Bulding $KERNEL kernel for $BASEBOARD/$TARGET/$ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
 time make -j$(nproc)
 make tarxz-pkg
 
 REL="$(make kernelrelease)"
 
-# make kernel partition
-# yes this is stolen from solidhal's prawnos, that's how open source works :D
-mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg || true # HACK, kernel.its needs fixing
-dd if=/dev/zero of=bootloader.bin bs=512 count=1
-vbutil_kernel --pack vmlinux.kpart \
-	--version 1 \
-	--vmlinuz vmlinux.uimg \
-	--arch $ARCH \
-	--keyblock /usr/share/vboot/devkeys/kernel.keyblock \
-	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
-	--config cmdline \
-	--bootloader bootloader.bin
-rm vmlinux.uimg
-
-cp vmlinux.kpart $CADMIUMROOT/
+# this below should go to separate script
 
 # clean the tree, just in case
-rm -rf $CADMIUMROOT/tmp/kernel-repack
-mkdir -p $CADMIUMROOT/tmp/kernel-repack/
+#rm -rf $CADMIUMROOT/tmp/kernel-repack
+#mkdir -p $CADMIUMROOT/tmp/kernel-repack/
 
 # by default make tarxz-pkg doesn't include vmlinux.kpart, add it manually
-bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux-*cadmium*.tar.xz  -C $CADMIUMROOT/tmp/kernel-repack
-cp $CADMIUMROOT/vmlinux.kpart $CADMIUMROOT/tmp/kernel-repack/boot/vmlinux.kpart
-cp $CADMIUMROOT/tmp/linux-$TARGET/arch/$ARCH/boot/Image $CADMIUMROOT/tmp/kernel-repack/boot/Image-$TARGET #FIXME: armv7 has image in this place too?
+#bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux-*cadmium*.tar.xz  -C $CADMIUMROOT/tmp/kernel-repack
+#cp $CADMIUMROOT/vmlinux.kpart $CADMIUMROOT/tmp/kernel-repack/boot/vmlinux.kpart
+#cp $CADMIUMROOT/tmp/linux-$TARGET/arch/$ARCH/boot/Image $CADMIUMROOT/tmp/kernel-repack/boot/Image-$TARGET #FIXME: armv7 has image in this place too?
 
 # put release info for script on target machine to compare its uname -r to
-echo "$REL" > $CADMIUMROOT/tmp/kernel-repack/release
+#echo "$REL" > $CADMIUMROOT/tmp/kernel-repack/release
 
 # and add target information
-echo "$TARGET" > $CADMIUMROOT/tmp/kernel-repack/target
+#echo "$TARGET" > $CADMIUMROOT/tmp/kernel-repack/target
 
 # make archive *including* vmlinux.kpart
-tar cJf $CADMIUMROOT/kernel-$TARGET.tar.xz -C $CADMIUMROOT/tmp kernel-repack
+#tar cJf $CADMIUMROOT/kernel-$TARGET.tar.xz -C $CADMIUMROOT/tmp kernel-repack
 
 # checksum to be 100% sure on target device that file downloaded correctly
-sha1sum $CADMIUMROOT/kernel-$TARGET.tar.xz | awk '{print $1}' > $CADMIUMROOT/kernel-$TARGET.sha1
+#sha1sum $CADMIUMROOT/kernel-$TARGET.tar.xz | awk '{print $1}' > $CADMIUMROOT/kernel-$TARGET.sha1
 

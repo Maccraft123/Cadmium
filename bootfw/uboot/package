@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "uboot stub!"
+exit 1

@@ -53,7 +53,7 @@ sync
 
 # build, package and write kernel
 ./kernel/build $CADMIUMROOT
-#./bootfw/$BOOTFW/package $CADMIUMROOT $DEVICE $ROOTPART
+./bootfw/$BOOTFW/package $CADMIUMROOT $DEVICE $ROOTPART
 dd if=$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart of=$KERNPART
 
 # write filesystem

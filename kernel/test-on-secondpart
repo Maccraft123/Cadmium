@@ -12,10 +12,6 @@ source $CADMIUMROOT/config
 source $CADMIUMROOT/board/$TARGET/boardinfo
 source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
-cd $CADMIUMROOT
-cd $CADMIUMROOT/tmp/linux-test/ || cd $CADMIUMROOT/tmp/linux-$TARGET
-
-
 # repack kernel
 [ -f 'vmlinux.uimg' ] && rm vmlinux.uimg
 mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg || true

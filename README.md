@@ -43,3 +43,4 @@
 | USB Gadget              	| P                  	| ?              	| ?				|
 | Suspending and resuming 	| N                  	| Y              	| P(Dislikes USB booting)	|
 | eMMC installation       	| Y                  	| Y              	| Y				|
+| KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| ?				|

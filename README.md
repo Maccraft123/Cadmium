@@ -35,12 +35,12 @@
 | Hardware video decoding	| N			| P			| P				|
 | Touchscreen             	| Y                  	| Y              	| Y				|
 | WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				|
-| 3D Acceleration         	| P                  	| Y              	| Y				|
-| Audio                   	| P(speakers broken) 	| Y              	| ?				|
+| 3D Acceleration         	| Y                  	| Y              	| Y				|
+| Audio                   	| P(speakers broken) 	| Y              	| Y				|
 | Bluetooth               	| Y                  	| ?              	| ?				|
-| Camera                  	| N                  	| Y              	| ?				|
+| Camera                  	| N                  	| Y              	| Y				|
 | USB                     	| Y                  	| Y              	| Y				|
 | USB Gadget              	| P                  	| ?              	| ?				|
-| Suspending and resuming 	| N                  	| Y              	| P(Dislikes USB booting)	|
+| Suspending and resuming 	| P                  	| Y              	| P(Dislikes USB booting)	|
 | eMMC installation       	| Y                  	| Y              	| Y				|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| ?				|

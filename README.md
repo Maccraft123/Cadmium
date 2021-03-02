@@ -30,6 +30,7 @@
 - ```gcc-aarch64-linux-gnu``` for compiling to ARM
 - ```curl``` to download the kernel
 - ```bsdtar``` for writing the archive file
+- ```f2fs-tools``` for working with the chromebook's eMMC storage
 - Build dependencies for kernel compilation
 
 | Hardware support        	| Duet               	| Kevin          	| Asus C100PA and C201PA	|

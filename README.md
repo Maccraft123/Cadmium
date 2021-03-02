@@ -6,6 +6,7 @@
 
 ## Installation
 - ``` ./build-all /dev/sdX ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt and debootstrap are needed to work correctly.
+- When ```build-all``` is ran like ```./build-all <file> <size>```, it builds Cadmium to <file> with size of <size>(2G should be fine)
 - Enable developer mode
 - Plug pendrive into duet via usb-c to usb-a adapter
 - Boot from USB

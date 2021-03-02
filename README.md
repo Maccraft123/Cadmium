@@ -27,6 +27,10 @@
 - ```debootstrap``` when Debian rootfs is used
 - ```qemu-user-static``` when build machine can't run binaries for target machine
 - ```vboot_utils u-boot-tools``` (vbutil_kernel, cgpt and mkimage) to pack kernel into format understandable by depthcharge
+- ```gcc-aarch64-linux-gnu``` for compiling to ARM
+- ```curl``` to download the kernel
+- ```bsdtar``` for writing the archive file
+- ```f2fs-tools``` for creating the filesystem used by Cadmium
 - Build dependencies for kernel compilation
 
 | Hardware support        	| Duet               	| Kevin          	| Asus C100PA and C201PA	|

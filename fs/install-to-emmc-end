@@ -30,7 +30,6 @@ cp /accel-matrix.hwdb /mnt/$HWDBPATH/61-sensor-local.hwdb
 
 # apply the changes
 [ "$SYSTEMD" = "1" ] && chroot /mnt systemd-hwdb update
-chroot /mnt udevadm trigger
 
 umount /mnt
 

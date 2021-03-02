@@ -25,7 +25,7 @@ dd if=/dev/zero of=bootloader.bin bs=512 count=1
 vbutil_kernel --pack vmlinux.kpart \
         --version 1 \
         --vmlinuz vmlinux.uimg \
-        --arch $ARCH \
+        --arch arm \
         --keyblock /usr/share/vboot/devkeys/kernel.keyblock \
         --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
         --config cmdline \

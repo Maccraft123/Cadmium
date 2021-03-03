@@ -5,3 +5,4 @@ vmlinux.kpart.mmc
 kernel-*.*
 *.img
 *.img.xz
+config

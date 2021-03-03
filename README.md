@@ -41,6 +41,7 @@
 | Touchscreen             	| Y                  	| Y              	| Y				|
 | WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				|
 | 3D Acceleration         	| Y                  	| Y              	| Y				|
+| GPU reclocking		| P			| Y			| Y				|
 | Audio                   	| P(speakers broken) 	| Y              	| Y				|
 | Bluetooth               	| Y                  	| ?              	| ?				|
 | Camera                  	| N                  	| Y              	| Y				|

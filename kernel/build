@@ -64,7 +64,7 @@ cd $CADMIUMROOT/tmp/linux-$TARGET
 if [ $TARGET != duet ]; then
 	for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do
 		echo "Applying $x"
-		patch -p1 < $x || true
+		patch -p1 --forward < $x || true
 	done
 fi
 

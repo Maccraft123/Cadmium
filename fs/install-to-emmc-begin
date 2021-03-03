@@ -1,13 +1,22 @@
 #!/bin/bash
 set -e
 
+# we need internet, TODO: make this run on voidlinux
+nmtui
+
+# a fancy hack
 MMCDEV=$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')
 
+# give some time to userspace
 sleep 1
 
+# zero out kernel partitions, just in case
 dd if=/dev/zero of=${MMCDEV} bs=1M count=64
 
+# cgpt doesn't like if we don't do this
 parted --script ${MMCDEV} mklabel gpt
+
+# create partitions
 cgpt create ${MMCDEV}
 cgpt add -i 1 -t kernel	-b 8192		-s 65536 -l MMCKernelA -S 1 -T 2 -P 10	${MMCDEV}
 cgpt add -i 2 -t kernel	-b 73728	-s 65536 -l MMCKernelB -S 0 -T 2 -P 5	${MMCDEV}
@@ -15,7 +24,8 @@ cgpt add -i 3 -t data	-b 139264	-s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT 
 
 sleep 1
 
-partx -a ${MMCDEV} || true
+# cgpt sometimes doesn't do this
+partx -a ${MMCDEV} 2>/dev/null || true
 
 sleep 1
 
@@ -25,12 +35,6 @@ mount ${MMCDEV}p3 /mnt
 
 mkdir -p /mnt/lib/firmware/
 cp -r /lib/firmware/* /mnt/lib/firmware/
-
-# sway config
-if [ -f /etc/sway/config ]; then
-	mkdir -p /mnt/etc/sway
-	cp /etc/sway/config /mnt/etc/sway/config
-fi
 
 # copy modules over
 mkdir -p /mnt/lib/modules/$(uname -r)/

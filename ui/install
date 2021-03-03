@@ -1,0 +1,45 @@
+#!/bin/false
+# this is meant to run on a liveusb
+set -e
+set -v
+
+. ~/info
+
+UIS="$(ls ~/ui)"
+CHOSEN=no
+
+until [ "$CHOSEN" != "no" ]; do
+	echo "Which UI do you want installed?"
+	echo -n "Choose one of: $UIS or none for no ui"
+	read -p '? ' CHOSEN
+done
+
+if [ "$CHOSEN" != "none"]; then
+	if [ -f "~/ui/$CHOSEN" ]; then
+		# xorg doesn't run on mt8183, TODO: why?
+		if [ "$BASEBOARD" = "kukui" -a "$DISPSERVER" = "xorg" ]; then
+			echo "Xorg isn't supported on $BASEBOARD/$TARGET"
+			exit 1
+		fi
+		case $ROOTFS in
+			debian)
+				export INSTALLER='apt install -y'
+				export PKGS="$DEBS"
+				;;
+			void*)
+				export INSTALLER='xbps-install -y'
+				export PKGS="$XBPS"
+				;;
+		esac
+		# magic line that installs all the packages
+		$INSTALLER $PKGS
+		case $CHOSEN in
+			sway)
+				mkdir -p /mnt/etc/sway
+				cp ~/sway-config /mnt/etc/sway/config
+				;;
+		esac
+	fi
+fi
+
+echo "Done installing UI!"

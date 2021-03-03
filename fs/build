@@ -113,6 +113,6 @@ fi
 cat $CADMIUMROOT/config $CADMIUMROOT/board/$TARGET/boardinfo $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo > root/root/info
 
 
-#cp -r $CADMIUMROOT/ui root/root/ui
+cp -r $CADMIUMROOT/ui root/root/ui
 
 #umount root # done in /build-all

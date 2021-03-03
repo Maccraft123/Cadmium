@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-# source the config file
-. ~/config
+# source the info file
+. ~/info
 
 # we need internet, TODO: make this run on voidlinux
 nmtui

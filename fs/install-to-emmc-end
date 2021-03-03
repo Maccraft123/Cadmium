@@ -31,6 +31,9 @@ cp /accel-matrix.hwdb /mnt/$HWDBPATH/61-sensor-local.hwdb
 # apply the changes
 [ "$SYSTEMD" = "1" ] && chroot /mnt systemd-hwdb update
 
+# install ui, yes this uses source. deal with it.
+source ~/ui/install
+
 umount /mnt
 
 echo "Done! :D, Don't forget to install your favourite DE/WM after rebooting"

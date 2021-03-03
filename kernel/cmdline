@@ -1,1 +1,1 @@
-console=tty1 root=/dev/sda3 rootfstype=f2fs rootwait rw
+console=tty1 root=PARTLABEL=Root rootfstype=f2fs rootwait rw

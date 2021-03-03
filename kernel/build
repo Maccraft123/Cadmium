@@ -61,12 +61,10 @@ fi
 
 cd $CADMIUMROOT/tmp/linux-$TARGET
 
-if [ $TARGET != duet ]; then
-	for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do
-		echo "Applying $x"
-		patch -p1 --forward < $x || true
-	done
-fi
+for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do
+	echo "Applying $x"
+	patch -p1 --forward < $x || true
+done
 
 # TODO:
 # make cadmium defconfig from: common-defconfig, soc-defconfig and board-defconfig

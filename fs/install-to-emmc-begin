@@ -33,7 +33,11 @@ partx -a ${MMCDEV} 2>/dev/null || true
 sleep 1
 
 # f2fs time boiii
-mkfs.f2fs -f ${MMCDEV}p3
+if [ "$TARGET" = "kevin" ]; then
+	mkfs.f2fs -f ${MMCDEV}p3
+else
+	mkfs.f2fs -f ${MMCDEV}p3 -t 0 # kevin doesn't support discard on f2fs?
+fi
 mount ${MMCDEV}p3 /mnt
 
 mkdir -p /mnt/lib/firmware/

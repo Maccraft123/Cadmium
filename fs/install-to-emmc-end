@@ -12,6 +12,8 @@ until chroot /mnt passwd $REPLY; do
 	chroot /mnt passwd $REPLY
 done
 
+export USERNAME=$REPLY
+
 # default libinput config for touchpad is bad
 # let's override it
 if [ -f /etc/libinput/local-overrides.quirks ]

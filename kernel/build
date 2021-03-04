@@ -61,10 +61,18 @@ fi
 
 cd $CADMIUMROOT/tmp/linux-$TARGET
 
-for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do
-	echo "Applying $x"
-	patch -p1 --forward < $x || true
-done
+if [ $TARGET = duet ]; then
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch
+else
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt
+fi
+
+#for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do
+#	echo "Applying $x"
+#	patch -p1 --forward < $x || true
+#done
 
 # TODO:
 # make cadmium defconfig from: common-defconfig, soc-defconfig and board-defconfig

@@ -4,7 +4,7 @@ echo "Enter root password"
 chroot /mnt passwd
 
 read -p "Enter username, no spaces or big letters: "
-chroot /mnt useradd -G sudo,video,audio,render -m $REPLY
+chroot /mnt useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
 
 echo "Enter user password:"
 until chroot /mnt passwd $REPLY; do

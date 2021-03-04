@@ -112,7 +112,8 @@ fi
 # copy config, boardinfo and baseboard info over
 cat $CADMIUMROOT/config $CADMIUMROOT/board/$TARGET/boardinfo $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo > root/root/info
 
-
+# copy over ui installer settings
 cp -r $CADMIUMROOT/ui root/root/ui
+chmod a+x root/root/ui/install
 
 #umount root # done in /build-all

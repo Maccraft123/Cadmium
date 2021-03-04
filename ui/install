@@ -1,21 +1,21 @@
 #!/bin/false
 # this is meant to run on a liveusb
-set -e
 set -v
 
 . ~/info
 
-UIS="$(ls ~/ui)"
+UIS="$(find ~/ui/* -type d -printf '%f')"
 CHOSEN=no
 
 until [ "$CHOSEN" != "no" ]; do
 	echo "Which UI do you want installed?"
-	echo -n "Choose one of: $UIS or none for no ui"
+	echo -n "Choose one of: $(echo -n $UIS) or none for no ui"
 	read -p '? ' CHOSEN
 done
 
-if [ "$CHOSEN" != "none"]; then
+if [ "$CHOSEN" != "none" ]; then
 	if [ -f "~/ui/$CHOSEN" ]; then
+		source ~/ui/$CHOSEN/include
 		# xorg doesn't run on mt8183, TODO: why?
 		if [ "$BASEBOARD" = "kukui" -a "$DISPSERVER" = "xorg" ]; then
 			echo "Xorg isn't supported on $BASEBOARD/$TARGET"
@@ -32,11 +32,14 @@ if [ "$CHOSEN" != "none"]; then
 				;;
 		esac
 		# magic line that installs all the packages
-		$INSTALLER $PKGS
+		chroot /mnt/ $INSTALLER $PKGS
 		case $CHOSEN in
 			sway)
+				echo "Copying sway config"
 				mkdir -p /mnt/etc/sway
 				cp ~/sway-config /mnt/etc/sway/config
+				# TODO: $RUN_COMMAND setting in ui information
+				echo 'tty | grep tty1 && exec sway' >> /mnt/home/$USERNAME/.bashrc
 				;;
 		esac
 	fi

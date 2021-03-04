@@ -2,7 +2,7 @@
 ### It also doesn't suck!
 
 <p align="center">
-<img src="/pics/logo/cd.png" alt="Logo" data-canonical-src="/pics/cd.png"/></p>
+<img src="/pics/logo/cd_smol.png" alt="Logo" data-canonical-src="/pics/cd_smol.png"/></p>
 Thanks @LoganMD for the logo
 
 ## Installation

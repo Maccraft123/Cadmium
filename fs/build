@@ -97,9 +97,9 @@ mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
 cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
 
-# install sway config
+# install sway config to user dir
 mkdir -p $CADMIUMROOT/tmp/root/etc/sway
-cp $CADMIUMROOT/board/$TARGET/sway-config $CADMIUMROOT/tmp/root/etc/sway/config
+cp $CADMIUMROOT/board/$TARGET/sway-config $CADMIUMROOT/tmp/root/root/swayconfig
 
 # copy installation scripts if not ubports, double root is not a typo
 if [ ! "$ROOTFS" = "ubports" ]; then

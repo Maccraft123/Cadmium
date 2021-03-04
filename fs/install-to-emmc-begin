@@ -5,7 +5,7 @@ set -e
 . ~/info
 
 # we need internet, TODO: make this run on voidlinux
-nmtui
+nmtui connect
 
 # a fancy hack
 MMCDEV=$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')

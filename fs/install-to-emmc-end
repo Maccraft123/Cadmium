@@ -14,22 +14,26 @@ done
 
 # default libinput config for touchpad is bad
 # let's override it
-mkdir -p /mnt/etc/libinput
-cp /etc/libinput/local-overrides.quirks /mnt/etc/libinput/local-overrides.quirks
-
-# eudev has hwdb in different place
-if [ "$EUDEV" = "1" ]; then
-	export HWDBPATH=/usr/lib/udev
-else
-	export HWDBPATH=/etc/udev/hwdb.d
+if [ -f /etc/libinput/local-overrides.quirks ]
+	mkdir -p /mnt/etc/libinput
+	cp /etc/libinput/local-overrides.quirks /mnt/etc/libinput/local-overrides.quirks
 fi
 
-# fix iio-sensor-proxy screen rotation
-mkdir -p /mnt/$HWDBPATH
-cp /accel-matrix.hwdb /mnt/$HWDBPATH/61-sensor-local.hwdb
+if [ -f /accel-matrix.hwdb ]; then
+	# eudev has hwdb in different place
+	if [ "$EUDEV" = "1" ]; then
+		export HWDBPATH=/usr/lib/udev
+	else
+		export HWDBPATH=/etc/udev/hwdb.d
+	fi
 
-# apply the changes
-[ "$SYSTEMD" = "1" ] && chroot /mnt systemd-hwdb update
+	# fix iio-sensor-proxy screen rotation
+	mkdir -p /mnt/$HWDBPATH
+	cp /accel-matrix.hwdb /mnt/$HWDBPATH/61-sensor-local.hwdb
+
+	# apply the changes
+	[ "$SYSTEMD" = "1" ] && chroot /mnt systemd-hwdb update
+fi
 
 # install ui, yes this uses source. deal with it.
 source ~/ui/install

@@ -62,11 +62,11 @@ fi
 cd $CADMIUMROOT/tmp/linux-$TARGET
 
 if [ $TARGET = duet ]; then
-	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch
-	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch || true
 else
-	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch
-	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt || true
 fi
 
 #for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do

@@ -5,7 +5,12 @@
 # It is sorta using codenames, but "kukui" sounds stupid so i won't use it
 # TODO: maybe this should be baseboard? veyron, gru, kukui or whatever?
 # One of: duet, kevin, minnie, speedy
-TARGET=duet
+if [ "$RELEASE" = "" ]; then
+	TARGET=duet
+else
+	TARGET=$RELEASE
+fi
+
 
 # Kernel variant
 # One of: stable, testing

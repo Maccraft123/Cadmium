@@ -16,7 +16,7 @@ export USERNAME=$REPLY
 
 # default libinput config for touchpad is bad
 # let's override it
-if [ -f /etc/libinput/local-overrides.quirks ]
+if [ -f /etc/libinput/local-overrides.quirks ]; then
 	mkdir -p /mnt/etc/libinput
 	cp /etc/libinput/local-overrides.quirks /mnt/etc/libinput/local-overrides.quirks
 fi

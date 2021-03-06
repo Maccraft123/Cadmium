@@ -83,30 +83,5 @@ cp $CADMIUMROOT/kernel/cmdline cmdline
 
 echo Bulding $KERNEL kernel for $BASEBOARD/$TARGET/$ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
 time make -j$(nproc)
+
 make tarxz-pkg
-
-REL="$(make kernelrelease)"
-
-# this below should go to separate script
-
-# clean the tree, just in case
-#rm -rf $CADMIUMROOT/tmp/kernel-repack
-#mkdir -p $CADMIUMROOT/tmp/kernel-repack/
-
-# by default make tarxz-pkg doesn't include vmlinux.kpart, add it manually
-#bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux-*cadmium*.tar.xz  -C $CADMIUMROOT/tmp/kernel-repack
-#cp $CADMIUMROOT/vmlinux.kpart $CADMIUMROOT/tmp/kernel-repack/boot/vmlinux.kpart
-#cp $CADMIUMROOT/tmp/linux-$TARGET/arch/$ARCH/boot/Image $CADMIUMROOT/tmp/kernel-repack/boot/Image-$TARGET #FIXME: armv7 has image in this place too?
-
-# put release info for script on target machine to compare its uname -r to
-#echo "$REL" > $CADMIUMROOT/tmp/kernel-repack/release
-
-# and add target information
-#echo "$TARGET" > $CADMIUMROOT/tmp/kernel-repack/target
-
-# make archive *including* vmlinux.kpart
-#tar cJf $CADMIUMROOT/kernel-$TARGET.tar.xz -C $CADMIUMROOT/tmp kernel-repack
-
-# checksum to be 100% sure on target device that file downloaded correctly
-#sha1sum $CADMIUMROOT/kernel-$TARGET.tar.xz | awk '{print $1}' > $CADMIUMROOT/kernel-$TARGET.sha1
-

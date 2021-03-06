@@ -5,8 +5,23 @@ Thanks @LoganMD for the logo
 # Cadmium, Linux for ARM chromebooks that don't get attention elsewhere
 ### It also doesn't suck!
 
-
-
+| Hardware support matrix      	| Duet               	| Kevin          	| Asus C100PA and C201PA	|
+|-------------------------	|--------------------	|----------------	|-------------------------	|
+| Display                 	| Y(needs patches)   	| Y(DP needs FW) 	| Y				|
+| Display autorotation    	| Y                  	| N              	| N				|
+| Hardware video decoding	| N			| P			| P				|
+| Touchscreen             	| Y                  	| Y              	| Y				|
+| WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				|
+| 3D Acceleration         	| Y                  	| Y              	| Y				|
+| GPU reclocking		| P			| Y			| Y				|
+| Audio                   	| P(speakers broken) 	| Y              	| Y				|
+| Bluetooth               	| Y                  	| ?              	| ?				|
+| Camera                  	| N                  	| Y              	| Y				|
+| USB                     	| Y                  	| Y              	| Y				|
+| USB Gadget              	| P                  	| ?              	| ?				|
+| Suspending and resuming 	| P                  	| Y              	| P(Dislikes USB booting)	|
+| eMMC installation       	| Y                  	| Y              	| Y				|
+| KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| ?				|
 
 ## Installation
 - ``` ./build-all /dev/sdX ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt and debootstrap are needed to work correctly.
@@ -36,21 +51,3 @@ Thanks @LoganMD for the logo
 - ```bsdtar``` for writing the archive file
 - ```f2fs-tools``` for creating the filesystem used by Cadmium
 - Build dependencies for kernel compilation
-
-| Hardware support        	| Duet               	| Kevin          	| Asus C100PA and C201PA	|
-|-------------------------	|--------------------	|----------------	|-------------------------	|
-| Display                 	| Y(needs patches)   	| Y(DP needs FW) 	| Y				|
-| Display autorotation    	| Y                  	| N              	| N				|
-| Hardware video decoding	| N			| P			| P				|
-| Touchscreen             	| Y                  	| Y              	| Y				|
-| WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				|
-| 3D Acceleration         	| Y                  	| Y              	| Y				|
-| GPU reclocking		| P			| Y			| Y				|
-| Audio                   	| P(speakers broken) 	| Y              	| Y				|
-| Bluetooth               	| Y                  	| ?              	| ?				|
-| Camera                  	| N                  	| Y              	| Y				|
-| USB                     	| Y                  	| Y              	| Y				|
-| USB Gadget              	| P                  	| ?              	| ?				|
-| Suspending and resuming 	| P                  	| Y              	| P(Dislikes USB booting)	|
-| eMMC installation       	| Y                  	| Y              	| Y				|
-| KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| ?				|

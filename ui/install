@@ -4,45 +4,49 @@ set -v
 
 . ~/info
 
-UIS="$(find ~/ui/* -type d -printf '%f')"
 CHOSEN=no
 
 until [ "$CHOSEN" != "no" ]; do
 	echo "Which UI do you want installed?"
-	echo -n "Choose one of: $(echo -n $UIS) or none for no ui"
+	echo -n "Choose one of: phosh, sway or none for no ui"
 	read -p '? ' CHOSEN
 done
 
 if [ "$CHOSEN" != "none" ]; then
-	if [ -f "~/ui/$CHOSEN" ]; then
-		source ~/ui/$CHOSEN/include
-		# xorg doesn't run on mt8183, TODO: why?
-		if [ "$BASEBOARD" = "kukui" -a "$DISPSERVER" = "xorg" ]; then
-			echo "Xorg isn't supported on $BASEBOARD/$TARGET"
-			exit 1
-		fi
-		case $ROOTFS in
-			debian)
-				export INSTALLER='apt install -y'
-				export PKGS="$DEBS"
-				;;
-			void*)
-				export INSTALLER='xbps-install -y'
-				export PKGS="$XBPS"
-				;;
-		esac
-		# magic line that installs all the packages
-		chroot /mnt/ $INSTALLER $PKGS
-		case $CHOSEN in
-			sway)
-				echo "Copying sway config"
-				mkdir -p /mnt/etc/sway
-				cp ~/sway-config /mnt/etc/sway/config
-				# TODO: $RUN_COMMAND setting in ui information
-				echo 'tty | grep tty1 && exec sway' >> /mnt/home/$USERNAME/.bashrc
-				;;
-		esac
+	source ~/ui/$CHOSEN/include
+	# xorg doesn't run on mt8183, TODO: why?
+	if [ "$BASEBOARD" = "kukui" -a "$DISPSERVER" = "xorg" ]; then
+		echo "Xorg isn't supported on $BASEBOARD/$TARGET"
+		exit 1
 	fi
+	case $ROOTFS in
+		debian)
+			export INSTALLER='apt install -y'
+			export PKGS="$DEBS"
+			;;
+		void*)
+			export INSTALLER='xbps-install -y'
+			export PKGS="$XBPS"
+			;;
+	esac
+	# magic line that installs all the packages
+	chroot /mnt/ $INSTALLER $PKGS
+	case $CHOSEN in
+		sway)
+			echo "Copying sway config"
+			mkdir -p /mnt/etc/sway
+			cp ~/sway-config /mnt/etc/sway/config
+			# TODO: $RUN_COMMAND setting in ui information
+			echo 'tty | grep tty1 && exec sway' >> /mnt/home/$USERNAME/.bashrc
+			;;
+		phosh)
+			echo "Phosh NEEDS password that is only digits"
+			chroot /mnt passwd $USERNAME
+			chroot /mnt systemctl enable phosh
+			;;
+	esac
+	echo "Installing common system utilities"
+	chroot /mnt $INSTALLER firefox htop ssh
 fi
 
 echo "Done installing UI!"

@@ -1,0 +1,110 @@
+diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+index 8ab025d00..5058e5ffa 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
++++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+@@ -145,7 +145,7 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+ 
+ 	cooling = of_devfreq_cooling_register(dev->of_node, devfreq);
+ 	if (IS_ERR(cooling))
+-		DRM_DEV_INFO(dev, "Failed to register cooling device\n");
++		DRM_DEV_INFO(dev, "Failed to register cooling device (%ld)\n", PTR_ERR(cooling));
+ 	else
+ 		pfdevfreq->cooling = cooling;
+ 
+diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+index e68967338..7fe114d01 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_device.c
++++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+@@ -56,6 +56,11 @@ static int panfrost_clk_init(struct panfrost_device *pfdev)
+ 	if (err)
+ 		return err;
+ 
++	pr_info("%s:%i\n", __func__, __LINE__);
++	err = clk_set_rate(pfdev->clock, 500000000);
++	if (err)
++		dev_err(pfdev->dev, "clk_set_rate() failed %d\n", err);
++
+ 	pfdev->bus_clock = devm_clk_get_optional(pfdev->dev, "bus");
+ 	if (IS_ERR(pfdev->bus_clock)) {
+ 		dev_err(pfdev->dev, "get bus_clock failed %ld\n",
+diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+index 0fc084110..2e075e95c 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_drv.c
++++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+@@ -621,6 +621,7 @@ static int panfrost_probe(struct platform_device *pdev)
+ 
+ 	panfrost_gem_shrinker_init(ddev);
+ 
++	pm_runtime_get_sync(pfdev->dev);
+ 	return 0;
+ 
+ err_out1:
+@@ -657,6 +658,15 @@ static const struct panfrost_compatible default_data = {
+ 	.pm_domain_names = NULL,
+ };
+ 
++static const char * const mt8183_supplies[] = { "mali", "mali-sram" };
++static const char * const mt8183_pm_domains[] = { "core0", "core1", "core2" };
++static const struct panfrost_compatible mt8183_data = {
++	.num_supplies = ARRAY_SIZE(mt8183_supplies),
++	.supply_names = mt8183_supplies,
++	.num_pm_domains = ARRAY_SIZE(mt8183_pm_domains),
++	.pm_domain_names = mt8183_pm_domains,
++};
++
+ static const struct panfrost_compatible amlogic_data = {
+ 	.num_supplies = ARRAY_SIZE(default_supplies),
+ 	.supply_names = default_supplies,
+@@ -669,6 +679,8 @@ static const struct of_device_id dt_match[] = {
+ 	  .data = &amlogic_data, },
+ 	{ .compatible = "amlogic,meson-g12a-mali",
+ 	  .data = &amlogic_data, },
++	{ .compatible = "mediatek,mt8183-g72-mali",
++	  .data = &mt8183_data, },
+ 	{ .compatible = "arm,mali-t604", .data = &default_data, },
+ 	{ .compatible = "arm,mali-t624", .data = &default_data, },
+ 	{ .compatible = "arm,mali-t628", .data = &default_data, },
+@@ -681,6 +693,7 @@ static const struct of_device_id dt_match[] = {
+ 	{ .compatible = "arm,mali-bifrost", .data = &default_data, },
+ 	{}
+ };
++
+ MODULE_DEVICE_TABLE(of, dt_match);
+ 
+ static const struct dev_pm_ops panfrost_pm_ops = {
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index 2aae636f1..61ddd825b 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -323,6 +323,9 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+ 	panfrost_gpu_init_quirks(pfdev);
+ 
+ 	/* Just turn on everything for now */
++	WARN_ON(gpu_read(pfdev, TILER_PWRTRANS_LO) != 0);
++	WARN_ON(gpu_read(pfdev, SHADER_PWRTRANS_LO) != 0);
++	WARN_ON(gpu_read(pfdev, L2_PWRTRANS_LO) != 0);
+ 	gpu_write(pfdev, L2_PWRON_LO, pfdev->features.l2_present);
+ 	ret = readl_relaxed_poll_timeout(pfdev->iomem + L2_READY_LO,
+ 		val, val == pfdev->features.l2_present, 100, 20000);
+@@ -344,9 +347,21 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+ 
+ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+ {
++	int ret;
++	u32 val;
++
+ 	gpu_write(pfdev, TILER_PWROFF_LO, 0);
++	ret = readl_relaxed_poll_timeout(pfdev->iomem + TILER_PWRTRANS_LO,
++		val, val == 0, 100, 1000);
++	WARN_ON(ret);
+ 	gpu_write(pfdev, SHADER_PWROFF_LO, 0);
++	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
++		val, val == 0, 100, 1000);
++	WARN_ON(ret);
+ 	gpu_write(pfdev, L2_PWROFF_LO, 0);
++	ret = readl_relaxed_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
++		val, val == 0, 100, 1000);
++	WARN_ON(ret);
+ }
+ 
+ int panfrost_gpu_init(struct panfrost_device *pfdev)

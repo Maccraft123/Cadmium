@@ -1,0 +1,999 @@
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+index 28651bc57..c8ae8d30d 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+@@ -11,6 +11,7 @@
+ #include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/soc/mediatek/mtk-cmdq.h>
+ 
+ #include "mtk_drm_crtc.h"
+@@ -402,9 +403,13 @@ static int mtk_disp_ovl_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	pm_runtime_enable(dev);
++
+ 	ret = component_add(dev, &mtk_disp_ovl_component_ops);
+-	if (ret)
++	if (ret) {
++		pm_runtime_disable(dev);
+ 		dev_err(dev, "Failed to add component: %d\n", ret);
++	}
+ 
+ 	return ret;
+ }
+@@ -413,6 +418,8 @@ static int mtk_disp_ovl_remove(struct platform_device *pdev)
+ {
+ 	component_del(&pdev->dev, &mtk_disp_ovl_component_ops);
+ 
++	pm_runtime_disable(&pdev->dev);
++
+ 	return 0;
+ }
+ 
+@@ -430,11 +437,29 @@ static const struct mtk_disp_ovl_data mt8173_ovl_driver_data = {
+ 	.fmt_rgb565_is_0 = true,
+ };
+ 
++static const struct mtk_disp_ovl_data mt8183_ovl_driver_data = {
++	.addr = DISP_REG_OVL_ADDR_MT8173,
++	.gmc_bits = 10,
++	.layer_nr = 4,
++	.fmt_rgb565_is_0 = true,
++};
++
++static const struct mtk_disp_ovl_data mt8183_ovl_2l_driver_data = {
++	.addr = DISP_REG_OVL_ADDR_MT8173,
++	.gmc_bits = 10,
++	.layer_nr = 2,
++	.fmt_rgb565_is_0 = true,
++};
++
+ static const struct of_device_id mtk_disp_ovl_driver_dt_match[] = {
+ 	{ .compatible = "mediatek,mt2701-disp-ovl",
+ 	  .data = &mt2701_ovl_driver_data},
+ 	{ .compatible = "mediatek,mt8173-disp-ovl",
+ 	  .data = &mt8173_ovl_driver_data},
++	{ .compatible = "mediatek,mt8183-disp-ovl",
++	  .data = &mt8183_ovl_driver_data},
++	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
++	  .data = &mt8183_ovl_2l_driver_data},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, mtk_disp_ovl_driver_dt_match);
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
+index e04319fed..28fe9edf0 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
+@@ -9,6 +9,7 @@
+ #include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/soc/mediatek/mtk-cmdq.h>
+ 
+ #include "mtk_drm_crtc.h"
+@@ -63,6 +64,7 @@ struct mtk_disp_rdma {
+ 	struct mtk_ddp_comp		ddp_comp;
+ 	struct drm_crtc			*crtc;
+ 	const struct mtk_disp_rdma_data	*data;
++	u32				fifo_size;
+ };
+ 
+ static inline struct mtk_disp_rdma *comp_to_rdma(struct mtk_ddp_comp *comp)
+@@ -131,12 +133,18 @@ static void mtk_rdma_config(struct mtk_ddp_comp *comp, unsigned int width,
+ 	unsigned int threshold;
+ 	unsigned int reg;
+ 	struct mtk_disp_rdma *rdma = comp_to_rdma(comp);
++	u32 rdma_fifo_size;
+ 
+ 	mtk_ddp_write_mask(cmdq_pkt, width, comp,
+ 			   DISP_REG_RDMA_SIZE_CON_0, 0xfff);
+ 	mtk_ddp_write_mask(cmdq_pkt, height, comp,
+ 			   DISP_REG_RDMA_SIZE_CON_1, 0xfffff);
+ 
++	if (rdma->fifo_size)
++		rdma_fifo_size = rdma->fifo_size;
++	else
++		rdma_fifo_size = RDMA_FIFO_SIZE(rdma);
++
+ 	/*
+ 	 * Enable FIFO underflow since DSI and DPI can't be blocked.
+ 	 * Keep the FIFO pseudo size reset default of 8 KiB. Set the
+@@ -145,7 +153,7 @@ static void mtk_rdma_config(struct mtk_ddp_comp *comp, unsigned int width,
+ 	 */
+ 	threshold = width * height * vrefresh * 4 * 7 / 1000000;
+ 	reg = RDMA_FIFO_UNDERFLOW_EN |
+-	      RDMA_FIFO_PSEUDO_SIZE(RDMA_FIFO_SIZE(rdma)) |
++	      RDMA_FIFO_PSEUDO_SIZE(rdma_fifo_size) |
+ 	      RDMA_OUTPUT_VALID_FIFO_THRESHOLD(threshold);
+ 	mtk_ddp_write(cmdq_pkt, reg, comp, DISP_REG_RDMA_FIFO_CON);
+ }
+@@ -291,6 +299,16 @@ static int mtk_disp_rdma_probe(struct platform_device *pdev)
+ 		return comp_id;
+ 	}
+ 
++	if (of_find_property(dev->of_node, "mediatek,rdma_fifo_size", &ret)) {
++		ret = of_property_read_u32(dev->of_node,
++					   "mediatek,rdma_fifo_size",
++					   &priv->fifo_size);
++		if (ret) {
++			dev_err(dev, "Failed to get rdma fifo size\n");
++			return ret;
++		}
++	}
++
+ 	ret = mtk_ddp_comp_init(dev, dev->of_node, &priv->ddp_comp, comp_id,
+ 				&mtk_disp_rdma_funcs);
+ 	if (ret) {
+@@ -316,9 +334,13 @@ static int mtk_disp_rdma_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, priv);
+ 
++	pm_runtime_enable(dev);
++
+ 	ret = component_add(dev, &mtk_disp_rdma_component_ops);
+-	if (ret)
++	if (ret) {
++		pm_runtime_disable(dev);
+ 		dev_err(dev, "Failed to add component: %d\n", ret);
++	}
+ 
+ 	return ret;
+ }
+@@ -327,6 +349,8 @@ static int mtk_disp_rdma_remove(struct platform_device *pdev)
+ {
+ 	component_del(&pdev->dev, &mtk_disp_rdma_component_ops);
+ 
++	pm_runtime_disable(&pdev->dev);
++
+ 	return 0;
+ }
+ 
+@@ -338,11 +362,17 @@ static const struct mtk_disp_rdma_data mt8173_rdma_driver_data = {
+ 	.fifo_size = SZ_8K,
+ };
+ 
++static const struct mtk_disp_rdma_data mt8183_rdma_driver_data = {
++	.fifo_size = 5 * SZ_1K,
++};
++
+ static const struct of_device_id mtk_disp_rdma_driver_dt_match[] = {
+ 	{ .compatible = "mediatek,mt2701-disp-rdma",
+ 	  .data = &mt2701_rdma_driver_data},
+ 	{ .compatible = "mediatek,mt8173-disp-rdma",
+ 	  .data = &mt8173_rdma_driver_data},
++	{ .compatible = "mediatek,mt8183-disp-rdma",
++	  .data = &mt8183_rdma_driver_data},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, mtk_disp_rdma_driver_dt_match);
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index ac0385721..da122407c 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -9,7 +9,6 @@
+ #include <linux/soc/mediatek/mtk-mmsys.h>
+ 
+ #include <asm/barrier.h>
+-#include <soc/mediatek/smi.h>
+ 
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_plane_helper.h>
+@@ -478,7 +477,6 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_crtc *mtk_crtc)
+ 	}
+ #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+ 	if (mtk_crtc->cmdq_client) {
+-		mbox_flush(mtk_crtc->cmdq_client->chan, 2000);
+ 		cmdq_handle = cmdq_pkt_create(mtk_crtc->cmdq_client, PAGE_SIZE);
+ 		cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_event);
+ 		cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, false);
+@@ -525,15 +523,14 @@ static void mtk_drm_crtc_atomic_enable(struct drm_crtc *crtc,
+ 
+ 	DRM_DEBUG_DRIVER("%s %d\n", __func__, crtc->base.id);
+ 
+-	ret = mtk_smi_larb_get(comp->larb_dev);
+-	if (ret) {
+-		DRM_ERROR("Failed to get larb: %d\n", ret);
+-		return;
+-	}
++	ret = pm_runtime_get_sync(comp->larb_dev);
++	if (ret < 0)
++		DRM_DEV_ERROR(comp->larb_dev, "Failed to enable power domain: %d\n",
++			      ret);
+ 
+ 	ret = mtk_crtc_ddp_hw_init(mtk_crtc);
+ 	if (ret) {
+-		mtk_smi_larb_put(comp->larb_dev);
++		pm_runtime_put(comp->larb_dev);
+ 		return;
+ 	}
+ 
+@@ -546,7 +543,7 @@ static void mtk_drm_crtc_atomic_disable(struct drm_crtc *crtc,
+ {
+ 	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
+ 	struct mtk_ddp_comp *comp = mtk_crtc->ddp_comp[0];
+-	int i;
++	int i, ret;
+ 
+ 	DRM_DEBUG_DRIVER("%s %d\n", __func__, crtc->base.id);
+ 	if (!mtk_crtc->enabled)
+@@ -569,7 +566,10 @@ static void mtk_drm_crtc_atomic_disable(struct drm_crtc *crtc,
+ 
+ 	drm_crtc_vblank_off(crtc);
+ 	mtk_crtc_ddp_hw_fini(mtk_crtc);
+-	mtk_smi_larb_put(comp->larb_dev);
++	ret = pm_runtime_put(comp->larb_dev);
++	if (ret < 0)
++		DRM_DEV_ERROR(comp->larb_dev, "Failed to disable power domain: %d\n",
++			      ret);
+ 
+ 	mtk_crtc->enabled = false;
+ }
+@@ -827,7 +827,7 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
+ 					 drm_crtc_index(&mtk_crtc->base),
+ 					 2000);
+ 	if (IS_ERR(mtk_crtc->cmdq_client)) {
+-		dev_dbg(dev, "mtk_crtc %d failed to create mailbox client, writing register by CPU now\n",
++		dev_err(dev, "mtk_crtc %d failed to create mailbox client, writing register by CPU now\n",
+ 			drm_crtc_index(&mtk_crtc->base));
+ 		mtk_crtc->cmdq_client = NULL;
+ 	}
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
+index 014c1bbe1..ead5f3253 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
+@@ -15,6 +15,8 @@
+ 
+ #define MT2701_DISP_MUTEX0_MOD0			0x2c
+ #define MT2701_DISP_MUTEX0_SOF0			0x30
++#define MT8183_DISP_MUTEX0_MOD0			0x30
++#define MT8183_DISP_MUTEX0_SOF0			0x2c
+ 
+ #define DISP_REG_MUTEX_EN(n)			(0x20 + 0x20 * (n))
+ #define DISP_REG_MUTEX(n)			(0x24 + 0x20 * (n))
+@@ -25,6 +27,18 @@
+ 
+ #define INT_MUTEX				BIT(1)
+ 
++#define MT8183_MUTEX_MOD_DISP_RDMA0		0
++#define MT8183_MUTEX_MOD_DISP_RDMA1		1
++#define MT8183_MUTEX_MOD_DISP_OVL0		9
++#define MT8183_MUTEX_MOD_DISP_OVL0_2L		10
++#define MT8183_MUTEX_MOD_DISP_OVL1_2L		11
++#define MT8183_MUTEX_MOD_DISP_WDMA0		12
++#define MT8183_MUTEX_MOD_DISP_COLOR0		13
++#define MT8183_MUTEX_MOD_DISP_CCORR0		14
++#define MT8183_MUTEX_MOD_DISP_AAL0		15
++#define MT8183_MUTEX_MOD_DISP_GAMMA0		16
++#define MT8183_MUTEX_MOD_DISP_DITHER0		17
++
+ #define MT8173_MUTEX_MOD_DISP_OVL0		11
+ #define MT8173_MUTEX_MOD_DISP_OVL1		12
+ #define MT8173_MUTEX_MOD_DISP_RDMA0		13
+@@ -74,6 +88,10 @@
+ #define MUTEX_SOF_DSI2			5
+ #define MUTEX_SOF_DSI3			6
+ 
++#define MT8183_MUTEX_SOF_DPI0			2
++#define MT8183_MUTEX_EOF_DSI0			(MUTEX_SOF_DSI0 << 6)
++#define MT8183_MUTEX_EOF_DPI0			(MT8183_MUTEX_SOF_DPI0 << 6)
++
+ 
+ struct mtk_disp_mutex {
+ 	int id;
+@@ -153,6 +171,20 @@ static const unsigned int mt8173_mutex_mod[DDP_COMPONENT_ID_MAX] = {
+ 	[DDP_COMPONENT_WDMA1] = MT8173_MUTEX_MOD_DISP_WDMA1,
+ };
+ 
++static const unsigned int mt8183_mutex_mod[DDP_COMPONENT_ID_MAX] = {
++	[DDP_COMPONENT_AAL0] = MT8183_MUTEX_MOD_DISP_AAL0,
++	[DDP_COMPONENT_CCORR] = MT8183_MUTEX_MOD_DISP_CCORR0,
++	[DDP_COMPONENT_COLOR0] = MT8183_MUTEX_MOD_DISP_COLOR0,
++	[DDP_COMPONENT_DITHER] = MT8183_MUTEX_MOD_DISP_DITHER0,
++	[DDP_COMPONENT_GAMMA] = MT8183_MUTEX_MOD_DISP_GAMMA0,
++	[DDP_COMPONENT_OVL0] = MT8183_MUTEX_MOD_DISP_OVL0,
++	[DDP_COMPONENT_OVL_2L0] = MT8183_MUTEX_MOD_DISP_OVL0_2L,
++	[DDP_COMPONENT_OVL_2L1] = MT8183_MUTEX_MOD_DISP_OVL1_2L,
++	[DDP_COMPONENT_RDMA0] = MT8183_MUTEX_MOD_DISP_RDMA0,
++	[DDP_COMPONENT_RDMA1] = MT8183_MUTEX_MOD_DISP_RDMA1,
++	[DDP_COMPONENT_WDMA0] = MT8183_MUTEX_MOD_DISP_WDMA0,
++};
++
+ static const unsigned int mt2712_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] = {
+ 	[DDP_MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
+ 	[DDP_MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0,
+@@ -163,6 +195,12 @@ static const unsigned int mt2712_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] = {
+ 	[DDP_MUTEX_SOF_DSI3] = MUTEX_SOF_DSI3,
+ };
+ 
++static const unsigned int mt8183_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] = {
++	[DDP_MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
++	[DDP_MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0 | MT8183_MUTEX_EOF_DSI0,
++	[DDP_MUTEX_SOF_DPI0] = MT8183_MUTEX_SOF_DPI0 | MT8183_MUTEX_EOF_DPI0,
++};
++
+ static const struct mtk_ddp_data mt2701_ddp_driver_data = {
+ 	.mutex_mod = mt2701_mutex_mod,
+ 	.mutex_sof = mt2712_mutex_sof,
+@@ -184,6 +222,14 @@ static const struct mtk_ddp_data mt8173_ddp_driver_data = {
+ 	.mutex_sof_reg = MT2701_DISP_MUTEX0_SOF0,
+ };
+ 
++static const struct mtk_ddp_data mt8183_ddp_driver_data = {
++	.mutex_mod = mt8183_mutex_mod,
++	.mutex_sof = mt8183_mutex_sof,
++	.mutex_mod_reg = MT8183_DISP_MUTEX0_MOD0,
++	.mutex_sof_reg = MT8183_DISP_MUTEX0_SOF0,
++	.no_clk = true,
++};
++
+ struct mtk_disp_mutex *mtk_disp_mutex_get(struct device *dev, unsigned int id)
+ {
+ 	struct mtk_ddp *ddp = dev_get_drvdata(dev);
+@@ -402,6 +448,8 @@ static const struct of_device_id ddp_driver_dt_match[] = {
+ 	  .data = &mt2712_ddp_driver_data},
+ 	{ .compatible = "mediatek,mt8173-disp-mutex",
+ 	  .data = &mt8173_ddp_driver_data},
++	{ .compatible = "mediatek,mt8183-disp-mutex",
++	  .data = &mt8183_ddp_driver_data},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, ddp_driver_dt_match);
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+index 8eba44be3..ea85ae369 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+@@ -468,10 +468,9 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
+ int mtk_ddp_comp_init(struct device *dev, struct device_node *node,
+ 		      struct mtk_ddp_comp *comp, enum mtk_ddp_comp_id comp_id,
+ 		      const struct mtk_ddp_comp_funcs *funcs)
++//		      enum mtk_ddp_comp_type comp_type)
+ {
+ 	enum mtk_ddp_comp_type type;
+-	struct device_node *larb_node;
+-	struct platform_device *larb_pdev;
+ #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+ 	struct resource res;
+ 	struct cmdq_client_reg cmdq_reg;
+@@ -506,35 +505,18 @@ int mtk_ddp_comp_init(struct device *dev, struct device_node *node,
+ 	if (IS_ERR(comp->clk))
+ 		return PTR_ERR(comp->clk);
+ 
+-	/* Only DMA capable components need the LARB property */
+-	comp->larb_dev = NULL;
+ 	if (type != MTK_DISP_OVL &&
+ 	    type != MTK_DISP_OVL_2L &&
+ 	    type != MTK_DISP_RDMA &&
+ 	    type != MTK_DISP_WDMA)
+ 		return 0;
+ 
+-	larb_node = of_parse_phandle(node, "mediatek,larb", 0);
+-	if (!larb_node) {
+-		dev_err(dev,
+-			"Missing mediadek,larb phandle in %pOF node\n", node);
+-		return -EINVAL;
+-	}
+-
+-	larb_pdev = of_find_device_by_node(larb_node);
+-	if (!larb_pdev) {
+-		dev_warn(dev, "Waiting for larb device %pOF\n", larb_node);
+-		of_node_put(larb_node);
+-		return -EPROBE_DEFER;
+-	}
+-	of_node_put(larb_node);
+-
+-	comp->larb_dev = &larb_pdev->dev;
++	comp->larb_dev = dev;
+ 
+ #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+ 	if (of_address_to_resource(node, 0, &res) != 0) {
+ 		dev_err(dev, "Missing reg in %s node\n", node->full_name);
+-		put_device(&larb_pdev->dev);
++		put_device(dev);
+ 		return -EINVAL;
+ 	}
+ 	comp->regs_pa = res.start;
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+index 1d9e00b69..6a05dde18 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+@@ -7,6 +7,7 @@
+ #define MTK_DRM_DDP_COMP_H
+ 
+ #include <linux/io.h>
++#include <linux/soc/mediatek/mtk-mmsys.h>
+ 
+ struct device;
+ struct device_node;
+@@ -35,45 +36,12 @@ enum mtk_ddp_comp_type {
+ 	MTK_DDP_COMP_TYPE_MAX,
+ };
+ 
+-enum mtk_ddp_comp_id {
+-	DDP_COMPONENT_AAL0,
+-	DDP_COMPONENT_AAL1,
+-	DDP_COMPONENT_BLS,
+-	DDP_COMPONENT_CCORR,
+-	DDP_COMPONENT_COLOR0,
+-	DDP_COMPONENT_COLOR1,
+-	DDP_COMPONENT_DITHER,
+-	DDP_COMPONENT_DPI0,
+-	DDP_COMPONENT_DPI1,
+-	DDP_COMPONENT_DSI0,
+-	DDP_COMPONENT_DSI1,
+-	DDP_COMPONENT_DSI2,
+-	DDP_COMPONENT_DSI3,
+-	DDP_COMPONENT_GAMMA,
+-	DDP_COMPONENT_OD0,
+-	DDP_COMPONENT_OD1,
+-	DDP_COMPONENT_OVL0,
+-	DDP_COMPONENT_OVL_2L0,
+-	DDP_COMPONENT_OVL_2L1,
+-	DDP_COMPONENT_OVL1,
+-	DDP_COMPONENT_PWM0,
+-	DDP_COMPONENT_PWM1,
+-	DDP_COMPONENT_PWM2,
+-	DDP_COMPONENT_RDMA0,
+-	DDP_COMPONENT_RDMA1,
+-	DDP_COMPONENT_RDMA2,
+-	DDP_COMPONENT_UFOE,
+-	DDP_COMPONENT_WDMA0,
+-	DDP_COMPONENT_WDMA1,
+-	DDP_COMPONENT_ID_MAX,
+-};
+-
+ struct mtk_ddp_comp;
+ struct cmdq_pkt;
+ struct mtk_ddp_comp_funcs {
+ 	void (*config)(struct mtk_ddp_comp *comp, unsigned int w,
+-		       unsigned int h, unsigned int vrefresh,
+-		       unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
++			unsigned int h, unsigned int vrefresh,
++			unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
+ 	void (*start)(struct mtk_ddp_comp *comp);
+ 	void (*stop)(struct mtk_ddp_comp *comp);
+ 	void (*enable_vblank)(struct mtk_ddp_comp *comp, struct drm_crtc *crtc);
+@@ -81,13 +49,13 @@ struct mtk_ddp_comp_funcs {
+ 	unsigned int (*supported_rotations)(struct mtk_ddp_comp *comp);
+ 	unsigned int (*layer_nr)(struct mtk_ddp_comp *comp);
+ 	int (*layer_check)(struct mtk_ddp_comp *comp,
+-			   unsigned int idx,
+-			   struct mtk_plane_state *state);
++			unsigned int idx,
++			struct mtk_plane_state *state);
+ 	void (*layer_config)(struct mtk_ddp_comp *comp, unsigned int idx,
+-			     struct mtk_plane_state *state,
+-			     struct cmdq_pkt *cmdq_pkt);
++			struct mtk_plane_state *state,
++			struct cmdq_pkt *cmdq_pkt);
+ 	void (*gamma_set)(struct mtk_ddp_comp *comp,
+-			  struct drm_crtc_state *state);
++			struct drm_crtc_state *state);
+ 	void (*bgclr_in_on)(struct mtk_ddp_comp *comp);
+ 	void (*bgclr_in_off)(struct mtk_ddp_comp *comp);
+ 	void (*ctm_set)(struct mtk_ddp_comp *comp,
+@@ -106,9 +74,9 @@ struct mtk_ddp_comp {
+ };
+ 
+ static inline void mtk_ddp_comp_config(struct mtk_ddp_comp *comp,
+-				       unsigned int w, unsigned int h,
+-				       unsigned int vrefresh, unsigned int bpc,
+-				       struct cmdq_pkt *cmdq_pkt)
++		unsigned int w, unsigned int h,
++		unsigned int vrefresh, unsigned int bpc,
++		struct cmdq_pkt *cmdq_pkt)
+ {
+ 	if (comp->funcs && comp->funcs->config)
+ 		comp->funcs->config(comp, w, h, vrefresh, bpc, cmdq_pkt);
+@@ -127,7 +95,7 @@ static inline void mtk_ddp_comp_stop(struct mtk_ddp_comp *comp)
+ }
+ 
+ static inline void mtk_ddp_comp_enable_vblank(struct mtk_ddp_comp *comp,
+-					      struct drm_crtc *crtc)
++		struct drm_crtc *crtc)
+ {
+ 	if (comp->funcs && comp->funcs->enable_vblank)
+ 		comp->funcs->enable_vblank(comp, crtc);
+@@ -139,7 +107,7 @@ static inline void mtk_ddp_comp_disable_vblank(struct mtk_ddp_comp *comp)
+ 		comp->funcs->disable_vblank(comp);
+ }
+ 
+-static inline
++	static inline
+ unsigned int mtk_ddp_comp_supported_rotations(struct mtk_ddp_comp *comp)
+ {
+ 	if (comp->funcs && comp->funcs->supported_rotations)
+@@ -157,8 +125,8 @@ static inline unsigned int mtk_ddp_comp_layer_nr(struct mtk_ddp_comp *comp)
+ }
+ 
+ static inline int mtk_ddp_comp_layer_check(struct mtk_ddp_comp *comp,
+-					   unsigned int idx,
+-					   struct mtk_plane_state *state)
++		unsigned int idx,
++		struct mtk_plane_state *state)
+ {
+ 	if (comp->funcs && comp->funcs->layer_check)
+ 		return comp->funcs->layer_check(comp, idx, state);
+@@ -166,16 +134,16 @@ static inline int mtk_ddp_comp_layer_check(struct mtk_ddp_comp *comp,
+ }
+ 
+ static inline void mtk_ddp_comp_layer_config(struct mtk_ddp_comp *comp,
+-					     unsigned int idx,
+-					     struct mtk_plane_state *state,
+-					     struct cmdq_pkt *cmdq_pkt)
++		unsigned int idx,
++		struct mtk_plane_state *state,
++		struct cmdq_pkt *cmdq_pkt)
+ {
+ 	if (comp->funcs && comp->funcs->layer_config)
+ 		comp->funcs->layer_config(comp, idx, state, cmdq_pkt);
+ }
+ 
+ static inline void mtk_ddp_gamma_set(struct mtk_ddp_comp *comp,
+-				     struct drm_crtc_state *state)
++		struct drm_crtc_state *state)
+ {
+ 	if (comp->funcs && comp->funcs->gamma_set)
+ 		comp->funcs->gamma_set(comp, state);
+@@ -194,7 +162,7 @@ static inline void mtk_ddp_comp_bgclr_in_off(struct mtk_ddp_comp *comp)
+ }
+ 
+ static inline void mtk_ddp_ctm_set(struct mtk_ddp_comp *comp,
+-				   struct drm_crtc_state *state)
++		struct drm_crtc_state *state)
+ {
+ 	if (comp->funcs && comp->funcs->ctm_set)
+ 		comp->funcs->ctm_set(comp, state);
+@@ -205,18 +173,19 @@ int mtk_ddp_comp_get_id(struct device_node *node,
+ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
+ 						struct mtk_ddp_comp ddp_comp);
+ int mtk_ddp_comp_init(struct device *dev, struct device_node *comp_node,
+-		      struct mtk_ddp_comp *comp, enum mtk_ddp_comp_id comp_id,
+-		      const struct mtk_ddp_comp_funcs *funcs);
++		struct mtk_ddp_comp *comp, enum mtk_ddp_comp_id comp_id,
++		const struct mtk_ddp_comp_funcs *funcs);
++//		enum mtk_ddp_comp_type comp_type);
+ int mtk_ddp_comp_register(struct drm_device *drm, struct mtk_ddp_comp *comp);
+ void mtk_ddp_comp_unregister(struct drm_device *drm, struct mtk_ddp_comp *comp);
+ void mtk_dither_set(struct mtk_ddp_comp *comp, unsigned int bpc,
+-		    unsigned int CFG, struct cmdq_pkt *cmdq_pkt);
++		unsigned int CFG, struct cmdq_pkt *cmdq_pkt);
+ enum mtk_ddp_comp_type mtk_ddp_comp_get_type(enum mtk_ddp_comp_id comp_id);
+ void mtk_ddp_write(struct cmdq_pkt *cmdq_pkt, unsigned int value,
+-		   struct mtk_ddp_comp *comp, unsigned int offset);
++		struct mtk_ddp_comp *comp, unsigned int offset);
+ void mtk_ddp_write_relaxed(struct cmdq_pkt *cmdq_pkt, unsigned int value,
+-			   struct mtk_ddp_comp *comp, unsigned int offset);
++		struct mtk_ddp_comp *comp, unsigned int offset);
+ void mtk_ddp_write_mask(struct cmdq_pkt *cmdq_pkt, unsigned int value,
+-			struct mtk_ddp_comp *comp, unsigned int offset,
+-			unsigned int mask);
++		struct mtk_ddp_comp *comp, unsigned int offset,
++		unsigned int mask);
+ #endif /* MTK_DRM_DDP_COMP_H */
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+index 59c85c63b..a7e9f8871 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+@@ -131,6 +131,24 @@ static const enum mtk_ddp_comp_id mt8173_mtk_ddp_ext[] = {
+ 	DDP_COMPONENT_DPI0,
+ };
+ 
++static const enum mtk_ddp_comp_id mt8183_mtk_ddp_main[] = {
++	DDP_COMPONENT_OVL0,
++	DDP_COMPONENT_OVL_2L0,
++	DDP_COMPONENT_RDMA0,
++	DDP_COMPONENT_COLOR0,
++	DDP_COMPONENT_CCORR,
++	DDP_COMPONENT_AAL0,
++	DDP_COMPONENT_GAMMA,
++	DDP_COMPONENT_DITHER,
++	DDP_COMPONENT_DSI0,
++};
++
++static const enum mtk_ddp_comp_id mt8183_mtk_ddp_ext[] = {
++	DDP_COMPONENT_OVL_2L1,
++	DDP_COMPONENT_RDMA1,
++	DDP_COMPONENT_DPI0,
++};
++
+ static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
+ 	.main_path = mt2701_mtk_ddp_main,
+ 	.main_len = ARRAY_SIZE(mt2701_mtk_ddp_main),
+@@ -163,6 +181,13 @@ static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
+ 	.ext_len = ARRAY_SIZE(mt8173_mtk_ddp_ext),
+ };
+ 
++static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
++	.main_path = mt8183_mtk_ddp_main,
++	.main_len = ARRAY_SIZE(mt8183_mtk_ddp_main),
++	.ext_path = mt8183_mtk_ddp_ext,
++	.ext_len = ARRAY_SIZE(mt8183_mtk_ddp_ext),
++};
++
+ static int mtk_drm_kms_init(struct drm_device *drm)
+ {
+ 	struct mtk_drm_private *private = drm->dev_private;
+@@ -403,12 +428,20 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
+ 	  .data = (void *)MTK_DISP_OVL },
+ 	{ .compatible = "mediatek,mt8173-disp-ovl",
+ 	  .data = (void *)MTK_DISP_OVL },
++	{ .compatible = "mediatek,mt8183-disp-ovl",
++	  .data = (void *)MTK_DISP_OVL },
++	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
++	  .data = (void *)MTK_DISP_OVL_2L },
+ 	{ .compatible = "mediatek,mt2701-disp-rdma",
+ 	  .data = (void *)MTK_DISP_RDMA },
+ 	{ .compatible = "mediatek,mt8173-disp-rdma",
+ 	  .data = (void *)MTK_DISP_RDMA },
++	{ .compatible = "mediatek,mt8183-disp-rdma",
++	  .data = (void *)MTK_DISP_RDMA },
+ 	{ .compatible = "mediatek,mt8173-disp-wdma",
+ 	  .data = (void *)MTK_DISP_WDMA },
++	{ .compatible = "mediatek,mt8183-disp-ccorr",
++	  .data = (void *)MTK_DISP_CCORR },
+ 	{ .compatible = "mediatek,mt2701-disp-color",
+ 	  .data = (void *)MTK_DISP_COLOR },
+ 	{ .compatible = "mediatek,mt8173-disp-color",
+@@ -417,22 +450,30 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
+ 	  .data = (void *)MTK_DISP_AAL},
+ 	{ .compatible = "mediatek,mt8173-disp-gamma",
+ 	  .data = (void *)MTK_DISP_GAMMA, },
++	{ .compatible = "mediatek,mt8183-disp-dither",
++	  .data = (void *)MTK_DISP_DITHER },
+ 	{ .compatible = "mediatek,mt8173-disp-ufoe",
+ 	  .data = (void *)MTK_DISP_UFOE },
+ 	{ .compatible = "mediatek,mt2701-dsi",
+ 	  .data = (void *)MTK_DSI },
+ 	{ .compatible = "mediatek,mt8173-dsi",
+ 	  .data = (void *)MTK_DSI },
++	{ .compatible = "mediatek,mt8183-dsi",
++	  .data = (void *)MTK_DSI },
+ 	{ .compatible = "mediatek,mt2701-dpi",
+ 	  .data = (void *)MTK_DPI },
+ 	{ .compatible = "mediatek,mt8173-dpi",
+ 	  .data = (void *)MTK_DPI },
++	{ .compatible = "mediatek,mt8183-dpi",
++	  .data = (void *)MTK_DPI },
+ 	{ .compatible = "mediatek,mt2701-disp-mutex",
+ 	  .data = (void *)MTK_DISP_MUTEX },
+ 	{ .compatible = "mediatek,mt2712-disp-mutex",
+ 	  .data = (void *)MTK_DISP_MUTEX },
+ 	{ .compatible = "mediatek,mt8173-disp-mutex",
+ 	  .data = (void *)MTK_DISP_MUTEX },
++	{ .compatible = "mediatek,mt8183-disp-mutex",
++	  .data = (void *)MTK_DISP_MUTEX },
+ 	{ .compatible = "mediatek,mt2701-disp-pwm",
+ 	  .data = (void *)MTK_DISP_BLS },
+ 	{ .compatible = "mediatek,mt8173-disp-pwm",
+@@ -451,6 +492,8 @@ static const struct of_device_id mtk_drm_of_ids[] = {
+ 	  .data = &mt2712_mmsys_driver_data},
+ 	{ .compatible = "mediatek,mt8173-mmsys",
+ 	  .data = &mt8173_mmsys_driver_data},
++	{ .compatible = "mediatek,mt8183-mmsys",
++	  .data = &mt8183_mmsys_driver_data},
+ 	{ }
+ };
+ 
+diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+index 4a188a942..cca483a07 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dsi.c
++++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+@@ -7,10 +7,12 @@
+ #include <linux/component.h>
+ #include <linux/iopoll.h>
+ #include <linux/irq.h>
++#include <linux/mfd/syscon.h>
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
++#include <linux/regmap.h>
+ 
+ #include <video/mipi_display.h>
+ #include <video/videomode.h>
+@@ -142,6 +144,8 @@
+ #define DATA_0				(0xff << 16)
+ #define DATA_1				(0xff << 24)
+ 
++#define MMSYS_SW_RST_DSI_B		BIT(25)
++
+ #define NS_TO_CYCLE(n, c)    ((n) / (c) + (((n) % (c)) ? 1 : 0))
+ 
+ #define MTK_DSI_HOST_IS_READ(type) \
+@@ -150,6 +154,9 @@
+ 	(type == MIPI_DSI_GENERIC_READ_REQUEST_2_PARAM) || \
+ 	(type == MIPI_DSI_DCS_READ))
+ 
++#define MIN_HFP_BYTE		0x02
++#define MIN_HBP_BYTE		0x02
++
+ struct mtk_phy_timing {
+ 	u32 lpx;
+ 	u32 da_hs_prepare;
+@@ -186,6 +193,8 @@ struct mtk_dsi {
+ 	struct drm_bridge *next_bridge;
+ 	struct drm_connector *connector;
+ 	struct phy *phy;
++	struct regmap *mmsys_sw_rst_b;
++	u32 sw_rst_b;
+ 
+ 	void __iomem *regs;
+ 
+@@ -606,15 +630,13 @@ static s32 mtk_dsi_switch_to_cmd_mode(struct mtk_dsi *dsi, u8 irq_flag, u32 t)
+ 	}
+ }
+ 
+-static int mtk_dsi_poweron(struct mtk_dsi *dsi)
++static int mtk_dsi_poweron(struct device *dev)
+ {
+-	struct device *dev = dsi->host.dev;
++	struct mtk_dsi *dsi = dev_get_drvdata(dev);
++	//struct device *dev = dsi->host.dev;
+ 	int ret;
+ 	u32 bit_per_pixel;
+ 
+-	if (++dsi->refcount != 1)
+-		return 0;
+-
+ 	switch (dsi->format) {
+ 	case MIPI_DSI_FMT_RGB565:
+ 		bit_per_pixel = 16;
+@@ -635,7 +657,7 @@ static int mtk_dsi_poweron(struct mtk_dsi *dsi)
+ 	ret = clk_set_rate(dsi->hs_clk, dsi->data_rate);
+ 	if (ret < 0) {
+ 		dev_err(dev, "Failed to set data rate: %d\n", ret);
+-		goto err_refcount;
++		return ret;
+ 	}
+ 
+ 	phy_power_on(dsi->phy);
+@@ -678,29 +700,13 @@ static int mtk_dsi_poweron(struct mtk_dsi *dsi)
+ 	clk_disable_unprepare(dsi->engine_clk);
+ err_phy_power_off:
+ 	phy_power_off(dsi->phy);
+-err_refcount:
+-	dsi->refcount--;
+ 	return ret;
+ }
+ 
+-static void mtk_dsi_poweroff(struct mtk_dsi *dsi)
++static int mtk_dsi_poweroff(struct device *dev)
+ {
+-	if (WARN_ON(dsi->refcount == 0))
+-		return;
+-
+-	if (--dsi->refcount != 0)
+-		return;
+-
+-	/*
+-	 * mtk_dsi_stop() and mtk_dsi_start() is asymmetric, since
+-	 * mtk_dsi_stop() should be called after mtk_drm_crtc_atomic_disable(),
+-	 * which needs irq for vblank, and mtk_dsi_stop() will disable irq.
+-	 * mtk_dsi_start() needs to be called in mtk_output_dsi_enable(),
+-	 * after dsi is fully set.
+-	 */
+-	mtk_dsi_stop(dsi);
++	struct mtk_dsi *dsi = dev_get_drvdata(dev);
+ 
+-	mtk_dsi_switch_to_cmd_mode(dsi, VM_DONE_INT_FLAG, 500);
+ 	mtk_dsi_reset_engine(dsi);
+ 	mtk_dsi_lane0_ulp_mode_enter(dsi);
+ 	mtk_dsi_clk_ulp_mode_enter(dsi);
+@@ -711,16 +717,20 @@ static void mtk_dsi_poweroff(struct mtk_dsi *dsi)
+ 	clk_disable_unprepare(dsi->digital_clk);
+ 
+ 	phy_power_off(dsi->phy);
++
++	return 0;
+ }
+ 
+ static void mtk_output_dsi_enable(struct mtk_dsi *dsi)
++
+ {
+ 	int ret;
+ 
+ 	if (dsi->enabled)
+ 		return;
+ 
+-	ret = mtk_dsi_poweron(dsi);
++	ret = pm_runtime_get_sync(dsi->host.dev);
++	//ret = mtk_dsi_poweron(dsi);
+ 	if (ret < 0) {
+ 		DRM_ERROR("failed to power on dsi\n");
+ 		return;
+@@ -739,7 +749,12 @@ static void mtk_output_dsi_disable(struct mtk_dsi *dsi)
+ 	if (!dsi->enabled)
+ 		return;
+ 
+-	mtk_dsi_poweroff(dsi);
++	/* Stop the DSI engine and get back to CMD mode. */
++	mtk_dsi_stop(dsi);
++	mtk_dsi_switch_to_cmd_mode(dsi, VM_DONE_INT_FLAG, 500);
++
++	pm_runtime_put(dsi->host.dev);
++	//mtk_dsi_poweroff(dsi);
+ 
+ 	dsi->enabled = false;
+ }
+@@ -788,14 +803,16 @@ static void mtk_dsi_ddp_start(struct mtk_ddp_comp *comp)
+ {
+ 	struct mtk_dsi *dsi = container_of(comp, struct mtk_dsi, ddp_comp);
+ 
+-	mtk_dsi_poweron(dsi);
++	pm_runtime_get(dsi->host.dev);
++	//mtk_dsi_poweron(dsi);
+ }
+ 
+ static void mtk_dsi_ddp_stop(struct mtk_ddp_comp *comp)
+ {
+ 	struct mtk_dsi *dsi = container_of(comp, struct mtk_dsi, ddp_comp);
+ 
+-	mtk_dsi_poweroff(dsi);
++	pm_runtime_put(dsi->host.dev);
++//	mtk_dsi_poweroff(dsi);
+ }
+ 
+ static const struct mtk_ddp_comp_funcs mtk_dsi_funcs = {
+@@ -908,24 +925,41 @@ static ssize_t mtk_dsi_host_transfer(struct mipi_dsi_host *host,
+ 	u8 read_data[16];
+ 	void *src_addr;
+ 	u8 irq_flag = CMD_DONE_INT_FLAG;
++	ssize_t ret;
++
++	ret = pm_runtime_get_sync(host->dev);
++	if (ret < 0)
++		return ret;
++
++	/* Switch back to CMD mode if needed. */
++	if (readl(dsi->regs + DSI_MODE_CTRL) & MODE) {
++		mtk_dsi_stop(dsi);
++		mtk_dsi_switch_to_cmd_mode(dsi, VM_DONE_INT_FLAG, 500);
++	}
+ 
+ 	if (readl(dsi->regs + DSI_MODE_CTRL) & MODE) {
+ 		DRM_ERROR("dsi engine is not command mode\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto out;
+ 	}
+ 
+ 	if (MTK_DSI_HOST_IS_READ(msg->type))
+ 		irq_flag |= LPRX_RD_RDY_INT_FLAG;
+ 
+-	if (mtk_dsi_host_send_cmd(dsi, msg, irq_flag) < 0)
+-		return -ETIME;
++	if (mtk_dsi_host_send_cmd(dsi, msg, irq_flag) < 0) {
++		ret = -ETIME;
++		goto out;
++	}
+ 
+-	if (!MTK_DSI_HOST_IS_READ(msg->type))
+-		return 0;
++	if (!MTK_DSI_HOST_IS_READ(msg->type)) {
++		ret = 0;
++		goto out;
++	}
+ 
+ 	if (!msg->rx_buf) {
+ 		DRM_ERROR("dsi receive buffer size may be NULL\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto out;
+ 	}
+ 
+ 	for (i = 0; i < 16; i++)
+@@ -950,7 +984,11 @@ static ssize_t mtk_dsi_host_transfer(struct mipi_dsi_host *host,
+ 	DRM_INFO("dsi get %d byte data from the panel address(0x%x)\n",
+ 		 recv_cnt, *((u8 *)(msg->tx_buf)));
+ 
+-	return recv_cnt;
++	ret = recv_cnt;
++
++out:
++	pm_runtime_put(host->dev);
++	return ret;
+ }
+ 
+ static const struct mipi_dsi_host_ops mtk_dsi_ops = {
+@@ -958,10 +996,22 @@ static const struct mipi_dsi_host_ops mtk_dsi_ops = {
+ 	.transfer = mtk_dsi_host_transfer,
+ };
+ 
++static void mtk_dsi_reset_all(struct mtk_dsi *dsi)
++{
++	regmap_update_bits(dsi->mmsys_sw_rst_b, dsi->sw_rst_b,
++			   MMSYS_SW_RST_DSI_B, 0);
++	usleep_range(1000, 1100);
++
++	regmap_update_bits(dsi->mmsys_sw_rst_b, dsi->sw_rst_b,
++			   MMSYS_SW_RST_DSI_B, MMSYS_SW_RST_DSI_B);
++}
++
+ static int mtk_dsi_encoder_init(struct drm_device *drm, struct mtk_dsi *dsi)
+ {
+ 	int ret;
+ 
++	mtk_dsi_reset_all(dsi);
++
+ 	ret = drm_simple_encoder_init(drm, &dsi->encoder,
+ 				      DRM_MODE_ENCODER_DSI);
+ 	if (ret) {
+@@ -1036,6 +1086,7 @@ static int mtk_dsi_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct drm_panel *panel;
+ 	struct resource *regs;
++	struct regmap *regmap;
+ 	int irq_num;
+ 	int comp_id;
+ 	int ret;
+@@ -1107,6 +1158,22 @@ static int mtk_dsi_probe(struct platform_device *pdev)
+ 		goto err_unregister_host;
+ 	}
+ 
++	regmap = syscon_regmap_lookup_by_phandle(dev->of_node,
++						 "mediatek,syscon-dsi");
++	ret = of_property_read_u32_index(dev->of_node, "mediatek,syscon-dsi", 1,
++					 &dsi->sw_rst_b);
++
++	if (IS_ERR(regmap))
++		ret = PTR_ERR(regmap);
++
++	if (ret) {
++		ret = PTR_ERR(regmap);
++		dev_err(dev, "Failed to get mmsys registers: %d\n", ret);
++		return ret;
++	}
++
++	dsi->mmsys_sw_rst_b = regmap;
++
+ 	comp_id = mtk_ddp_comp_get_id(dev->of_node, MTK_DSI);
+ 	if (comp_id < 0) {
+ 		dev_err(dev, "Failed to identify by alias: %d\n", comp_id);
+@@ -1146,14 +1213,18 @@ static int mtk_dsi_probe(struct platform_device *pdev)
+ 
+ 	drm_bridge_add(&dsi->bridge);
+ 
++	pm_runtime_enable(&pdev->dev);
++
+ 	ret = component_add(&pdev->dev, &mtk_dsi_component_ops);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to add component: %d\n", ret);
+-		goto err_unregister_host;
++		goto err_disable_runtime_pm;
+ 	}
+ 
+ 	return 0;
+ 
++err_disable_runtime_pm:
++	pm_runtime_disable(&pdev->dev);
+ err_unregister_host:
+ 	mipi_dsi_host_unregister(&dsi->host);
+ 	return ret;
+@@ -1166,6 +1237,7 @@ static int mtk_dsi_remove(struct platform_device *pdev)
+ 	mtk_output_dsi_disable(dsi);
+ 	drm_bridge_remove(&dsi->bridge);
+ 	component_del(&pdev->dev, &mtk_dsi_component_ops);
++	pm_runtime_disable(&pdev->dev);
+ 	mipi_dsi_host_unregister(&dsi->host);
+ 
+ 	return 0;
+@@ -1195,11 +1267,14 @@ static const struct of_device_id mtk_dsi_of_match[] = {
+ 	{ },
+ };
+ 
++UNIVERSAL_DEV_PM_OPS(mtk_dsi_pm_ops, mtk_dsi_poweroff, mtk_dsi_poweron, NULL);
++
+ struct platform_driver mtk_dsi_driver = {
+ 	.probe = mtk_dsi_probe,
+ 	.remove = mtk_dsi_remove,
+ 	.driver = {
+ 		.name = "mtk-dsi",
+ 		.of_match_table = mtk_dsi_of_match,
++		.pm = &mtk_dsi_pm_ops,
+ 	},
+ };

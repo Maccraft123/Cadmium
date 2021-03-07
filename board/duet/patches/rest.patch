@@ -1,0 +1,108 @@
+diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+index 92436553f..72dc3a95f 100644
+--- a/include/drm/gpu_scheduler.h
++++ b/include/drm/gpu_scheduler.h
+@@ -43,6 +43,7 @@ enum drm_sched_priority {
+ 	DRM_SCHED_PRIORITY_KERNEL,
+ 
+ 	DRM_SCHED_PRIORITY_COUNT,
++	DRM_SCHED_PRIORITY_INVALID = -1,
+ 	DRM_SCHED_PRIORITY_UNSET = -2
+ };
+ 
+diff --git a/drivers/pwm/pwm-mtk-disp.c b/drivers/pwm/pwm-mtk-disp.c
+index 83b8be020..8d5b957cd 100644
+--- a/drivers/pwm/pwm-mtk-disp.c
++++ b/drivers/pwm/pwm-mtk-disp.c
+@@ -122,6 +122,13 @@ static int mtk_disp_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+ 		mtk_disp_pwm_update_bits(mdp, mdp->data->commit,
+ 					 mdp->data->commit_mask,
+ 					 0x0);
++	} else {
++		mtk_disp_pwm_update_bits(mdp, mdp->data->bls_debug,
++					 mdp->data->bls_debug_mask,
++					 mdp->data->bls_debug_mask);
++		mtk_disp_pwm_update_bits(mdp, mdp->data->con0,
++					 mdp->data->con0_sel,
++					 mdp->data->con0_sel);
+ 	}
+ 
+ 	clk_disable(mdp->clk_mm);
+diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+index dfab49a67..1d7d8aa56 100644
+--- a/drivers/thermal/devfreq_cooling.c
++++ b/drivers/thermal/devfreq_cooling.c
+@@ -465,6 +465,7 @@ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
+ 	char dev_name[THERMAL_NAME_LENGTH];
+ 	int err;
+ 
++	pr_info("%s:%i\n", __func__, __LINE__);
+ 	dfc = kzalloc(sizeof(*dfc), GFP_KERNEL);
+ 	if (!dfc)
+ 		return ERR_PTR(-ENOMEM);
+@@ -480,21 +481,25 @@ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
+ 		devfreq_cooling_ops.power2state = devfreq_cooling_power2state;
+ 	}
+ 
++	pr_info("%s:%i\n", __func__, __LINE__);
+ 	err = devfreq_cooling_gen_tables(dfc);
+ 	if (err)
+ 		goto free_dfc;
+ 
++	pr_info("%s:%i\n", __func__, __LINE__);
+ 	err = dev_pm_qos_add_request(df->dev.parent, &dfc->req_max_freq,
+ 				     DEV_PM_QOS_MAX_FREQUENCY,
+ 				     PM_QOS_MAX_FREQUENCY_DEFAULT_VALUE);
+ 	if (err < 0)
+ 		goto free_tables;
+ 
++	pr_info("%s:%i\n", __func__, __LINE__);
+ 	err = ida_simple_get(&devfreq_ida, 0, 0, GFP_KERNEL);
+ 	if (err < 0)
+ 		goto remove_qos_req;
+ 	dfc->id = err;
+ 
++	pr_info("%s:%i\n", __func__, __LINE__);
+ 	snprintf(dev_name, sizeof(dev_name), "thermal-devfreq-%d", dfc->id);
+ 
+ 	cdev = thermal_of_cooling_device_register(np, dev_name, dfc,
+@@ -507,6 +512,7 @@ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
+ 		goto release_ida;
+ 	}
+ 
++	pr_info("%s:%i\n", __func__, __LINE__);
+ 	dfc->cdev = cdev;
+ 
+ 	return cdev;
+diff --git a/include/dt-bindings/power/mt8183-power.h b/include/dt-bindings/power/mt8183-power.h
+new file mode 100644
+index 000000000..d1ab387ba
+--- /dev/null
++++ b/include/dt-bindings/power/mt8183-power.h
+@@ -0,0 +1,26 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (c) 2020 MediaTek Inc.
++ * Author: Weiyi Lu <weiyi.lu@mediatek.com>
++ */
++
++#ifndef _DT_BINDINGS_POWER_MT8183_POWER_H
++#define _DT_BINDINGS_POWER_MT8183_POWER_H
++
++#define MT8183_POWER_DOMAIN_AUDIO	0
++#define MT8183_POWER_DOMAIN_CONN	1
++#define MT8183_POWER_DOMAIN_MFG_ASYNC	2
++#define MT8183_POWER_DOMAIN_MFG		3
++#define MT8183_POWER_DOMAIN_MFG_CORE0	4
++#define MT8183_POWER_DOMAIN_MFG_CORE1	5
++#define MT8183_POWER_DOMAIN_MFG_2D	6
++#define MT8183_POWER_DOMAIN_DISP	7
++#define MT8183_POWER_DOMAIN_CAM		8
++#define MT8183_POWER_DOMAIN_ISP		9
++#define MT8183_POWER_DOMAIN_VDEC	10
++#define MT8183_POWER_DOMAIN_VENC	11
++#define MT8183_POWER_DOMAIN_VPU_TOP	12
++#define MT8183_POWER_DOMAIN_VPU_CORE0	13
++#define MT8183_POWER_DOMAIN_VPU_CORE1	14
++
++#endif /* _DT_BINDINGS_POWER_MT8183_POWER_H */

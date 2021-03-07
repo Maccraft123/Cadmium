@@ -1,0 +1,1386 @@
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 485b7dbd4f9e..cb28a1c6616a 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -11,6 +11,7 @@
+ # Copyright (C) 1995-2001 by Russell King
+ 
+ LDFLAGS_vmlinux	:=--no-undefined -X
++CPPFLAGS_vmlinux.lds = -DTEXT_OFFSET=$(TEXT_OFFSET)
+ 
+ ifeq ($(CONFIG_RELOCATABLE), y)
+ # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
+diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+index 3ee682c26..708fc60fa 100644
+--- a/arch/arm64/boot/dts/mediatek/Makefile
++++ b/arch/arm64/boot/dts/mediatek/Makefile
+@@ -6,6 +6,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-evb.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-x20-dev.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-rfb1.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-bananapi-bpi-r64.dtb
++dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-oak-rev5.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana.dtb
+ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana-rev7.dtb
+diff --git a/arch/arm64/boot/dts/mediatek/mt6358.dtsi b/arch/arm64/boot/dts/mediatek/mt6358.dtsi
+index fa159b203..401018626 100644
+--- a/arch/arm64/boot/dts/mediatek/mt6358.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt6358.dtsi
+@@ -13,6 +13,7 @@ pmic: mt6358 {
+ 
+ 		mt6358codec: mt6358codec {
+ 			compatible = "mediatek,mt6358-sound";
++			mediatek,dmic-mode = <0>; /* two-wires */
+ 		};
+ 
+ 		mt6358regulator: mt6358regulator {
+@@ -213,6 +214,7 @@ mt6358_vsram_gpu_reg: ldo_vsram_gpu {
+ 				regulator-max-microvolt = <1293750>;
+ 				regulator-ramp-delay = <6250>;
+ 				regulator-enable-ramp-delay = <240>;
++				regulator-always-on;
+ 			};
+ 
+ 			mt6358_vxo22_reg: ldo_vxo22 {
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+index 44a034613..21452c51a 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+@@ -87,7 +87,6 @@ volume_up {
+ 	panel: panel {
+ 		compatible = "lg,lp120up1";
+ 		power-supply = <&panel_fixed_3v3>;
+-		ddc-i2c-bus = <&i2c0>;
+ 		backlight = <&backlight>;
+ 
+ 		port {
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173-oak-rev5.dts b/arch/arm64/boot/dts/mediatek/mt8173-oak-rev5.dts
+new file mode 100644
+index 000000000..4e4d9facb
+--- /dev/null
++++ b/arch/arm64/boot/dts/mediatek/mt8173-oak-rev5.dts
+@@ -0,0 +1,32 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright 2020 MediaTek Inc.
++ */
++
++/dts-v1/;
++#include "mt8173-elm.dtsi"
++
++/ {
++	model = "Mediatek Oak rev5 board";
++	compatible = "google,oak-rev5", "google,oak", "mediatek,mt8173";
++};
++
++&aud_i2s2 {
++	pins1 {
++		pinmux = <MT8173_PIN_128_I2S0_LRCK__FUNC_I2S1_WS>,
++			 <MT8173_PIN_129_I2S0_BCK__FUNC_I2S1_BCK>,
++			 <MT8173_PIN_130_I2S0_MCK__FUNC_I2S1_MCK>,
++			 <MT8173_PIN_131_I2S0_DATA0__FUNC_I2S1_DO_1>,
++			 <MT8173_PIN_132_I2S0_DATA1__FUNC_I2S2_DI_2>;
++		bias-pull-down;
++	};
++};
++
++&rt5650 {
++	 realtek,dmic1-data-pin = <2>;
++};
++
++&sound {
++	compatible = "mediatek,mt8173-rt5650";
++	mediatek,audio-codec = <&rt5650 &hdmi0>;
++};
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
+index fbc471ccf..5061f2d44 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
+@@ -6,6 +6,17 @@
+ #include "mt8183-kukui.dtsi"
+ 
+ / {
++	backlight_lcd0: backlight_lcd0 {
++		compatible = "pwm-backlight";
++		pwms = <&pwm0 0 500000>;
++		power-supply = <&bl_pp5000>;
++		enable-gpios = <&pio 176 0>;
++		brightness-levels = <0 1023>;
++		num-interpolated-steps = <1023>;
++		default-brightness-level = <576>;
++		status = "okay";
++	};
++
+ 	ppvarn_lcd: ppvarn-lcd {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "ppvarn_lcd";
+@@ -44,6 +55,52 @@ &bluetooth {
+ 	firmware-name = "nvm_00440302_i2s_eu.bin";
+ };
+ 
++&dpi0 {
++	pinctrl-names = "sleep", "default";
++	pinctrl-0 = <&dpi_pin_default>;
++	pinctrl-1 = <&dpi_pin_func>;
++	status = "okay";
++	port {
++		dpi_out: endpoint {
++			remote-endpoint = <&it6505_in>;
++		};
++	};
++};
++
++&dsi0 {
++	status = "okay";
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	panel: panel@0 {
++		status = "okay";
++		compatible = "boe,tv101wum-nl6";
++		reg = <0>;
++		enable-gpios = <&pio 45 0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&panel_pins_default>;
++		avdd-supply = <&ppvarn_lcd>;
++		avee-supply = <&ppvarp_lcd>;
++		pp1800-supply = <&pp1800_lcd>;
++		power-supply = <&lcd_pp3300>;
++		backlight = <&backlight_lcd0>;
++		rotation = <270>;
++		port {
++			panel_in: endpoint {
++				remote-endpoint = <&dsi_out>;
++			};
++		};
++	};
++
++	ports {
++		port {
++			dsi_out: endpoint {
++				remote-endpoint = <&panel_in>;
++			};
++		};
++	};
++};
++
+ &i2c0 {
+ 	status = "okay";
+ 
+@@ -341,3 +398,7 @@ rst_pin {
+ &qca_wifi {
+ 	qcom,ath10k-calibration-variant = "LE_Krane";
+ };
++
++&sound {
++	compatible = "mediatek,mt8183_mt6358_ts3a227_max98357";
++};
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+index 85f7c33ba..958ce2ff9 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+@@ -104,13 +104,27 @@ scp_mem_reserved: scp_mem_region {
+ 
+ 	max98357a: codec0 {
+ 		compatible = "maxim,max98357a";
+-		sdmode-gpios = <&pio 175 0>;
++		//sdmode-gpios = <&pio 175 0>;
+ 	};
+ 
+ 	btsco: codec1 {
+ 		compatible = "linux,bt-sco";
+ 	};
+ 
++	sound: mt8183-sound {
++		compatible = "mediatek,mt8183_mt6358_ts3a227_max98357";
++		mediatek,platform = <&afe>;
++		mediatek,hdmi-codec = <&it6505dptx>;
++		pinctrl-names = "default",
++				"aud_tdm_out_on",
++				"aud_tdm_out_off";
++		pinctrl-0 = <&aud_pins_default>;
++		pinctrl-1 = <&aud_pins_tdm_out_on>;
++		pinctrl-2 = <&aud_pins_tdm_out_off>;
++		status = "okay";
++	};
++
++
+ 	wifi_pwrseq: wifi-pwrseq {
+ 		compatible = "mmc-pwrseq-simple";
+ 		pinctrl-names = "default";
+@@ -206,6 +220,10 @@ &auxadc {
+ 	status = "okay";
+ };
+ 
++&cci {
++	proc-supply = <&mt6358_vproc12_reg>;
++};
++
+ &cpu0 {
+ 	proc-supply = <&mt6358_vproc12_reg>;
+ };
+@@ -238,6 +256,24 @@ &cpu7 {
+ 	proc-supply = <&mt6358_vproc11_reg>;
+ };
+ 
++&gpu {
++	supply-names = "mali", "mali-sram";
++	mali-supply = <&mt6358_vgpu_reg>;
++	mali-sram-supply = <&mt6358_vsram_gpu_reg>;
++	operating-points-v2 = <&gpu_opp_table>;
++	power_model@0 {
++		compatible = "arm,mali-simple-power-model";
++		static-coefficient = <2427750>;
++		dynamic-coefficient = <4687>;
++		ts = <20000 2000 (-20) 2>;
++		thermal-zone = "cpu_thermal";
++	};
++	power_model@1 {
++		compatible = "arm,mali-g72-power-model";
++		scale = <15000>;
++	};
++};
++
+ &i2c0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&i2c0_pins>;
+@@ -261,6 +297,27 @@ &i2c3 {
+ 	clock-frequency = <100000>;
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
++
++	it6505dptx: it6505dptx@5c {
++		compatible = "ite,it6505";
++		status = "okay";
++		interrupt-parent = <&pio>;
++		interrupts = <152 IRQ_TYPE_EDGE_FALLING 152 0>;
++		reg = <0x5c>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&it6505_pins>;
++		ovdd-supply = <&mt6358_vsim2_reg>;
++		pwr18-supply = <&it6505_pp18_reg>;
++		reset-gpios = <&pio 179 1>;
++		hpd-gpios = <&pio 9 0>;
++		extcon = <&usbc_extcon>;
++		no-laneswap;
++		port {
++			it6505_in: endpoint {
++				remote-endpoint = <&dpi_out>;
++			};
++		};
++	};
+ };
+ 
+ &i2c5 {
+@@ -350,6 +407,54 @@ &mt6358_vsim2_reg {
+ };
+ 
+ &pio {
++	aud_pins_default: audiopins {
++		pins_bus {
++			pinmux = <PINMUX_GPIO97__FUNC_I2S2_MCK>,
++				<PINMUX_GPIO98__FUNC_I2S2_BCK>,
++				<PINMUX_GPIO101__FUNC_I2S2_LRCK>,
++				<PINMUX_GPIO102__FUNC_I2S2_DI>,
++				<PINMUX_GPIO3__FUNC_I2S3_DO>, /*i2s to da7219/max98357*/
++				<PINMUX_GPIO89__FUNC_I2S5_BCK>,
++				<PINMUX_GPIO90__FUNC_I2S5_LRCK>,
++				<PINMUX_GPIO91__FUNC_I2S5_DO>,
++				<PINMUX_GPIO174__FUNC_I2S0_DI>, /*i2s to wifi/bt*/
++				<PINMUX_GPIO136__FUNC_AUD_CLK_MOSI>,
++				<PINMUX_GPIO137__FUNC_AUD_SYNC_MOSI>,
++				<PINMUX_GPIO138__FUNC_AUD_DAT_MOSI0>,
++				<PINMUX_GPIO139__FUNC_AUD_DAT_MOSI1>,
++				<PINMUX_GPIO140__FUNC_AUD_CLK_MISO>,
++				<PINMUX_GPIO141__FUNC_AUD_SYNC_MISO>,
++				<PINMUX_GPIO142__FUNC_AUD_DAT_MISO0>,
++				<PINMUX_GPIO143__FUNC_AUD_DAT_MISO1>; /*mtkaif3.0*/
++		};
++	};
++
++	aud_pins_tdm_out_on: audiotdmouton {
++		pins_bus {
++			pinmux = <PINMUX_GPIO169__FUNC_TDM_BCK_2ND>,
++				<PINMUX_GPIO170__FUNC_TDM_LRCK_2ND>,
++				<PINMUX_GPIO171__FUNC_TDM_DATA0_2ND>,
++				<PINMUX_GPIO172__FUNC_TDM_DATA1_2ND>,
++				<PINMUX_GPIO173__FUNC_TDM_DATA2_2ND>,
++				<PINMUX_GPIO10__FUNC_TDM_DATA3>; /*8ch-i2s to it6505*/
++			drive-strength = <MTK_DRIVE_6mA>;
++		};
++	};
++
++	aud_pins_tdm_out_off: audiotdmoutoff {
++		pins_bus {
++			pinmux = <PINMUX_GPIO169__FUNC_GPIO169>,
++				<PINMUX_GPIO170__FUNC_GPIO170>,
++				<PINMUX_GPIO171__FUNC_GPIO171>,
++				<PINMUX_GPIO172__FUNC_GPIO172>,
++				<PINMUX_GPIO173__FUNC_GPIO173>,
++				<PINMUX_GPIO10__FUNC_GPIO10>;
++			input-enable;
++			bias-pull-down;
++			drive-strength = <MTK_DRIVE_2mA>;
++		};
++	};
++
+ 	bt_pins: bt-pins {
+ 		pins_bt_en {
+ 			pinmux = <PINMUX_GPIO120__FUNC_GPIO120>;
+@@ -357,6 +462,51 @@ pins_bt_en {
+ 		};
+ 	};
+ 
++	dpi_pin_default: dpi_pin_default {
++		pins_cmd_dat {
++			pinmux = <PINMUX_GPIO13__FUNC_GPIO13>,
++				<PINMUX_GPIO14__FUNC_GPIO14>,
++				<PINMUX_GPIO15__FUNC_GPIO15>,
++				<PINMUX_GPIO16__FUNC_GPIO16>,
++				<PINMUX_GPIO17__FUNC_GPIO17>,
++				<PINMUX_GPIO18__FUNC_GPIO18>,
++				<PINMUX_GPIO19__FUNC_GPIO19>,
++				<PINMUX_GPIO20__FUNC_GPIO20>,
++				<PINMUX_GPIO21__FUNC_GPIO21>,
++				<PINMUX_GPIO22__FUNC_GPIO22>,
++				<PINMUX_GPIO23__FUNC_GPIO23>,
++				<PINMUX_GPIO24__FUNC_GPIO24>,
++				<PINMUX_GPIO25__FUNC_GPIO25>,
++				<PINMUX_GPIO26__FUNC_GPIO26>,
++				<PINMUX_GPIO27__FUNC_GPIO27>,
++				<PINMUX_GPIO28__FUNC_GPIO28>;
++				drive-strength = <MTK_DRIVE_6mA>;
++				output-low;
++		};
++	};
++
++	dpi_pin_func: dpi_pin_func {
++		pins_cmd_dat {
++			pinmux = <PINMUX_GPIO13__FUNC_DBPI_D0>,
++				<PINMUX_GPIO14__FUNC_DBPI_D1>,
++				<PINMUX_GPIO15__FUNC_DBPI_D2>,
++				<PINMUX_GPIO16__FUNC_DBPI_D3>,
++				<PINMUX_GPIO17__FUNC_DBPI_D4>,
++				<PINMUX_GPIO18__FUNC_DBPI_D5>,
++				<PINMUX_GPIO19__FUNC_DBPI_D6>,
++				<PINMUX_GPIO20__FUNC_DBPI_D7>,
++				<PINMUX_GPIO21__FUNC_DBPI_D8>,
++				<PINMUX_GPIO22__FUNC_DBPI_D9>,
++				<PINMUX_GPIO23__FUNC_DBPI_D10>,
++				<PINMUX_GPIO24__FUNC_DBPI_D11>,
++				<PINMUX_GPIO25__FUNC_DBPI_HSYNC>,
++				<PINMUX_GPIO26__FUNC_DBPI_VSYNC>,
++				<PINMUX_GPIO27__FUNC_DBPI_DE>,
++				<PINMUX_GPIO28__FUNC_DBPI_CK>;
++				drive-strength = <MTK_DRIVE_6mA>;
++		};
++	};
++
+ 	ec_ap_int_odl: ec_ap_int_odl {
+ 		pins1 {
+ 			pinmux = <PINMUX_GPIO151__FUNC_GPIO151>;
+@@ -434,6 +584,32 @@ pins_bus {
+ 		};
+ 	};
+ 
++	it6505_pins: it6505_pins {
++		pins_hpd {
++			pinmux = <PINMUX_GPIO9__FUNC_GPIO9>;
++			input-enable;
++			bias-pull-up;
++		};
++
++		pins_int {
++			pinmux = <PINMUX_GPIO152__FUNC_GPIO152>;
++			input-enable;
++			bias-pull-up;
++		};
++
++		pins_power_enable {
++			pinmux = <PINMUX_GPIO178__FUNC_GPIO178>;
++			output-low;
++			bias-pull-up;
++		};
++
++		pins_reset {
++			pinmux = <PINMUX_GPIO179__FUNC_GPIO179>;
++			output-low;
++			bias-pull-up;
++		};
++	};
++
+ 	mmc0_pins_default: mmc0-pins-default {
+ 		pins_cmd_dat {
+ 			pinmux = <PINMUX_GPIO123__FUNC_MSDC0_DAT0>,
+@@ -536,6 +712,24 @@ pins_clk {
+ 		};
+ 	};
+ 
++	panel_pins_default: panel_pins_default {
++		panel_reset {
++			pinmux = <PINMUX_GPIO45__FUNC_GPIO45>;
++			output-low;
++			bias-pull-up;
++		};
++	};
++
++	pwm0_pin_default: pwm0_pin_default {
++		pins1 {
++			pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
++			output-high;
++			bias-pull-up;
++		};
++		pins2 {
++			pinmux = <PINMUX_GPIO43__FUNC_DISP_PWM>;
++		};
++	};
+ 	scp_pins: scp {
+ 		pins_scp_uart {
+ 			pinmux = <PINMUX_GPIO110__FUNC_TP_URXD1_AO>,
+@@ -745,6 +939,12 @@ usbc_extcon: extcon0 {
+ 	};
+ };
+ 
++&pwm0 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pwm0_pin_default>;
++};
++
+ &spi3 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&spi3_pins>;
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index 9cfd961c4..1a92df792 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -6,8 +6,11 @@
+  */
+ 
+ #include <dt-bindings/clock/mt8183-clk.h>
++#include <dt-bindings/gce/mt8183-gce.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/memory/mt8183-larb-port.h>
++#include <dt-bindings/power/mt8183-power.h>
+ #include <dt-bindings/reset-controller/mt8183-resets.h>
+ #include <dt-bindings/phy/phy.h>
+ #include "mt8183-pinfunc.h"
+@@ -31,8 +34,260 @@ aliases {
+ 		i2c9 = &i2c9;
+ 		i2c10 = &i2c10;
+ 		i2c11 = &i2c11;
++		ovl0 = &ovl0;
++		ovl-2l0 = &ovl_2l0;
++		ovl-2l1 = &ovl_2l1;
++		rdma0 = &rdma0;
++		rdma1 = &rdma1;
+ 	};
+ 
++	cluster0_opp: opp_table0 {
++		compatible = "operating-points-v2";
++		opp-shared;
++		opp0_00: opp-793000000 {
++			opp-hz = /bits/ 64 <793000000>;
++			opp-microvolt = <650000>;
++			required-opps = <&opp2_00>;
++		};
++		opp0_01: opp-910000000 {
++			opp-hz = /bits/ 64 <910000000>;
++			opp-microvolt = <687500>;
++			required-opps = <&opp2_01>;
++		};
++		opp0_02: opp-1014000000 {
++			opp-hz = /bits/ 64 <1014000000>;
++			opp-microvolt = <718750>;
++			required-opps = <&opp2_02>;
++		};
++		opp0_03: opp-1131000000 {
++			opp-hz = /bits/ 64 <1131000000>;
++			opp-microvolt = <756250>;
++			required-opps = <&opp2_03>;
++		};
++		opp0_04: opp-1248000000 {
++			opp-hz = /bits/ 64 <1248000000>;
++			opp-microvolt = <800000>;
++			required-opps = <&opp2_04>;
++		};
++		opp0_05: opp-1326000000 {
++			opp-hz = /bits/ 64 <1326000000>;
++			opp-microvolt = <818750>;
++			required-opps = <&opp2_05>;
++		};
++		opp0_06: opp-1417000000 {
++			opp-hz = /bits/ 64 <1417000000>;
++			opp-microvolt = <850000>;
++			required-opps = <&opp2_06>;
++		};
++		opp0_07: opp-1508000000 {
++			opp-hz = /bits/ 64 <1508000000>;
++			opp-microvolt = <868750>;
++			required-opps = <&opp2_07>;
++		};
++		opp0_08: opp-1586000000 {
++			opp-hz = /bits/ 64 <1586000000>;
++			opp-microvolt = <893750>;
++			required-opps = <&opp2_08>;
++		};
++		opp0_09: opp-1625000000 {
++			opp-hz = /bits/ 64 <1625000000>;
++			opp-microvolt = <906250>;
++			required-opps = <&opp2_09>;
++		};
++		opp0_10: opp-1677000000 {
++			opp-hz = /bits/ 64 <1677000000>;
++			opp-microvolt = <931250>;
++			required-opps = <&opp2_10>;
++		};
++		opp0_11: opp-1716000000 {
++			opp-hz = /bits/ 64 <1716000000>;
++			opp-microvolt = <943750>;
++			required-opps = <&opp2_11>;
++		};
++		opp0_12: opp-1781000000 {
++			opp-hz = /bits/ 64 <1781000000>;
++			opp-microvolt = <975000>;
++			required-opps = <&opp2_12>;
++		};
++		opp0_13: opp-1846000000 {
++			opp-hz = /bits/ 64 <1846000000>;
++			opp-microvolt = <1000000>;
++			required-opps = <&opp2_13>;
++		};
++		opp0_14: opp-1924000000 {
++			opp-hz = /bits/ 64 <1924000000>;
++			opp-microvolt = <1025000>;
++			required-opps = <&opp2_14>;
++		};
++		opp0_15: opp-1989000000 {
++			opp-hz = /bits/ 64 <1989000000>;
++			opp-microvolt = <1050000>;
++			required-opps = <&opp2_15>;
++		};
++	};
++
++	cluster1_opp: opp_table1 {
++		compatible = "operating-points-v2";
++		opp-shared;
++		opp1_00: opp-793000000 {
++			opp-hz = /bits/ 64 <793000000>;
++			opp-microvolt = <700000>;
++			required-opps = <&opp2_00>;
++		};
++		opp1_01: opp-910000000 {
++			opp-hz = /bits/ 64 <910000000>;
++			opp-microvolt = <725000>;
++			required-opps = <&opp2_01>;
++		};
++		opp1_02: opp-1014000000 {
++			opp-hz = /bits/ 64 <1014000000>;
++			opp-microvolt = <750000>;
++			required-opps = <&opp2_02>;
++		};
++		opp1_03: opp-1131000000 {
++			opp-hz = /bits/ 64 <1131000000>;
++			opp-microvolt = <775000>;
++			required-opps = <&opp2_03>;
++		};
++		opp1_04: opp-1248000000 {
++			opp-hz = /bits/ 64 <1248000000>;
++			opp-microvolt = <800000>;
++			required-opps = <&opp2_04>;
++		};
++		opp1_05: opp-1326000000 {
++			opp-hz = /bits/ 64 <1326000000>;
++			opp-microvolt = <825000>;
++			required-opps = <&opp2_05>;
++		};
++		opp1_06: opp-1417000000 {
++			opp-hz = /bits/ 64 <1417000000>;
++			opp-microvolt = <850000>;
++			required-opps = <&opp2_06>;
++		};
++		opp1_07: opp-1508000000 {
++			opp-hz = /bits/ 64 <1508000000>;
++			opp-microvolt = <875000>;
++			required-opps = <&opp2_07>;
++		};
++		opp1_08: opp-1586000000 {
++			opp-hz = /bits/ 64 <1586000000>;
++			opp-microvolt = <900000>;
++			required-opps = <&opp2_08>;
++		};
++		opp1_09: opp-1625000000 {
++			opp-hz = /bits/ 64 <1625000000>;
++			opp-microvolt = <912500>;
++			required-opps = <&opp2_09>;
++		};
++		opp1_10: opp-1677000000 {
++			opp-hz = /bits/ 64 <1677000000>;
++			opp-microvolt = <931250>;
++			required-opps = <&opp2_10>;
++		};
++		opp1_11: opp-1716000000 {
++			opp-hz = /bits/ 64 <1716000000>;
++			opp-microvolt = <950000>;
++			required-opps = <&opp2_11>;
++		};
++		opp1_12: opp-1781000000 {
++			opp-hz = /bits/ 64 <1781000000>;
++			opp-microvolt = <975000>;
++			required-opps = <&opp2_12>;
++		};
++		opp1_13: opp-1846000000 {
++			opp-hz = /bits/ 64 <1846000000>;
++			opp-microvolt = <1000000>;
++			required-opps = <&opp2_13>;
++		};
++		opp1_14: opp-1924000000 {
++			opp-hz = /bits/ 64 <1924000000>;
++			opp-microvolt = <1025000>;
++			required-opps = <&opp2_14>;
++		};
++		opp1_15: opp-1989000000 {
++			opp-hz = /bits/ 64 <1989000000>;
++			opp-microvolt = <1050000>;
++			required-opps = <&opp2_15>;
++		};
++	};
++
++	cci_opp: opp_table2 {
++		compatible = "operating-points-v2";
++		opp-shared;
++		opp2_00: opp-273000000 {
++			opp-hz = /bits/ 64 <273000000>;
++			opp-microvolt = <650000>;
++		};
++		opp2_01: opp-338000000 {
++			opp-hz = /bits/ 64 <338000000>;
++			opp-microvolt = <687500>;
++		};
++		opp2_02: opp-403000000 {
++			opp-hz = /bits/ 64 <403000000>;
++			opp-microvolt = <718750>;
++		};
++		opp2_03: opp-463000000 {
++			opp-hz = /bits/ 64 <463000000>;
++			opp-microvolt = <756250>;
++		};
++		opp2_04: opp-546000000 {
++			opp-hz = /bits/ 64 <546000000>;
++			opp-microvolt = <800000>;
++		};
++		opp2_05: opp-624000000 {
++			opp-hz = /bits/ 64 <624000000>;
++			opp-microvolt = <818750>;
++		};
++		opp2_06: opp-689000000 {
++			opp-hz = /bits/ 64 <689000000>;
++			opp-microvolt = <850000>;
++		};
++		opp2_07: opp-767000000 {
++			opp-hz = /bits/ 64 <767000000>;
++			opp-microvolt = <868750>;
++		};
++		opp2_08: opp-845000000 {
++			opp-hz = /bits/ 64 <845000000>;
++			opp-microvolt = <893750>;
++		};
++		opp2_09: opp-871000000 {
++			opp-hz = /bits/ 64 <871000000>;
++			opp-microvolt = <906250>;
++		};
++		opp2_10: opp-923000000 {
++			opp-hz = /bits/ 64 <923000000>;
++			opp-microvolt = <931250>;
++		};
++		opp2_11: opp-962000000 {
++			opp-hz = /bits/ 64 <962000000>;
++			opp-microvolt = <943750>;
++		};
++		opp2_12: opp-1027000000 {
++			opp-hz = /bits/ 64 <1027000000>;
++			opp-microvolt = <975000>;
++		};
++		opp2_13: opp-1092000000 {
++			opp-hz = /bits/ 64 <1092000000>;
++			opp-microvolt = <1000000>;
++		};
++		opp2_14: opp-1144000000 {
++			opp-hz = /bits/ 64 <1144000000>;
++			opp-microvolt = <1025000>;
++		};
++		opp2_15: opp-1196000000 {
++			opp-hz = /bits/ 64 <1196000000>;
++			opp-microvolt = <1050000>;
++		};
++	};
++
++	cci: cci {
++		compatible = "mediatek,mt8183-cci";
++		clocks = <&apmixedsys CLK_APMIXED_CCIPLL>;
++		clock-names = "cci_clock";
++		operating-points-v2 = <&cci_opp>;
++	};
++
++
+ 	cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -78,6 +333,10 @@ cpu0: cpu@0 {
+ 			cpu-idle-states = <&CPU_SLEEP &CLUSTER_SLEEP0>;
+ 			dynamic-power-coefficient = <84>;
+ 			#cooling-cells = <2>;
++			clocks = <&mcucfg CLK_MCU_MP0_SEL>,
++				 <&topckgen CLK_TOP_ARMPLL_DIV_PLL1>;
++			clock-names = "cpu", "intermediate";
++			operating-points-v2 = <&cluster0_opp>;
+ 		};
+ 
+ 		cpu1: cpu@1 {
+@@ -89,6 +348,10 @@ cpu1: cpu@1 {
+ 			cpu-idle-states = <&CPU_SLEEP &CLUSTER_SLEEP0>;
+ 			dynamic-power-coefficient = <84>;
+ 			#cooling-cells = <2>;
++                        clocks = <&mcucfg CLK_MCU_MP0_SEL>,
++                                 <&topckgen CLK_TOP_ARMPLL_DIV_PLL1>;
++                        clock-names = "cpu", "intermediate";
++                        operating-points-v2 = <&cluster0_opp>;
+ 		};
+ 
+ 		cpu2: cpu@2 {
+@@ -100,6 +363,10 @@ cpu2: cpu@2 {
+ 			cpu-idle-states = <&CPU_SLEEP &CLUSTER_SLEEP0>;
+ 			dynamic-power-coefficient = <84>;
+ 			#cooling-cells = <2>;
++                        clocks = <&mcucfg CLK_MCU_MP0_SEL>,
++                                 <&topckgen CLK_TOP_ARMPLL_DIV_PLL1>;
++                        clock-names = "cpu", "intermediate";
++                        operating-points-v2 = <&cluster0_opp>;
+ 		};
+ 
+ 		cpu3: cpu@3 {
+@@ -111,6 +378,10 @@ cpu3: cpu@3 {
+ 			cpu-idle-states = <&CPU_SLEEP &CLUSTER_SLEEP0>;
+ 			dynamic-power-coefficient = <84>;
+ 			#cooling-cells = <2>;
++                        clocks = <&mcucfg CLK_MCU_MP0_SEL>,
++                                 <&topckgen CLK_TOP_ARMPLL_DIV_PLL1>;
++                        clock-names = "cpu", "intermediate";
++                        operating-points-v2 = <&cluster0_opp>;
+ 		};
+ 
+ 		cpu4: cpu@100 {
+@@ -122,6 +393,10 @@ cpu4: cpu@100 {
+ 			cpu-idle-states = <&CPU_SLEEP &CLUSTER_SLEEP1>;
+ 			dynamic-power-coefficient = <211>;
+ 			#cooling-cells = <2>;
++			clocks = <&mcucfg CLK_MCU_MP2_SEL>,
++				 <&topckgen CLK_TOP_ARMPLL_DIV_PLL1>;
++			clock-names = "cpu", "intermediate";
++			operating-points-v2 = <&cluster1_opp>;
+ 		};
+ 
+ 		cpu5: cpu@101 {
+@@ -133,6 +408,10 @@ cpu5: cpu@101 {
+ 			cpu-idle-states = <&CPU_SLEEP &CLUSTER_SLEEP1>;
+ 			dynamic-power-coefficient = <211>;
+ 			#cooling-cells = <2>;
++			clocks = <&mcucfg CLK_MCU_MP2_SEL>,
++				 <&topckgen CLK_TOP_ARMPLL_DIV_PLL1>;
++			clock-names = "cpu", "intermediate";
++			operating-points-v2 = <&cluster1_opp>;
+ 		};
+ 
+ 		cpu6: cpu@102 {
+@@ -144,6 +423,10 @@ cpu6: cpu@102 {
+ 			cpu-idle-states = <&CPU_SLEEP &CLUSTER_SLEEP1>;
+ 			dynamic-power-coefficient = <211>;
+ 			#cooling-cells = <2>;
++			clocks = <&mcucfg CLK_MCU_MP2_SEL>,
++				 <&topckgen CLK_TOP_ARMPLL_DIV_PLL1>;
++			clock-names = "cpu", "intermediate";
++			operating-points-v2 = <&cluster1_opp>;
+ 		};
+ 
+ 		cpu7: cpu@103 {
+@@ -155,6 +438,10 @@ cpu7: cpu@103 {
+ 			cpu-idle-states = <&CPU_SLEEP &CLUSTER_SLEEP1>;
+ 			dynamic-power-coefficient = <211>;
+ 			#cooling-cells = <2>;
++			clocks = <&mcucfg CLK_MCU_MP2_SEL>,
++				 <&topckgen CLK_TOP_ARMPLL_DIV_PLL1>;
++			clock-names = "cpu", "intermediate";
++			operating-points-v2 = <&cluster1_opp>;
+ 		};
+ 
+ 		idle-states {
+@@ -316,6 +603,62 @@ pio: pinctrl@10005000 {
+ 			#interrupt-cells = <2>;
+ 		};
+ 
++		scpsys: power-controller@10006000 {
++			compatible = "mediatek,mt8183-scpsys", "syscon";
++			#power-domain-cells = <1>;
++			reg = <0 0x10006000 0 0x1000>;
++			clocks = <&topckgen CLK_TOP_MUX_AUD_INTBUS>,
++				 <&infracfg CLK_INFRA_AUDIO>,
++				 <&infracfg CLK_INFRA_AUDIO_26M_BCLK>,
++				 <&topckgen CLK_TOP_MUX_MFG>,
++				 <&topckgen CLK_TOP_MUX_MM>,
++				 <&topckgen CLK_TOP_MUX_CAM>,
++				 <&topckgen CLK_TOP_MUX_IMG>,
++				 <&topckgen CLK_TOP_MUX_IPU_IF>,
++				 <&topckgen CLK_TOP_MUX_DSP>,
++				 <&topckgen CLK_TOP_MUX_DSP1>,
++				 <&topckgen CLK_TOP_MUX_DSP2>,
++				 <&mmsys CLK_MM_SMI_COMMON>,
++				 <&mmsys CLK_MM_SMI_LARB0>,
++				 <&mmsys CLK_MM_SMI_LARB1>,
++				 <&mmsys CLK_MM_GALS_COMM0>,
++				 <&mmsys CLK_MM_GALS_COMM1>,
++				 <&mmsys CLK_MM_GALS_CCU2MM>,
++				 <&mmsys CLK_MM_GALS_IPU12MM>,
++				 <&mmsys CLK_MM_GALS_IMG2MM>,
++				 <&mmsys CLK_MM_GALS_CAM2MM>,
++				 <&mmsys CLK_MM_GALS_IPU2MM>,
++				 <&imgsys CLK_IMG_LARB5>,
++				 <&imgsys CLK_IMG_LARB2>,
++				 <&camsys CLK_CAM_LARB6>,
++				 <&camsys CLK_CAM_LARB3>,
++				 <&camsys CLK_CAM_SENINF>,
++				 <&camsys CLK_CAM_CAMSV0>,
++				 <&camsys CLK_CAM_CAMSV1>,
++				 <&camsys CLK_CAM_CAMSV2>,
++				 <&camsys CLK_CAM_CCU>,
++				 <&ipu_conn CLK_IPU_CONN_IPU>,
++				 <&ipu_conn CLK_IPU_CONN_AHB>,
++				 <&ipu_conn CLK_IPU_CONN_AXI>,
++				 <&ipu_conn CLK_IPU_CONN_ISP>,
++				 <&ipu_conn CLK_IPU_CONN_CAM_ADL>,
++				 <&ipu_conn CLK_IPU_CONN_IMG_ADL>;
++			clock-names = "audio", "audio1", "audio2",
++				      "mfg", "mm", "cam",
++				      "isp", "vpu", "vpu1",
++				      "vpu2", "vpu3", "mm-0",
++				      "mm-1", "mm-2", "mm-3",
++				      "mm-4", "mm-5", "mm-6",
++				      "mm-7", "mm-8", "mm-9",
++				      "isp-0", "isp-1", "cam-0",
++				      "cam-1", "cam-2", "cam-3",
++				      "cam-4", "cam-5", "cam-6",
++				      "vpu-0", "vpu-1", "vpu-2",
++				      "vpu-3", "vpu-4", "vpu-5";
++			infracfg = <&infracfg>;
++			mediatek,smi = <&smi_common>;
++		};
++
+ 		watchdog: watchdog@10007000 {
+ 			compatible = "mediatek,mt8183-wdt";
+ 			reg = <0 0x10007000 0 0x100>;
+@@ -359,6 +702,15 @@ systimer: timer@10017000 {
+ 			clock-names = "clk13m";
+ 		};
+ 
++		iommu: iommu@10205000 {
++			compatible = "mediatek,mt8183-m4u";
++			reg = <0 0x10205000 0 0x1000>;
++			interrupts = <GIC_SPI 166 IRQ_TYPE_LEVEL_LOW>;
++			mediatek,larbs = <&larb0 &larb1 &larb2 &larb3
++					  &larb4 &larb5 &larb6>;
++			#iommu-cells = <1>;
++		};
++
+ 		gce: mailbox@10238000 {
+ 			compatible = "mediatek,mt8183-gce";
+ 			reg = <0 0x10238000 0 0x4000>;
+@@ -479,6 +831,17 @@ spi0: spi@1100a000 {
+ 			status = "disabled";
+ 		};
+ 
++		pwm0: pwm@1100e000 {
++			compatible = "mediatek,mt8183-disp-pwm";
++			reg = <0 0x1100e000 0 0x1000>;
++			interrupts = <GIC_SPI 128 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			#pwm-cells = <2>;
++			clocks = <&topckgen CLK_TOP_MUX_DISP_PWM>,
++					<&infracfg CLK_INFRA_DISP_PWM>;
++			clock-names = "main", "mm";
++		};
++
+ 		i2c3: i2c@1100f000 {
+ 			compatible = "mediatek,mt8183-i2c";
+ 			reg = <0 0x1100f000 0 0x1000>,
+@@ -694,6 +1057,98 @@ audiosys: syscon@11220000 {
+ 			compatible = "mediatek,mt8183-audiosys", "syscon";
+ 			reg = <0 0x11220000 0 0x1000>;
+ 			#clock-cells = <1>;
++			afe: mt8183-afe-pcm {
++				compatible = "mediatek,mt8183-audio";
++				interrupts = <GIC_SPI 161 IRQ_TYPE_LEVEL_LOW>;
++				resets = <&watchdog MT8183_TOPRGU_AUDIO_SW_RST>;
++				reset-names = "audiosys";
++				power-domains =
++					<&scpsys MT8183_POWER_DOMAIN_AUDIO>;
++				clocks = <&audiosys CLK_AUDIO_AFE>,
++					 <&audiosys CLK_AUDIO_DAC>,
++					 <&audiosys CLK_AUDIO_DAC_PREDIS>,
++					 <&audiosys CLK_AUDIO_ADC>,
++					 <&audiosys CLK_AUDIO_PDN_ADDA6_ADC>,
++					 <&audiosys CLK_AUDIO_22M>,
++					 <&audiosys CLK_AUDIO_24M>,
++					 <&audiosys CLK_AUDIO_APLL_TUNER>,
++					 <&audiosys CLK_AUDIO_APLL2_TUNER>,
++					 <&audiosys CLK_AUDIO_I2S1>,
++					 <&audiosys CLK_AUDIO_I2S2>,
++					 <&audiosys CLK_AUDIO_I2S3>,
++					 <&audiosys CLK_AUDIO_I2S4>,
++					 <&audiosys CLK_AUDIO_TDM>,
++					 <&audiosys CLK_AUDIO_TML>,
++					 <&infracfg CLK_INFRA_AUDIO>,
++					 <&infracfg CLK_INFRA_AUDIO_26M_BCLK>,
++					 <&topckgen CLK_TOP_MUX_AUDIO>,
++					 <&topckgen CLK_TOP_MUX_AUD_INTBUS>,
++					 <&topckgen CLK_TOP_SYSPLL_D2_D4>,
++					 <&topckgen CLK_TOP_MUX_AUD_1>,
++					 <&topckgen CLK_TOP_APLL1_CK>,
++					 <&topckgen CLK_TOP_MUX_AUD_2>,
++					 <&topckgen CLK_TOP_APLL2_CK>,
++					 <&topckgen CLK_TOP_MUX_AUD_ENG1>,
++					 <&topckgen CLK_TOP_APLL1_D8>,
++					 <&topckgen CLK_TOP_MUX_AUD_ENG2>,
++					 <&topckgen CLK_TOP_APLL2_D8>,
++					 <&topckgen CLK_TOP_MUX_APLL_I2S0>,
++					 <&topckgen CLK_TOP_MUX_APLL_I2S1>,
++					 <&topckgen CLK_TOP_MUX_APLL_I2S2>,
++					 <&topckgen CLK_TOP_MUX_APLL_I2S3>,
++					 <&topckgen CLK_TOP_MUX_APLL_I2S4>,
++					 <&topckgen CLK_TOP_MUX_APLL_I2S5>,
++					 <&topckgen CLK_TOP_APLL12_DIV0>,
++					 <&topckgen CLK_TOP_APLL12_DIV1>,
++					 <&topckgen CLK_TOP_APLL12_DIV2>,
++					 <&topckgen CLK_TOP_APLL12_DIV3>,
++					 <&topckgen CLK_TOP_APLL12_DIV4>,
++					 <&topckgen CLK_TOP_APLL12_DIVB>,
++					 /*<&topckgen CLK_TOP_APLL12_DIV5>,*/
++					 <&clk26m>;
++				clock-names = "aud_afe_clk",
++						  "aud_dac_clk",
++						  "aud_dac_predis_clk",
++						  "aud_adc_clk",
++						  "aud_adc_adda6_clk",
++						  "aud_apll22m_clk",
++						  "aud_apll24m_clk",
++						  "aud_apll1_tuner_clk",
++						  "aud_apll2_tuner_clk",
++						  "aud_i2s1_bclk_sw",
++						  "aud_i2s2_bclk_sw",
++						  "aud_i2s3_bclk_sw",
++						  "aud_i2s4_bclk_sw",
++						  "aud_tdm_clk",
++						  "aud_tml_clk",
++						  "aud_infra_clk",
++						  "mtkaif_26m_clk",
++						  "top_mux_audio",
++						  "top_mux_aud_intbus",
++						  "top_syspll_d2_d4",
++						  "top_mux_aud_1",
++						  "top_apll1_ck",
++						  "top_mux_aud_2",
++						  "top_apll2_ck",
++						  "top_mux_aud_eng1",
++						  "top_apll1_d8",
++						  "top_mux_aud_eng2",
++						  "top_apll2_d8",
++						  "top_i2s0_m_sel",
++						  "top_i2s1_m_sel",
++						  "top_i2s2_m_sel",
++						  "top_i2s3_m_sel",
++						  "top_i2s4_m_sel",
++						  "top_i2s5_m_sel",
++						  "top_apll12_div0",
++						  "top_apll12_div1",
++						  "top_apll12_div2",
++						  "top_apll12_div3",
++						  "top_apll12_div4",
++						  "top_apll12_divb",
++						  /*"top_apll12_div5",*/
++						  "top_clk26m_clk";
++			};
+ 		};
+ 
+ 		mmc0: mmc@11230000 {
+@@ -720,10 +1175,27 @@ mmc1: mmc@11240000 {
+ 			status = "disabled";
+ 		};
+ 
++		mipi_tx0: mipi-dphy@11e50000 {
++			compatible = "mediatek,mt8183-mipi-tx";
++			reg = <0 0x11e50000 0 0x1000>;
++			clocks = <&apmixedsys CLK_APMIXED_MIPID0_26M>;
++			clock-names = "ref_clk";
++			#clock-cells = <0>;
++			#phy-cells = <0>;
++			clock-output-names = "mipi_tx0_pll";
++			nvmem-cells = <&mipi_tx_calibration>;
++			nvmem-cell-names = "calibration-data";
++		};
++
+ 		efuse: efuse@11f10000 {
+ 			compatible = "mediatek,mt8183-efuse",
+ 				     "mediatek,efuse";
+ 			reg = <0 0x11f10000 0 0x1000>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			mipi_tx_calibration: calib@190 {
++				reg = <0x190 0xc>;
++			};
+ 		};
+ 
+ 		u3phy: usb-phy@11f40000 {
+@@ -757,32 +1229,290 @@ mfgcfg: syscon@13000000 {
+ 			compatible = "mediatek,mt8183-mfgcfg", "syscon";
+ 			reg = <0 0x13000000 0 0x1000>;
+ 			#clock-cells = <1>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_MFG_ASYNC>;
++		};
++
++		gpu_opp_table: opp_table0 {
++			/*
++			 * Note: "operating-points-v2-mali" compatible and the
++			 * opp-core-mask properties are not part of upstream
++			 * binding.
++			 */
++
++			compatible = "operating-points-v2", "operating-points-v2-mali";
++			opp-shared;
++
++			opp-500000000 {
++				opp-hz = /bits/ 64 <500000000>;
++				opp-microvolt = <687500>, /* Supply 0 */
++						<850000>; /* Supply 1 */
++				opp-core-mask = /bits/ 64 <0xf>;
++			};
++
++			opp-600000000 {
++				opp-hz = /bits/ 64 <600000000>;
++				opp-microvolt = <720000>, /* Supply 0 */
++						<825000>; /* Supply 1 */
++				opp-core-mask = /bits/ 64 <0xf>;
++			};
++
++			opp-700000000 {
++				opp-hz = /bits/ 64 <700000000>;
++				opp-microvolt = <768750>, /* Supply 0 */
++						<868750>; /* Supply 1 */
++				opp-core-mask = /bits/ 64 <0xf>;
++			};
++
++			opp-800000000 {
++				opp-hz = /bits/ 64 <800000000>;
++				opp-microvolt = <825000>, /* Supply 0 */
++						<925000>; /* Supply 1 */
++				opp-core-mask = /bits/ 64 <0xf>;
++			};
++		};
++
++		gpu: mali@13040000 {
++			compatible = "mediatek,mt8183-g72-mali", "arm,mali-bifrost";
++			reg = <0 0x13040000 0 0x4000>;
++			interrupts =
++				<GIC_SPI 280 IRQ_TYPE_LEVEL_LOW>,
++				<GIC_SPI 279 IRQ_TYPE_LEVEL_LOW>,
++				<GIC_SPI 278 IRQ_TYPE_LEVEL_LOW>;
++			interrupt-names = "job", "mmu", "gpu";
++			clocks = <&mfgcfg CLK_MFG_BG3D>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_MFG_CORE0>,
++					<&scpsys MT8183_POWER_DOMAIN_MFG_CORE1>,
++					<&scpsys MT8183_POWER_DOMAIN_MFG_2D>;
++			power-domain-names = "core0", "core1", "core2";
++			operating-points-v2 = <&gpu_opp_table>;
++
++			#cooling-cells = <2>;
++			cooling-min-level = <0>;
++			cooling-max-level = <15>;
+ 		};
+ 
+ 		mmsys: syscon@14000000 {
+ 			compatible = "mediatek,mt8183-mmsys", "syscon";
+ 			reg = <0 0x14000000 0 0x1000>;
++			mboxes = <&gce 0 CMDQ_THR_PRIO_HIGHEST 1>,
++				 <&gce 1 CMDQ_THR_PRIO_HIGHEST 1>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0 0x1000>;
+ 			#clock-cells = <1>;
+ 		};
+ 
++		ovl0: ovl@14008000 {
++			compatible = "mediatek,mt8183-disp-ovl";
++			reg = <0 0x14008000 0 0x1000>;
++			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DISP_OVL0>;
++			iommus = <&iommu M4U_PORT_DISP_OVL0>;
++			mediatek,larb = <&larb0>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x8000 0x1000>;
++		};
++
++		ovl_2l0: ovl@14009000 {
++			compatible = "mediatek,mt8183-disp-ovl-2l";
++			reg = <0 0x14009000 0 0x1000>;
++			interrupts = <GIC_SPI 226 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DISP_OVL0_2L>;
++			iommus = <&iommu M4U_PORT_DISP_2L_OVL0_LARB0>;
++			mediatek,larb = <&larb0>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x9000 0x1000>;
++		};
++
++		ovl_2l1: ovl@1400a000 {
++			compatible = "mediatek,mt8183-disp-ovl-2l";
++			reg = <0 0x1400a000 0 0x1000>;
++			interrupts = <GIC_SPI 227 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DISP_OVL1_2L>;
++			iommus = <&iommu M4U_PORT_DISP_2L_OVL1_LARB0>;
++			mediatek,larb = <&larb0>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xa000 0x1000>;
++		};
++
++		rdma0: rdma@1400b000 {
++			compatible = "mediatek,mt8183-disp-rdma";
++			reg = <0 0x1400b000 0 0x1000>;
++			interrupts = <GIC_SPI 228 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DISP_RDMA0>;
++			iommus = <&iommu M4U_PORT_DISP_RDMA0>;
++			mediatek,larb = <&larb0>;
++			mediatek,rdma_fifo_size = <5120>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xb000 0x1000>;
++
++		};
++
++		rdma1: rdma@1400c000 {
++			compatible = "mediatek,mt8183-disp-rdma";
++			reg = <0 0x1400c000 0 0x1000>;
++			interrupts = <GIC_SPI 229 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DISP_RDMA1>;
++			iommus = <&iommu M4U_PORT_DISP_RDMA1>;
++			mediatek,larb = <&larb0>;
++			mediatek,rdma_fifo_size = <2048>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xc000 0x1000>;
++		};
++
++		color0: color@1400e000 {
++			compatible = "mediatek,mt8183-disp-color",
++				     "mediatek,mt8173-disp-color";
++			reg = <0 0x1400e000 0 0x1000>;
++			interrupts = <GIC_SPI 231 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DISP_COLOR0>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xe000 0x1000>;
++		};
++
++		ccorr0: ccorr@1400f000 {
++			compatible = "mediatek,mt8183-disp-ccorr";
++			reg = <0 0x1400f000 0 0x1000>;
++			interrupts = <GIC_SPI 232 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DISP_CCORR0>;
++		};
++
++		aal0: aal@14010000 {
++			compatible = "mediatek,mt8183-disp-aal",
++				     "mediatek,mt8173-disp-aal";
++			reg = <0 0x14010000 0 0x1000>;
++			interrupts = <GIC_SPI 233 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DISP_AAL0>;
++		};
++
++		gamma0: gamma@14011000 {
++			compatible = "mediatek,mt8183-disp-gamma",
++				     "mediatek,mt8173-disp-gamma";
++			reg = <0 0x14011000 0 0x1000>;
++			interrupts = <GIC_SPI 234 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DISP_GAMMA0>;
++		};
++
++		dither0: dither@14012000 {
++			compatible = "mediatek,mt8183-disp-dither";
++			reg = <0 0x14012000 0 0x1000>;
++			interrupts = <GIC_SPI 235 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DISP_DITHER0>;
++		};
++
++		dsi0: dsi@14014000 {
++			compatible = "mediatek,mt8183-dsi";
++			reg = <0 0x14014000 0 0x1000>;
++			interrupts = <GIC_SPI 236 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			mediatek,syscon-dsi = <&mmsys 0x140>;
++			clocks = <&mmsys CLK_MM_DSI0_MM>,
++				<&mmsys CLK_MM_DSI0_IF>,
++				<&mipi_tx0>;
++			clock-names = "engine", "digital", "hs";
++			phys = <&mipi_tx0>;
++			phy-names = "dphy";
++		};
++
++		dpi0: dpi@14015000 {
++			compatible = "mediatek,mt8183-dpi";
++			reg = <0 0x14015000 0 0x1000>;
++			interrupts = <GIC_SPI 237 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DPI_IF>,
++				 <&mmsys CLK_MM_DPI_MM>,
++				 <&apmixedsys CLK_APMIXED_TVDPLL>;
++			clock-names = "pixel", "engine", "pll";
++		};
++
++		mutex: mutex@14016000 {
++			compatible = "mediatek,mt8183-disp-mutex";
++			reg = <0 0x14016000 0 0x1000>;
++			interrupts = <GIC_SPI 217 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			mediatek,gce-events = <CMDQ_EVENT_MUTEX_STREAM_DONE0>,
++					      <CMDQ_EVENT_MUTEX_STREAM_DONE1>;
++		};
++
++		larb0: larb@14017000 {
++			compatible = "mediatek,mt8183-smi-larb";
++			reg = <0 0x14017000 0 0x1000>;
++			mediatek,smi = <&smi_common>;
++			clocks = <&mmsys CLK_MM_SMI_LARB0>,
++				 <&mmsys CLK_MM_SMI_LARB0>;
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
++			clock-names = "apb", "smi";
++		};
++
++		smi_common: smi@14019000 {
++			compatible = "mediatek,mt8183-smi-common", "syscon";
++			reg = <0 0x14019000 0 0x1000>;
++			clocks = <&mmsys CLK_MM_SMI_COMMON>,
++				 <&mmsys CLK_MM_SMI_COMMON>,
++				 <&mmsys CLK_MM_GALS_COMM0>,
++				 <&mmsys CLK_MM_GALS_COMM1>;
++			clock-names = "apb", "smi", "gals0", "gals1";
++		};
++
+ 		imgsys: syscon@15020000 {
+ 			compatible = "mediatek,mt8183-imgsys", "syscon";
+ 			reg = <0 0x15020000 0 0x1000>;
+ 			#clock-cells = <1>;
+ 		};
+ 
++		larb5: larb@15021000 {
++			compatible = "mediatek,mt8183-smi-larb";
++			reg = <0 0x15021000 0 0x1000>;
++			mediatek,smi = <&smi_common>;
++			clocks = <&imgsys CLK_IMG_LARB5>, <&imgsys CLK_IMG_LARB5>,
++				 <&mmsys CLK_MM_GALS_IMG2MM>;
++			clock-names = "apb", "smi", "gals";
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_ISP>;
++		};
++
++		larb2: larb@1502f000 {
++			compatible = "mediatek,mt8183-smi-larb";
++			reg = <0 0x1502f000 0 0x1000>;
++			mediatek,smi = <&smi_common>;
++			clocks = <&imgsys CLK_IMG_LARB2>, <&imgsys CLK_IMG_LARB2>,
++				 <&mmsys CLK_MM_GALS_IPU2MM>;
++			clock-names = "apb", "smi", "gals";
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_ISP>;
++		};
++
+ 		vdecsys: syscon@16000000 {
+ 			compatible = "mediatek,mt8183-vdecsys", "syscon";
+ 			reg = <0 0x16000000 0 0x1000>;
+ 			#clock-cells = <1>;
+ 		};
+ 
++		larb1: larb@16010000 {
++			compatible = "mediatek,mt8183-smi-larb";
++			reg = <0 0x16010000 0 0x1000>;
++			mediatek,smi = <&smi_common>;
++			clocks = <&vdecsys CLK_VDEC_VDEC>, <&vdecsys CLK_VDEC_LARB1>;
++			clock-names = "apb", "smi";
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_VDEC>;
++		};
++
+ 		vencsys: syscon@17000000 {
+ 			compatible = "mediatek,mt8183-vencsys", "syscon";
+ 			reg = <0 0x17000000 0 0x1000>;
+ 			#clock-cells = <1>;
+ 		};
+ 
++		larb4: larb@17010000 {
++			compatible = "mediatek,mt8183-smi-larb";
++			reg = <0 0x17010000 0 0x1000>;
++			mediatek,smi = <&smi_common>;
++			clocks = <&vencsys CLK_VENC_LARB>,
++				 <&vencsys CLK_VENC_LARB>;
++			clock-names = "apb", "smi";
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_VENC>;
++		};
++
+ 		ipu_conn: syscon@19000000 {
+ 			compatible = "mediatek,mt8183-ipu_conn", "syscon";
+ 			reg = <0 0x19000000 0 0x1000>;
+@@ -812,5 +1542,25 @@ camsys: syscon@1a000000 {
+ 			reg = <0 0x1a000000 0 0x1000>;
+ 			#clock-cells = <1>;
+ 		};
++
++		larb6: larb@1a001000 {
++			compatible = "mediatek,mt8183-smi-larb";
++			reg = <0 0x1a001000 0 0x1000>;
++			mediatek,smi = <&smi_common>;
++			clocks = <&camsys CLK_CAM_LARB6>, <&camsys CLK_CAM_LARB6>,
++				 <&mmsys CLK_MM_GALS_CAM2MM>;
++			clock-names = "apb", "smi", "gals";
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_CAM>;
++		};
++
++		larb3: larb@1a002000 {
++			compatible = "mediatek,mt8183-smi-larb";
++			reg = <0 0x1a002000 0 0x1000>;
++			mediatek,smi = <&smi_common>;
++			clocks = <&camsys CLK_CAM_LARB3>, <&camsys CLK_CAM_LARB3>,
++				 <&mmsys CLK_MM_GALS_IPU12MM>;
++			clock-names = "apb", "smi", "gals";
++			power-domains = <&scpsys MT8183_POWER_DOMAIN_CAM>;
++		};
+ 	};
+ };
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 5cfe3cf6f..0aaa13df4 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -568,6 +568,7 @@ CONFIG_MFD_ALTERA_SYSMGR=y
+ CONFIG_MFD_BD9571MWV=y
+ CONFIG_MFD_AXP20X_I2C=y
+ CONFIG_MFD_AXP20X_RSB=y
++CONFIG_MFD_CROS_EC_DEV=y
+ CONFIG_MFD_EXYNOS_LPASS=m
+ CONFIG_MFD_HI6421_PMIC=y
+ CONFIG_MFD_HI655X_PMIC=y
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index 4ff12a7ad..9ceec4756 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -36,6 +36,11 @@
+ #include <linux/mm_types.h>
+ #include <linux/sched.h>
+ 
++extern void __pte_error(const char *file, int line, unsigned long val);
++extern void __pmd_error(const char *file, int line, unsigned long val);
++extern void __pud_error(const char *file, int line, unsigned long val);
++extern void __pgd_error(const char *file, int line, unsigned long val);
++
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
+ 

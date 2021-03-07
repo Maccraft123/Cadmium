@@ -26,6 +26,37 @@ mkdir $CADMIUMROOT/tmp/repack-$TARGET
 # we have to add vmlinux.kpart and few other things
 bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux*cadmium*.tar.xz -C $CADMIUMROOT/tmp/repack-$TARGET
 
+# this should go in separate file
+#[ -d $CADMIUMROOT/tmp/initfs-$TARGET ] && rm -rf $CADMIUMROOT/tmp/initfs-$TARGET
+#mkdir $CADMIUMROOT/tmp/initfs-$TARGET
+
+#mkdir $CADMIUMROOT/tmp/initfs-$TARGET/bin/
+#mkdir $CADMIUMROOT/tmp/initfs-$TARGET/lib/
+#mkdir $CADMIUMROOT/tmp/initfs-$TARGET/dev/
+#mkdir $CADMIUMROOT/tmp/initfs-$TARGET/usr/
+#mkdir $CADMIUMROOT/tmp/initfs-$TARGET/usr/bin
+#mkdir $CADMIUMROOT/tmp/initfs-$TARGET/usr/lib
+#mkdir $CADMIUMROOT/tmp/initfs-$TARGET/newroot/
+
+#wget https://busybox.net/downloads/binaries/1.31.0-defconfig-multiarch-musl/busybox-armv8l -O $CADMIUMROOT/tmp/initfs-$TARGET/bin/busybox
+#chmod 777 $CADMIUMROOT/tmp/initfs-$TARGET/bin/busybox
+
+#mkdir -p $CADMIUMROOT/tmp/initfs-$TARGET/{bin,sbin,etc,proc,sys,newroot}
+#printf '#!/bin/busybox sh\n/bin/busybox --install\n/bin/busybox sh\n' > $CADMIUMROOT/tmp/initfs-$TARGET/init
+#chmod 777 $CADMIUMROOT/tmp/initfs-$TARGET/init
+
+#mknod -m 622 $CADMIUMROOT/tmp/initfs-$TARGET/dev/console c 5 1
+#mknod -m 622 $CADMIUMROOT/tmp/initfs-$TARGET/dev/tty0 c 4 0
+
+#[ -f $CADMIUMROOT/tmp/initfs-oxide-1-$TARGET.cpio ] && rm $CADMIUMROOT/tmp/initfs-oxide-1-$TARGET.cpio
+#cd $CADMIUMROOT/tmp/initfs-$TARGET
+#find . | cpio -H newc -o > $CADMIUMROOT/tmp/initfs-oxide-1-$TARGET.cpio
+
+# debootstrap into initfs-oxide-2-$TARGET.cpio?
+
+# </oxide>
+cd $CADMIUMROOT
+
 cp $CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart $CADMIUMROOT/tmp/repack-$TARGET/vmlinux.kpart
 
 echo $REL > $CADMIUMROOT/tmp/repack-$TARGET/kern-release

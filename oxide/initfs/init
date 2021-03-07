@@ -1,0 +1,7 @@
+#!/bin/busybox sh
+
+mount -n -t proc proc /proc
+mount -n -t sysfs sysfs /sys
+mount -n -t devtmpfs devtmpfs /dev
+
+/bin/busybox sh

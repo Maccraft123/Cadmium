@@ -7,8 +7,8 @@ Thanks @LoganMD for the logo
 
 | Hardware support matrix      	| Duet               	| Kevin          	| Asus C100PA and C201PA	|
 |-------------------------	|--------------------	|----------------	|-------------------------	|
-| Internal Display              | Y(needs patches)   	| Y(DP needs FW) 	| Y				|
-| External Display		| N			| ?			| Y				|
+| Internal Display              | Y(needs patches)   	| Y		 	| Y				|
+| External Display		| N			| Y			| Y				|
 | Display autorotation    	| Y                  	| N              	| N				|
 | Hardware video decoding	| N			| P			| P				|
 | Touchscreen             	| Y                  	| Y              	| Y				|

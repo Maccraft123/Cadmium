@@ -11,11 +11,6 @@ else
 	TARGET=$RELEASE
 fi
 
-
-# Kernel variant
-# One of: stable, testing
-KERNEL=stable
-
 # RootFS type
 # One of: debian, void, void-musl
 ROOTFS=debian

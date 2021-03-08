@@ -19,44 +19,21 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$TARGET)" ]; then
 	echo "Downloading kernel for $TARGET"
 	rm -rf linux-$TARGET
 
-	case "$KERNEL" in # TODO: cros kernel for blob tracing?
-		testing) # <-- HACK
-			case "$TARGET" in
-				duet)
-					# we don't want to redownload repo
-					if [ -d linux-$TARGET ]; then
-						cd linux-$TARGET
-						git pull
-					else
-						git clone https://github.com/Maccraft123/linux --depth 1 --single-branch -b master linux-$TARGET
-					fi
-					echo "$(date +'%V%y') $KERNEL" > $CADMIUMROOT/tmp/kern-dl-date-$TARGET
-				;;
-				*)
-					echo "testing kernel is unsupported for $TARGET"
-					exit 1
-				;;
-			esac	
-		;;
-		
-		stable)
-			if [ "$TARGET" = "duet" ]; then #      -.-
-				curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.20.tar.xz -o Linux-archive
-			else
-				curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
-			fi
-			mkdir linux-$TARGET
-			bsdtar xf Linux-archive --strip-components=1 -C linux-$TARGET
-			echo "$(date +'%V%y') $KERNEL" > kern-dl-date-$TARGET
+	if [ "$TARGET" = "duet" ]; then #      -.-
+		curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.20.tar.xz -o Linux-archive
+	else
+		curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+	fi
+	mkdir linux-$TARGET
+	bsdtar xf Linux-archive --strip-components=1 -C linux-$TARGET
+	echo "$(date +'%V%y') $KERNEL" > kern-dl-date-$TARGET
 
-			cd linux-$TARGET
+	cd linux-$TARGET
 
-			for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch); do
-				echo "Applying $x"
-				patch -p1 --forward < $x || true
-			done
-		;;
-	esac	
+	for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch); do
+		echo "Applying $x"
+		patch -p1 --forward < $x || true
+	done
 fi
 
 cd $CADMIUMROOT/tmp/linux-$TARGET

@@ -1,6 +1,6 @@
 #!/bin/false
-export DEBS="sway i3status xfce4-terminal dmenu xwayland grim slurp"
-export XBPS="sway i3status xfce4-terminal dmenu xorg-server-xwayland grim slurp"
+export DEBS="sway i3status xfce4-terminal dmenu xwayland grim slurp brightnessctl"
+export XBPS="sway i3status xfce4-terminal dmenu xorg-server-xwayland grim slurp brightnessctl"
 
 export WM="sway"
 export DISPSERVER="wayland"

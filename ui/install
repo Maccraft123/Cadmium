@@ -46,7 +46,7 @@ if [ "$CHOSEN" != "none" ]; then
 			;;
 	esac
 	echo "Installing common system utilities"
-	chroot /mnt $INSTALLER firefox htop ssh
+	chroot /mnt $INSTALLER firefox pulseaudio pavucontrol htop ssh
 fi
 
 echo "Done installing UI!"

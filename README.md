@@ -5,6 +5,7 @@ Thanks @LoganMD for the logo
 # Cadmium, Linux for ARM chromebooks that don't get attention elsewhere
 ### It also doesn't suck!
 
+## Hardware support:
 | Hardware support matrix      	| Duet               	| Kevin          	| Asus C100PA and C201PA	|
 |-------------------------	|--------------------	|----------------	|-------------------------	|
 | Internal Display              | Y(needs patches)   	| Y		 	| Y				|

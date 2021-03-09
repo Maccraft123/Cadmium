@@ -35,7 +35,7 @@ if [ "$CHOSEN" != "none" ]; then
 		sway)
 			echo "Copying sway config"
 			mkdir -p /mnt/etc/sway
-			cp ~/sway-config /mnt/etc/sway/config
+			cp ~/swayconfig /mnt/etc/sway/config
 			# TODO: $RUN_COMMAND setting in ui information
 			echo 'tty | grep tty1 && exec sway' >> /mnt/home/$USERNAME/.bashrc
 			;;

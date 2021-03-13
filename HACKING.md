@@ -16,6 +16,7 @@
 - ```fs/``` is for building rootfs that can be used on target device
 - ```fs/$ROOTFS``` is for parts that are rootfs-specific
 - ```kernel/``` contains only kernel-specific files, including scripts to test whether built kernel works or not
+- ```bootfw/``` has scripts to set up kernel and partition layout
 
 # Random notes:
 - MMSYS sits between *everything* related to multimedia

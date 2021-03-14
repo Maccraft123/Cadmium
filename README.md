@@ -9,7 +9,7 @@ Thanks @LoganMD for the logo
 | Hardware support matrix      	| Duet               	| Kevin          	| Asus C100PA and C201PA	|
 |-------------------------	|--------------------	|----------------	|-------------------------	|
 | Internal Display              | Y(needs patches)   	| Y		 	| Y				|
-| External Display		| N			| Y			| Y				|
+| External Display		| N			| Y(FW)			| Y				|
 | Display autorotation    	| Y                  	| N              	| N				|
 | Hardware video decoding	| N			| P			| P				|
 | Touchscreen             	| Y                  	| Y              	| Y				|
@@ -17,13 +17,13 @@ Thanks @LoganMD for the logo
 | 3D Acceleration         	| Y                  	| Y              	| Y				|
 | GPU reclocking		| P			| Y			| Y				|
 | Audio                   	| P(speakers broken) 	| Y              	| Y				|
-| Bluetooth               	| Y                  	| ?              	| ?				|
+| Bluetooth               	| Y                  	| ?              	| Y				|
 | Camera                  	| N                  	| Y              	| Y				|
 | USB                     	| Y                  	| Y              	| Y				|
-| USB Gadget              	| P                  	| ?              	| ?				|
+| USB Gadget              	| P                  	| ?              	| N				|
 | Suspending and resuming 	| P                  	| Y              	| P(Dislikes USB booting)	|
 | eMMC installation       	| Y                  	| Y              	| Y				|
-| KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| ?				|
+| KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				|
 
 ## Installation
 - ``` ./build-all /dev/sdX ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt and debootstrap are needed to work correctly.

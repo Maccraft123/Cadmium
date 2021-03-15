@@ -18,7 +18,8 @@ Thanks @LoganMD for the logo
 | GPU reclocking		| P			| Y			| Y				|
 | Audio                   	| P(speakers broken) 	| Y              	| Y				|
 | Bluetooth               	| Y                  	| ?              	| Y				|
-| Camera                  	| N                  	| Y              	| Y				|
+| Front Camera			| N			| Y			| Y				|
+| Back Camera                  	| N                  	|               	| 				|
 | USB                     	| Y                  	| Y              	| Y				|
 | USB Gadget              	| P                  	| ?              	| N				|
 | Suspending and resuming 	| P                  	| Y              	| P(Dislikes USB booting)	|

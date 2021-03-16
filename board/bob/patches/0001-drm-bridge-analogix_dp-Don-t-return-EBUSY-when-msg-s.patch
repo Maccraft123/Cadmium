@@ -1,0 +1,44 @@
+From 6958888b47956821a2bbbaeeb2deb27d32337bf0 Mon Sep 17 00:00:00 2001
+From: SolidHal <hal@halemmerich.com>
+Date: Wed, 23 Dec 2020 09:24:11 -0800
+Subject: [PATCH 1/2] drm/bridge: analogix_dp: Don't return -EBUSY when
+ msg->size is 0 in aux transaction
+
+The analogix_dp_transfer() will return -EBUSY if num_transferred is zero.
+But sometimes we will send a bare address packet to start the transaction,
+like drm_dp_i2c_xfer() show:
+	......
+	/* Send a bare address packet to start the transaction.
+	 * Zero sized messages specify an address only (bare
+	 * address) transaction.
+	 */
+	msg.buffer = NULL;
+	msg.size = 0;
+	err = drm_dp_i2c_do_msg(aux, &msg);
+	......
+
+In this case, the msg->size is zero, so the num_transferred will be zero too.
+We can't return -EBUSY here, let's we return num_transferred if num_transferred
+equals msg->size.
+
+from: https://chromium.googlesource.com/chromiumos/third_party/kernel/+/e7629f9b475ce9a0b70126e907049b0e1468010d%5E%21/#F0
+---
+ drivers/gpu/drm/bridge/analogix/analogix_dp_reg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bridge/analogix/analogix_dp_reg.c b/drivers/gpu/drm/bridge/analogix/analogix_dp_reg.c
+index 914c569ab8c1..ee6cda10bca4 100644
+--- a/drivers/gpu/drm/bridge/analogix/analogix_dp_reg.c
++++ b/drivers/gpu/drm/bridge/analogix/analogix_dp_reg.c
+@@ -1222,7 +1222,7 @@ ssize_t analogix_dp_transfer(struct analogix_dp_device *dp,
+ 		 (msg->request & ~DP_AUX_I2C_MOT) == DP_AUX_NATIVE_READ)
+ 		msg->reply = DP_AUX_NATIVE_REPLY_ACK;
+ 
+-	return num_transferred > 0 ? num_transferred : -EBUSY;
++	return (num_transferred == msg->size) ? num_transferred : -EBUSY;
+ 
+ aux_error:
+ 	/* if aux err happen, reset aux */
+-- 
+2.20.1
+

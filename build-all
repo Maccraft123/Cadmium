@@ -15,6 +15,13 @@ sleep 1 # let's give user time if they commit a typo
 
 [ -z "$1" ] && exit 1
 
+if [ -nz "$2" ]; then
+	echo "Warning,"
+	echo "Running $0 like that is not recommended"
+	echo "Consider $0 /dev/sdX"
+	sleep 2
+fi
+
 # it deals with env vars
 source $CADMIUMROOT/bootfw/$BOOTFW/prepare_parts
 

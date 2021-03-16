@@ -1,0 +1,13 @@
+diff --git a/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt b/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt
+index a10d1f6d85c6..a41bcfef95c8 100644
+--- a/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt
++++ b/Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt
+@@ -12,6 +12,8 @@ Required properties:
+ 			 for details.
+ - center-supply:	 DMC supply node.
+ - status:		 Marks the node enabled/disabled.
++- rockchip,pmu:		 Phandle to the syscon managing the "PMU general register
++			 files".
+ 
+ Optional properties:
+ - interrupts:		 The CPU interrupt number. The interrupt specifier

@@ -6,7 +6,6 @@ CADMIUMROOT=$(pwd)
 . $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
 set -e
-set -v
 
 sleep 1 # let's give user time if they commit a typo
 

@@ -34,5 +34,6 @@ jobs:
           ./release
       - name: Upload artifacts
         uses: actions/upload-artifact@v2.2.2
-        path: cadmium-*-.img.gz
+        with:
+          path: cadmium-*-.img.gz
       

@@ -29,8 +29,10 @@ jobs:
       - name: Run a multi-line script
         run: |
           cd $GITHUB_WORKSPACE
-          sudo cat /etc/apt/sources.list
-          sudo apt install libarchive-tools curl wget f2fs-tools cgpt vboot-utils libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf 
+          echo 'deb-src http://azure.archive.ubuntu.com/ubuntu/ focal main restricted' | sudo tee /etc/apt/sources.list.d/debsrc
+          sudo apt update
+          sudo apt build-dep linux
+          sudo apt install libarchive-tools curl wget f2fs-tools cgpt vboot-utils libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf qemu-user-static
           ./release
       - name: Upload artifacts
         uses: actions/upload-artifact@v2.2.2

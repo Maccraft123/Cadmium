@@ -6,7 +6,7 @@ Thanks @LoganMD for the logo
 ### It also doesn't suck!
 
 ## Hardware support:
-| Hardware support matrix      	| Duet               	| Kevin          	| Asus C100PA and C201PA	|
+| Hardware support matrix      	| Duet               	| Kevin and Bob        	| Asus C100PA and C201PA	|
 |-------------------------	|--------------------	|----------------	|-------------------------	|
 | Internal Display              | Y(needs patches)   	| Y		 	| Y				|
 | External Display		| N			| Y(FW)			| Y				|

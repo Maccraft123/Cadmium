@@ -22,7 +22,7 @@ Thanks @LoganMD for the logo
 | Back Camera                  	| N                  	|               	| 				|
 | USB                     	| Y                  	| Y              	| Y				|
 | USB Gadget              	| P                  	| ?              	| N				|
-| Suspending and resuming 	| P                  	| Y              	| P(Dislikes USB booting)	|
+| Suspending and resuming 	| P                  	| Y              	| P(Fails to resume when booted from USB)	|
 | eMMC installation       	| Y                  	| Y              	| Y				|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				|
 

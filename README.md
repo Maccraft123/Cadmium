@@ -13,7 +13,7 @@ Thanks @LoganMD for the logo
 | Display autorotation    	| Y                  	| N              	| N				|
 | Hardware video decoding	| N			| P			| P				|
 | Touchscreen             	| Y                  	| Y              	| Y				|
-| Pen Input			| ?			| Y			| 				|
+| Pen Input			| Y			| Y			| 				|
 | WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				|
 | 3D Acceleration         	| Y                  	| Y              	| Y				|
 | GPU reclocking		| P			| Y			| Y				|

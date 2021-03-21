@@ -20,7 +20,7 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$TARGET 2>/dev/null)" ]; t
 	rm -rf linux-$TARGET
 
 	if [ "$TARGET" = "duet" ]; then #      -.-
-		curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.23.tar.xz -o Linux-archive
+		curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.25.tar.xz -o Linux-archive
 	else
 		curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
 	fi

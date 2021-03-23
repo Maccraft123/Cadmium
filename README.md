@@ -27,6 +27,9 @@ Thanks @LoganMD for the logo
 | eMMC installation       	| Y                  	| Y              	| Y				|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				|
 
+## Official discord server is at https://discord.gg/4QhpsHRygt
+## Official IRC channel is #cadmium on Freenode IRC, it is bridged to #cadmium-irc channel on discord
+
 ## Installation
 - ``` ./build-all /dev/sdX ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt and debootstrap are needed to work correctly.
 - When ```build-all``` is ran like ```./build-all <file> <size>```, it builds Cadmium to <file> with size of <size>(2G should be fine)

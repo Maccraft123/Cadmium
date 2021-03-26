@@ -1,0 +1,133 @@
+From 0f09019241a0ea6eee0b9b596a70ec8a66b820ce Mon Sep 17 00:00:00 2001
+From: SolidHal <hal@halemmerich.com>
+Date: Fri, 24 Aug 2018 11:04:43 -0500
+Subject: [PATCH] block: partitions: efi: Add support for IGNOREME GPT
+ signature
+
+This patch adds support for a special GPT header signature marker (using
+the string 'IGNOREME' instead of the spec's 'EFI PART'). This tells the
+kernel to ignore this GPT completely and look at the other one instead.
+Since the kernel always prefers the primary GPT anyway, all we really
+need to do effectively is to check whether the primary GPT is marked
+'IGNOREME' and force evaluation of the secondary one in that case.
+
+Borrowed from the chrome os 3.14 kernel, the commit can be found here:
+https://chromium.googlesource.com/chromiumos/third_party/kernel/+/abba28d0a1b7361da6e2023352e92687166ca30d
+
+Also bundled in this commit
+https://chromium.googlesource.com/chromiumos/third_party/kernel/+/bd0c62c7de0c8a63314b7955e5718d8f6192f9d2%5E%21/#F0
+Which is a small compiler warning fix for the above patch
+
+This patch fixes how the kernel detects and handles certain mmc
+manufatures devices, and allows the partitions on the mmc to be bootable
+and mountable.
+
+Signed-off-by: SolidHal <hal@halemmerich.com>
+---
+ block/partitions/efi.c | 31 ++++++++++++++++++++++---------
+ block/partitions/efi.h |  3 ++-
+ 2 files changed, 24 insertions(+), 10 deletions(-)
+
+diff --git a/block/partitions/efi.c b/block/partitions/efi.c
+index 39f70d9..aa08380 100644
+--- a/block/partitions/efi.c
++++ b/block/partitions/efi.c
+@@ -344,23 +344,34 @@ static gpt_header *alloc_read_gpt_header(struct parsed_partitions *state,
+  * @lba: logical block address of the GPT header to test
+  * @gpt: GPT header ptr, filled on return.
+  * @ptes: PTEs ptr, filled on return.
++ * @ignored is filled on return with 1 if this is an IGNOREME GPT,
++ *     0 otherwise. May be NULL.
+  *
+  * Description: returns 1 if valid,  0 on error.
+  * If valid, returns pointers to newly allocated GPT header and PTEs.
+  */
+ static int is_gpt_valid(struct parsed_partitions *state, u64 lba,
+-			gpt_header **gpt, gpt_entry **ptes)
++			gpt_header **gpt, gpt_entry **ptes, int *ignored)
+ {
+ 	u32 crc, origcrc;
+ 	u64 lastlba, pt_size;
+ 
++	if (ignored)
++		*ignored = 0;
+ 	if (!ptes)
+ 		return 0;
+ 	if (!(*gpt = alloc_read_gpt_header(state, lba)))
+ 		return 0;
+ 
+ 	/* Check the GUID Partition Table signature */
+-	if (le64_to_cpu((*gpt)->signature) != GPT_HEADER_SIGNATURE) {
++
++	if (le64_to_cpu((*gpt)->signature) == GPT_HEADER_SIGNATURE_IGNORED) {
++		pr_debug("GUID Partition Table at LBA %llu marked IGNOREME\n",
++						(unsigned long long)lba);
++		if (ignored)
++			*ignored = 1;
++		goto fail;
++	} else if (le64_to_cpu((*gpt)->signature) != GPT_HEADER_SIGNATURE) {
+ 		pr_debug("GUID Partition Table Header signature is wrong:"
+ 			 "%lld != %lld\n",
+ 			 (unsigned long long)le64_to_cpu((*gpt)->signature),
+@@ -597,7 +608,7 @@ compare_gpts(gpt_header *pgpt, gpt_header *agpt, u64 lastlba)
+ static int find_valid_gpt(struct parsed_partitions *state, gpt_header **gpt,
+ 			  gpt_entry **ptes)
+ {
+-	int good_pgpt = 0, good_agpt = 0, good_pmbr = 0;
++	int good_pgpt = 0, good_agpt = 0, good_pmbr = 0, pgpt_ignored = 0;
+ 	gpt_header *pgpt = NULL, *agpt = NULL;
+ 	gpt_entry *pptes = NULL, *aptes = NULL;
+ 	legacy_mbr *legacymbr;
+@@ -627,19 +638,20 @@ static int find_valid_gpt(struct parsed_partitions *state, gpt_header **gpt,
+ 	}
+ 
+ 	good_pgpt = is_gpt_valid(state, GPT_PRIMARY_PARTITION_TABLE_LBA,
+-				 &pgpt, &pptes);
++			 &pgpt, &pptes, &pgpt_ignored);
+         if (good_pgpt)
+ 		good_agpt = is_gpt_valid(state,
+ 					 le64_to_cpu(pgpt->alternate_lba),
+-					 &agpt, &aptes);
+-        if (!good_agpt && force_gpt)
+-                good_agpt = is_gpt_valid(state, lastlba, &agpt, &aptes);
++					 &agpt, &aptes, NULL);
++	if (!good_agpt && (force_gpt || pgpt_ignored))
++		good_agpt = is_gpt_valid(state, lastlba, &agpt, &aptes, NULL);
+ 
+         /* The obviously unsuccessful case */
+         if (!good_pgpt && !good_agpt)
+                 goto fail;
+ 
+-        compare_gpts(pgpt, agpt, lastlba);
++	if (!pgpt_ignored)
++		compare_gpts(pgpt, agpt, lastlba);
+ 
+         /* The good cases */
+         if (good_pgpt) {
+@@ -656,7 +668,8 @@ static int find_valid_gpt(struct parsed_partitions *state, gpt_header **gpt,
+                 *ptes = aptes;
+                 kfree(pgpt);
+                 kfree(pptes);
+-		pr_warn("Primary GPT is invalid, using alternate GPT.\n");
++	pr_warn("Primary GPT is %s, using alternate GPT.\n",
++		pgpt_ignored ? "being ignored" : "invalid");
+                 return 1;
+         }
+ 
+diff --git a/block/partitions/efi.h b/block/partitions/efi.h
+index abd0b19..36cddc8 100644
+--- a/block/partitions/efi.h
++++ b/block/partitions/efi.h
+@@ -41,7 +41,8 @@
+ #define GPT_MBR_PROTECTIVE  1
+ #define GPT_MBR_HYBRID      2
+ 
+-#define GPT_HEADER_SIGNATURE 0x5452415020494645ULL
++#define GPT_HEADER_SIGNATURE		0x5452415020494645ULL	/* 'EFI PART' */
++#define GPT_HEADER_SIGNATURE_IGNORED	0x454d45524f4e4749ULL	/* 'IGNOREME' */
+ #define GPT_HEADER_REVISION_V1 0x00010000
+ #define GPT_PRIMARY_PARTITION_TABLE_LBA 1
+ 
+-- 
+2.11.0
+

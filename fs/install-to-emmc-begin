@@ -14,16 +14,16 @@ MMCDEV=$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')
 sleep 1
 
 # zero out kernel partitions, just in case
-dd if=/dev/zero of=${MMCDEV} bs=1M count=64
+dd if=/dev/zero of=${MMCDEV} bs=512k count=128 seek=$EMMC_OFFSET
 
 # cgpt doesn't like if we don't do this
 parted --script ${MMCDEV} mklabel gpt
 
 # create partitions
 cgpt create ${MMCDEV}
-cgpt add -i 1 -t kernel	-b 8192		-s 65536 -l MMCKernelA -S 1 -T 2 -P 10	${MMCDEV}
-cgpt add -i 2 -t kernel	-b 73728	-s 65536 -l MMCKernelB -S 0 -T 2 -P 5	${MMCDEV}
-cgpt add -i 3 -t data	-b 139264	-s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - 139264) -l Root ${MMCDEV}
+cgpt add -i 1 -t kernel	-b $(expr 8192 + $EMMC_OFFSET)		-s 65536 -l MMCKernelA -S 1 -T 2 -P 10	${MMCDEV}
+cgpt add -i 2 -t kernel	-b $(expr 73728 + $EMMC_OFFSET)		-s 65536 -l MMCKernelB -S 0 -T 2 -P 5	${MMCDEV}
+cgpt add -i 3 -t data	-b $(expr 139264 + $EMMC_OFFSET)	-s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l Root ${MMCDEV}
 
 sleep 1
 

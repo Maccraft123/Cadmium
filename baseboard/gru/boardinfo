@@ -6,6 +6,7 @@ export ARCH_UNAME=aarch64
 export ARCH_DEB=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
 
+export EMMC_OFFSET=0
 export SOC=rk3399
 
 export BOOTFW=depthcharge

@@ -17,7 +17,7 @@ sleep 1
 dd if=/dev/zero of=${MMCDEV} bs=512k count=128 seek=$EMMC_OFFSET
 
 # cgpt doesn't like if we don't do this
-parted --script ${MMCDEV} mklabel gpt
+parted --script ${MMCDEV} mklabel gpt >/dev/null 2>&1 || true
 
 # create partitions
 cgpt create ${MMCDEV}

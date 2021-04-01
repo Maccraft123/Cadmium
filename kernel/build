@@ -15,31 +15,31 @@ cd $CADMIUMROOT/tmp
 
 
 # check if kernel has been downloaded this week, if not download/update it
-if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$TARGET 2>/dev/null)" ]; then
-	echo "Downloading kernel for $TARGET"
-	rm -rf linux-$TARGET
+if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]; then
+	echo "Downloading kernel for $BASEBOARD/$TARGET"
+	rm -rf linux-$BASEBOARD
 
-	if [ "$TARGET" = "duet" ]; then #      -.-
+	if [ "$BASEBOARD" = "kukui" ]; then #      -.-
 		curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.25.tar.xz -o Linux-archive
 	else
 		curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
 	fi
-	mkdir linux-$TARGET
-	bsdtar xf Linux-archive --strip-components=1 -C linux-$TARGET
-	echo "$(date +'%V%y') $KERNEL" > kern-dl-date-$TARGET
+	mkdir linux-$BASEBOARD
+	bsdtar xf Linux-archive --strip-components=1 -C linux-$BASEBOARD
+	echo "$(date +'%V%y') $KERNEL" > kern-dl-date-$BASEBOARD
 
-	cd linux-$TARGET
+	cd linux-$BASEBOARD
 
-	for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch); do
+	for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch); do
 		echo "Applying $x"
 		patch -p1 --forward < $x || true
 	done
 fi
 
-cd $CADMIUMROOT/tmp/linux-$TARGET
+cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 
 # TODO: this is probably wrong
-if [ $TARGET = duet ]; then
+if [ $BASEBOARD = kukui ]; then
 	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
 	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch || true
 else
@@ -47,14 +47,9 @@ else
 	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt || true
 fi
 
-#for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do
-#	echo "Applying $x"
-#	patch -p1 --forward < $x || true
-#done
-
 # TODO:
 # make cadmium defconfig from: common-defconfig, soc-defconfig and board-defconfig
-[ -f .config ] || cp $CADMIUMROOT/board/$TARGET/kernel-config .config
+[ -f .config ] || cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel-config .config
 cp $CADMIUMROOT/kernel/cmdline cmdline
 
 #make nconfig # if you want to customize config just uncomment this

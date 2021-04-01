@@ -21,7 +21,7 @@ areweontarget || exit 1
 
 uname -a > $CADMIUMROOT/tmp/linux-good
 
-cd $CADMIUMROOT/tmp/linux-$TARGET
+cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 
 make modules_install
 

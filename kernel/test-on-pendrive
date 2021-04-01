@@ -7,7 +7,7 @@ export DEVICE=$2
 
 source $CADMIUMROOT/config
 
-cd $CADMIUMROOT/tmp/linux-test/ || cd $CADMIUMROOT/tmp/linux-$TARGET
+cd $CADMIUMROOT/tmp/linux-test/ || cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 
 
 # repack kernel
@@ -31,10 +31,10 @@ mkdir -p $CADMIUMROOT/tmp/root
 mount ${DEVICE}3 $CADMIUMROOT/tmp/root
 
 # install modules
-make -C $CADMIUMROOT/tmp/linux-$TARGET ARCH=arm64 INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
+make -C $CADMIUMROOT/tmp/linux-$BASEBOARD ARCH=arm64 INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
 
 # write new kernel
-dd if=$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart of=${DEVICE}1
+dd if=$CADMIUMROOT/tmp/linux-$BASEBOARD/vmlinux.kpart of=${DEVICE}1
 
 umount $CADMIUMROOT/tmp/root
 

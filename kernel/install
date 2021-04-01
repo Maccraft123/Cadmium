@@ -29,7 +29,7 @@ fi
 
 areweontarget || mount $ROOTPART /mnt
 
-cd $CADMIUMROOT/tmp/linux-$TARGET
+cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 
 mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg || true
 
@@ -59,11 +59,11 @@ if areweontarget; then
 	fi
 
 	dd if=$MMCDEV of=$CADMIUMROOT/tmp/backup bs=1M count=32 status=none
-	dd if=$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart.pad of=$MMCDEV status=none
+	dd if=$CADMIUMROOT/tmp/linux-$BASEBOARD/vmlinux.kpart.pad of=$MMCDEV status=none
 	OUTSHA=$(sha1sum $MMCDEV)
 
 
-	if cmp -s -- "$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart.pad" "$MMCDEV"; then
+	if cmp -s -- "$CADMIUMROOT/tmp/linux-$BASEBOARD/vmlinux.kpart.pad" "$MMCDEV"; then
 		echo "Written correctly!"
 	else
 		echo "Oops, $MMCDEV doesn't match linux kernel image!"
@@ -74,9 +74,9 @@ else
 	make INSTALL_MOD_PATH=/mnt/ modules_install
 	umount /mnt
 	dd if=$KERNPART of=$CADMIUMROOT/tmp/backup bs=1M count=32 # backup kernel partition, just in case
-	dd if=$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart.pad of=$KERNPART
+	dd if=$CADMIUMROOT/tmp/linux-$BASEBOARD/vmlinux.kpart.pad of=$KERNPART
 fi
 
-rm $CADMIUMROOT/tmp/linux-$TARGET/vmlinux.uimg
+rm $CADMIUMROOT/tmp/linux-$BASEBOARD/vmlinux.uimg
 
 sync

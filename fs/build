@@ -84,7 +84,7 @@ esac
 # remove root password, this is install medium so it's ok, not needed in ubports
 [ ! "$ROOTFS" = "ubports" ] && chroot root/ $qemu /bin/passwd -d root
 
-echo $TARGET > root/etc/hostname # set default hostname in kernel?
+echo $BASEBOARD > root/etc/hostname # set default hostname in kernel?
 
 # workaround bad touchpad experience on certain boards
 mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
@@ -95,7 +95,7 @@ mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 
 # copy over firmware
 mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
-cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
+cp -r $CADMIUMROOT/baseboard/$BASEBOARD/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
 
 # install sway config to user dir
 mkdir -p $CADMIUMROOT/tmp/root/etc/sway

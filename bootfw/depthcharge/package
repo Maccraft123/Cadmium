@@ -15,9 +15,9 @@ source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 # sanity check
 [ "$BOOTFW" != "depthcharge" ] && exit 1
 
-cd $CADMIUMROOT/tmp/linux-$TARGET
+cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 
-cp $CADMIUMROOT/board/$TARGET/kernel.its kernel.its
+cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel.its kernel.its
 
 # make kernel partition
 # yes this is stolen from solidhal's prawnos, that's how open source works :D

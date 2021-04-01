@@ -15,16 +15,16 @@ source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 # sanity check
 [ "$BOOTFW" != "depthcharge" ] && exit 1
 
-cd $CADMIUMROOT/tmp/linux-$TARGET
+cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 
 REL=$(make kernelrelease)
 
 # just in case we are building 2 targets immediately after each other
-[ -d $CADMIUMROOT/tmp/repack-$TARGET ] && rm -rf $CADMIUMROOT/tmp/repack-$TARGET
-mkdir $CADMIUMROOT/tmp/repack-$TARGET
+[ -d $CADMIUMROOT/tmp/repack-$BASEBOARD ] && rm -rf $CADMIUMROOT/tmp/repack-$BASEBOARD
+mkdir $CADMIUMROOT/tmp/repack-$BASEBOARD
 
 # we have to add vmlinux.kpart and few other things
-bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux*cadmium*.tar.xz -C $CADMIUMROOT/tmp/repack-$TARGET
+bsdtar xf $CADMIUMROOT/tmp/linux-$BASEBOARD/linux*cadmium*.tar.xz -C $CADMIUMROOT/tmp/repack-$BASEBOARD
 
 # this should go in separate file
 #[ -d $CADMIUMROOT/tmp/initfs-$TARGET ] && rm -rf $CADMIUMROOT/tmp/initfs-$TARGET
@@ -57,14 +57,14 @@ bsdtar xf $CADMIUMROOT/tmp/linux-$TARGET/linux*cadmium*.tar.xz -C $CADMIUMROOT/t
 # </oxide>
 cd $CADMIUMROOT
 
-cp $CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart $CADMIUMROOT/tmp/repack-$TARGET/vmlinux.kpart
+cp $CADMIUMROOT/tmp/linux-$BASEBOARD/vmlinux.kpart $CADMIUMROOT/tmp/repack-$BASEBOARD/vmlinux.kpart
 
-echo $REL > $CADMIUMROOT/tmp/repack-$TARGET/kern-release
-echo $TARGET > $CADMIUMROOT/tmp/repack-$TARGET/target
+echo $REL > $CADMIUMROOT/tmp/repack-$BASEBOARD/kern-release
+echo $BASEBOARD > $CADMIUMROOT/tmp/repack-$BASEBOARD/target
 
 # and pack it again
 cd $CADMIUMROOT
-tar cJf $CADMIUMROOT/repack-$TARGET.tar.xz -C $CADMIUMROOT/tmp repack-$TARGET
+tar cJf $CADMIUMROOT/repack-$BASEBOARD.tar.xz -C $CADMIUMROOT/tmp repack-$BASEBOARD
 
 # just to be safe
-sha1sum $CADMIUMROOT/repack-$TARGET.tar.xz > $CADMIUMROOT/repack-$TARGET.sha1
+sha1sum $CADMIUMROOT/repack-$BASEBOARD.tar.xz > $CADMIUMROOT/repack-$BASEBOARD.sha1

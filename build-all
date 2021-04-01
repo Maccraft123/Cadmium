@@ -34,10 +34,10 @@ source $CADMIUMROOT/bootfw/$BOOTFW/prepare_parts
 
 
 ./bootfw/$BOOTFW/package $CADMIUMROOT $DEVICE $ROOTPART
-dd if=$CADMIUMROOT/tmp/linux-$TARGET/vmlinux.kpart of=$KERNPART
+dd if=$CADMIUMROOT/tmp/linux-$BASEBOARD/vmlinux.kpart of=$KERNPART
 
 # install modules
-make -C $CADMIUMROOT/tmp/linux-$TARGET INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
+make -C $CADMIUMROOT/tmp/linux-$BASEBOARD INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
 
 # we don't umount it in fs/build
 umount $CADMIUMROOT/tmp/root

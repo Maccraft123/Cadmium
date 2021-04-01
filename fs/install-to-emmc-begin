@@ -5,6 +5,7 @@ set -e
 . ~/info
 
 # we need internet, TODO: make this run on voidlinux
+nmcli device wifi rescan
 nmtui connect
 
 # a fancy hack

@@ -41,7 +41,7 @@ Thanks @LoganMD for the logo
 
 ### OR
 - Enable developer mode(instructions are in the wiki for duet)
-- Write uncompressed release image appropriate for your device named ```cadmium-<device>.tar.gz``` to pendrive
+- Download and uncompress ```cadmium-<device>.tar.gz``` to your pendrive
 - Boot from USB
 - Run ```./install-to-emmc```
 

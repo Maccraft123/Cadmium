@@ -6,26 +6,26 @@ Thanks @LoganMD for the logo
 ### It also doesn't suck!
 
 ## Hardware support:
-| Hardware support matrix      	| Duet               	| Kevin and Bob        	| Asus C100PA and C201PA	|
-|-------------------------	|--------------------	|----------------	|-------------------------	|
-| Internal Display              | Y(needs patches)   	| Y		 	| Y				|
-| External Display		| N			| Y(FW)			| Y				|
-| Display autorotation    	| Y                  	| N              	| N				|
-| Hardware video decoding	| N			| P			| P				|
-| Touchscreen             	| Y                  	| Y              	| Y				|
-| Pen Input			| Y			| Y			| 				|
-| WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				|
-| 3D Acceleration         	| Y                  	| Y              	| Y				|
-| GPU reclocking		| P			| Y			| Y				|
-| Audio                   	| P(speakers broken) 	| Y              	| Y				|
-| Bluetooth               	| Y                  	| ?              	| Y				|
-| Front Camera			| N			| Y			| Y				|
-| Back Camera                  	| N                  	|               	| 				|
-| USB                     	| Y                  	| Y              	| Y				|
-| USB Gadget              	| P                  	| ?              	| N				|
-| Suspending and resuming 	| P                  	| Y              	| P(Fails to resume when booted from USB)	|
-| eMMC installation       	| Y                  	| Y              	| Y				|
-| KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				|
+| Hardware support matrix      	| Duet               	| Kevin and Bob        	| Asus C100PA and C201PA	| Acer Spin 513		|
+|-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|
+| Internal Display              | Y(needs patches)   	| Y		 	| Y				| Y			|
+| External Display		| N			| Y(FW)			| Y				| ?			|
+| Display autorotation    	| Y                  	| N              	| N				| N			|
+| Hardware video decoding	| N			| P			| P				| ?			|
+| Touchscreen             	| Y                  	| Y              	| Y				| ?			|
+| Pen Input			| Y			| Y			| 				| ?			|
+| WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				| N			|
+| 3D Acceleration         	| Y                  	| Y              	| Y				| Y(FW)			|
+| GPU reclocking		| P			| Y			| Y				| ?			|
+| Audio                   	| P(speakers broken) 	| Y              	| Y				| P			|
+| Bluetooth               	| Y                  	| ?              	| Y				| N			|
+| Front Camera			| N			| Y			| Y				| ?			|
+| Back Camera                  	| N                  	|               	| 				|			|
+| USB                     	| Y                  	| Y              	| Y				| Y			|
+| USB Gadget              	| P                  	| ?              	| N				| ?			|
+| Suspending and resuming 	| P                  	| Y              	| P(Fails to resume when booted from USB)	| ?	|
+| eMMC installation       	| Y                  	| Y              	| Y				| ?			|
+| KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| ?			|
 
 ## Official discord server is at https://discord.gg/4QhpsHRygt
 ## Official IRC channel is #cadmium on Freenode IRC, it is bridged to #cadmium-irc channel on discord

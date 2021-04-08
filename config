@@ -3,9 +3,9 @@
 
 # Target device
 # It is sorta using codenames, but "kukui" sounds stupid so i won't use it
-# One of: bob, duet, kevin, minnie, speedy
+# One of: bob, duet, kevin, minnie, speedy, lazor
 if [ "$RELEASE" = "" ]; then
-	TARGET=minnie
+	TARGET=lazor
 else
 	TARGET=$RELEASE
 fi

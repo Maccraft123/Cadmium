@@ -22,7 +22,7 @@ Thanks @LoganMD for the logo
 | Front Camera			| N			| Y			| Y				| ?			|
 | Back Camera                  	| N                  	|               	| 				|			|
 | USB                     	| Y                  	| Y              	| Y				| Y			|
-| USB Gadget              	| P                  	| ?              	| N				| ?			|
+| USB Gadget              	| P                  	| ?              	| N				| 			|
 | Suspending and resuming 	| P                  	| Y              	| P(weird stuff)		| Y			|
 | eMMC installation       	| Y                  	| Y              	| Y				| Y			|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| Y			|

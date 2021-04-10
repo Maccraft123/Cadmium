@@ -9,7 +9,7 @@ Thanks @LoganMD for the logo
 | Hardware support matrix      	| Duet               	| Kevin and Bob        	| Asus C100PA and C201PA	| Acer Spin 513		|
 |-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|
 | Internal Display              | Y(needs patches)   	| Y		 	| Y				| Y			|
-| External Display		| N			| Y(FW)			| Y				| ?			|
+| External Display		| N			| Y(FW)			| Y				| N			|
 | Display autorotation    	| Y                  	| N              	| N				| N			|
 | Hardware video decoding	| N			| P			| P				| N(FW)			|
 | Touchscreen             	| Y                  	| Y              	| Y				| Y			|

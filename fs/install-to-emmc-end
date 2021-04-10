@@ -37,6 +37,14 @@ if [ -f /accel-matrix.hwdb ]; then
 	[ "$SYSTEMD" = "1" ] && chroot /mnt systemd-hwdb update
 fi
 
+cp -r /CdFiles /mnt/CdFiles
+if [ $TARGET = lazor ]; then
+	chroot /mnt make -C /CdFiles/qmic prefix=/usr install
+	chroot /mnt make -C /CdFiles/qrtr prefix=/usr install
+	chroot /mnt make -C /CdFiles/rmtfs prefix=/usr install
+	chroot /mnt systemctl enable rmtfs
+fi
+
 # install ui, yes this uses source. deal with it.
 source ~/ui/install
 

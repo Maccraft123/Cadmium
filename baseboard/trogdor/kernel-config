@@ -2,7 +2,7 @@
 # Automatically generated file; DO NOT EDIT.
 # Linux/arm64 5.12.0-rc6 Kernel Configuration
 #
-CONFIG_CC_VERSION_TEXT="aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110"
+CONFIG_CC_VERSION_TEXT="gcc (Debian 10.2.1-6) 10.2.1 20210110"
 CONFIG_CC_IS_GCC=y
 CONFIG_GCC_VERSION=100201
 CONFIG_CLANG_VERSION=0
@@ -2601,6 +2601,7 @@ CONFIG_RMI4_F12=y
 CONFIG_RMI4_F30=y
 # CONFIG_RMI4_F34 is not set
 # CONFIG_RMI4_F3A is not set
+# CONFIG_RMI4_F54 is not set
 # CONFIG_RMI4_F55 is not set
 
 #
@@ -3527,7 +3528,278 @@ CONFIG_REGULATOR_QCOM_SPMI=y
 # CONFIG_REGULATOR_QCOM_LABIBB is not set
 # CONFIG_RC_CORE is not set
 # CONFIG_MEDIA_CEC_SUPPORT is not set
-# CONFIG_MEDIA_SUPPORT is not set
+CONFIG_MEDIA_SUPPORT=m
+CONFIG_MEDIA_SUPPORT_FILTER=y
+# CONFIG_MEDIA_SUBDRV_AUTOSELECT is not set
+
+#
+# Media device types
+#
+CONFIG_MEDIA_CAMERA_SUPPORT=y
+# CONFIG_MEDIA_ANALOG_TV_SUPPORT is not set
+# CONFIG_MEDIA_DIGITAL_TV_SUPPORT is not set
+# CONFIG_MEDIA_RADIO_SUPPORT is not set
+# CONFIG_MEDIA_SDR_SUPPORT is not set
+CONFIG_MEDIA_PLATFORM_SUPPORT=y
+# CONFIG_MEDIA_TEST_SUPPORT is not set
+# end of Media device types
+
+CONFIG_VIDEO_DEV=m
+CONFIG_MEDIA_CONTROLLER=y
+
+#
+# Video4Linux options
+#
+CONFIG_VIDEO_V4L2=m
+CONFIG_VIDEO_V4L2_I2C=y
+CONFIG_VIDEO_V4L2_SUBDEV_API=y
+# CONFIG_VIDEO_ADV_DEBUG is not set
+# CONFIG_VIDEO_FIXED_MINOR_RANGES is not set
+CONFIG_V4L2_FWNODE=m
+# end of Video4Linux options
+
+#
+# Media controller options
+#
+# end of Media controller options
+
+#
+# Media drivers
+#
+
+#
+# Drivers filtered as selected at 'Filter media drivers'
+#
+CONFIG_MEDIA_USB_SUPPORT=y
+
+#
+# Webcam devices
+#
+CONFIG_USB_VIDEO_CLASS=m
+# CONFIG_USB_VIDEO_CLASS_INPUT_EVDEV is not set
+# CONFIG_USB_GSPCA is not set
+# CONFIG_USB_PWC is not set
+# CONFIG_VIDEO_CPIA2 is not set
+# CONFIG_USB_ZR364XX is not set
+# CONFIG_USB_STKWEBCAM is not set
+# CONFIG_USB_S2255 is not set
+# CONFIG_VIDEO_USBTV is not set
+
+#
+# Webcam, TV (analog/digital) USB devices
+#
+# CONFIG_VIDEO_EM28XX is not set
+# CONFIG_MEDIA_PCI_SUPPORT is not set
+CONFIG_VIDEOBUF2_CORE=m
+CONFIG_VIDEOBUF2_V4L2=m
+CONFIG_VIDEOBUF2_MEMOPS=m
+CONFIG_VIDEOBUF2_VMALLOC=m
+CONFIG_VIDEOBUF2_DMA_SG=m
+CONFIG_V4L_PLATFORM_DRIVERS=y
+# CONFIG_VIDEO_CAFE_CCIC is not set
+# CONFIG_VIDEO_CADENCE is not set
+# CONFIG_VIDEO_ASPEED is not set
+# CONFIG_VIDEO_MUX is not set
+CONFIG_VIDEO_QCOM_CAMSS=m
+# CONFIG_VIDEO_XILINX is not set
+# CONFIG_V4L_MEM2MEM_DRIVERS is not set
+# end of Media drivers
+
+#
+# Media ancillary drivers
+#
+
+#
+# Audio decoders, processors and mixers
+#
+# CONFIG_VIDEO_TVAUDIO is not set
+# CONFIG_VIDEO_TDA7432 is not set
+# CONFIG_VIDEO_TDA9840 is not set
+# CONFIG_VIDEO_TDA1997X is not set
+# CONFIG_VIDEO_TEA6415C is not set
+# CONFIG_VIDEO_TEA6420 is not set
+# CONFIG_VIDEO_MSP3400 is not set
+# CONFIG_VIDEO_CS3308 is not set
+# CONFIG_VIDEO_CS5345 is not set
+# CONFIG_VIDEO_CS53L32A is not set
+# CONFIG_VIDEO_TLV320AIC23B is not set
+# CONFIG_VIDEO_UDA1342 is not set
+# CONFIG_VIDEO_WM8775 is not set
+# CONFIG_VIDEO_WM8739 is not set
+# CONFIG_VIDEO_VP27SMPX is not set
+# CONFIG_VIDEO_SONY_BTF_MPX is not set
+# end of Audio decoders, processors and mixers
+
+#
+# RDS decoders
+#
+# CONFIG_VIDEO_SAA6588 is not set
+# end of RDS decoders
+
+#
+# Video decoders
+#
+# CONFIG_VIDEO_ADV7180 is not set
+# CONFIG_VIDEO_ADV7183 is not set
+# CONFIG_VIDEO_ADV748X is not set
+# CONFIG_VIDEO_ADV7604 is not set
+# CONFIG_VIDEO_ADV7842 is not set
+# CONFIG_VIDEO_BT819 is not set
+# CONFIG_VIDEO_BT856 is not set
+# CONFIG_VIDEO_BT866 is not set
+# CONFIG_VIDEO_KS0127 is not set
+# CONFIG_VIDEO_ML86V7667 is not set
+# CONFIG_VIDEO_SAA7110 is not set
+# CONFIG_VIDEO_SAA711X is not set
+# CONFIG_VIDEO_TC358743 is not set
+# CONFIG_VIDEO_TVP514X is not set
+# CONFIG_VIDEO_TVP5150 is not set
+# CONFIG_VIDEO_TVP7002 is not set
+# CONFIG_VIDEO_TW2804 is not set
+# CONFIG_VIDEO_TW9903 is not set
+# CONFIG_VIDEO_TW9906 is not set
+# CONFIG_VIDEO_TW9910 is not set
+# CONFIG_VIDEO_VPX3220 is not set
+# CONFIG_VIDEO_MAX9286 is not set
+
+#
+# Video and audio decoders
+#
+# CONFIG_VIDEO_SAA717X is not set
+# CONFIG_VIDEO_CX25840 is not set
+# end of Video decoders
+
+#
+# Video encoders
+#
+# CONFIG_VIDEO_SAA7127 is not set
+# CONFIG_VIDEO_SAA7185 is not set
+# CONFIG_VIDEO_ADV7170 is not set
+# CONFIG_VIDEO_ADV7175 is not set
+# CONFIG_VIDEO_ADV7343 is not set
+# CONFIG_VIDEO_ADV7393 is not set
+# CONFIG_VIDEO_ADV7511 is not set
+# CONFIG_VIDEO_AD9389B is not set
+# CONFIG_VIDEO_AK881X is not set
+# CONFIG_VIDEO_THS8200 is not set
+# end of Video encoders
+
+#
+# Video improvement chips
+#
+# CONFIG_VIDEO_UPD64031A is not set
+# CONFIG_VIDEO_UPD64083 is not set
+# end of Video improvement chips
+
+#
+# Audio/Video compression chips
+#
+# CONFIG_VIDEO_SAA6752HS is not set
+# end of Audio/Video compression chips
+
+#
+# SDR tuner chips
+#
+# end of SDR tuner chips
+
+#
+# Miscellaneous helper chips
+#
+# CONFIG_VIDEO_THS7303 is not set
+# CONFIG_VIDEO_M52790 is not set
+# CONFIG_VIDEO_I2C is not set
+# CONFIG_VIDEO_ST_MIPID02 is not set
+# end of Miscellaneous helper chips
+
+#
+# Camera sensor devices
+#
+# CONFIG_VIDEO_HI556 is not set
+# CONFIG_VIDEO_IMX214 is not set
+# CONFIG_VIDEO_IMX219 is not set
+# CONFIG_VIDEO_IMX258 is not set
+# CONFIG_VIDEO_IMX274 is not set
+# CONFIG_VIDEO_IMX290 is not set
+# CONFIG_VIDEO_IMX319 is not set
+# CONFIG_VIDEO_IMX334 is not set
+# CONFIG_VIDEO_IMX355 is not set
+# CONFIG_VIDEO_OV02A10 is not set
+# CONFIG_VIDEO_OV2640 is not set
+# CONFIG_VIDEO_OV2659 is not set
+# CONFIG_VIDEO_OV2680 is not set
+# CONFIG_VIDEO_OV2685 is not set
+# CONFIG_VIDEO_OV5640 is not set
+# CONFIG_VIDEO_OV5645 is not set
+# CONFIG_VIDEO_OV5647 is not set
+# CONFIG_VIDEO_OV5648 is not set
+# CONFIG_VIDEO_OV6650 is not set
+# CONFIG_VIDEO_OV5670 is not set
+# CONFIG_VIDEO_OV5675 is not set
+# CONFIG_VIDEO_OV5695 is not set
+# CONFIG_VIDEO_OV7251 is not set
+# CONFIG_VIDEO_OV772X is not set
+# CONFIG_VIDEO_OV7640 is not set
+# CONFIG_VIDEO_OV7670 is not set
+# CONFIG_VIDEO_OV7740 is not set
+# CONFIG_VIDEO_OV8856 is not set
+# CONFIG_VIDEO_OV8865 is not set
+# CONFIG_VIDEO_OV9640 is not set
+# CONFIG_VIDEO_OV9650 is not set
+# CONFIG_VIDEO_OV13858 is not set
+# CONFIG_VIDEO_VS6624 is not set
+# CONFIG_VIDEO_MT9M001 is not set
+# CONFIG_VIDEO_MT9M032 is not set
+# CONFIG_VIDEO_MT9M111 is not set
+# CONFIG_VIDEO_MT9P031 is not set
+# CONFIG_VIDEO_MT9T001 is not set
+# CONFIG_VIDEO_MT9T112 is not set
+# CONFIG_VIDEO_MT9V011 is not set
+# CONFIG_VIDEO_MT9V032 is not set
+# CONFIG_VIDEO_MT9V111 is not set
+# CONFIG_VIDEO_SR030PC30 is not set
+# CONFIG_VIDEO_NOON010PC30 is not set
+# CONFIG_VIDEO_M5MOLS is not set
+# CONFIG_VIDEO_RDACM20 is not set
+# CONFIG_VIDEO_RDACM21 is not set
+# CONFIG_VIDEO_RJ54N1 is not set
+# CONFIG_VIDEO_S5K6AA is not set
+# CONFIG_VIDEO_S5K6A3 is not set
+# CONFIG_VIDEO_S5K4ECGX is not set
+# CONFIG_VIDEO_S5K5BAF is not set
+# CONFIG_VIDEO_CCS is not set
+# CONFIG_VIDEO_ET8EK8 is not set
+# CONFIG_VIDEO_S5C73M3 is not set
+# end of Camera sensor devices
+
+#
+# Lens drivers
+#
+# CONFIG_VIDEO_AD5820 is not set
+# CONFIG_VIDEO_AK7375 is not set
+# CONFIG_VIDEO_DW9714 is not set
+# CONFIG_VIDEO_DW9768 is not set
+# CONFIG_VIDEO_DW9807_VCM is not set
+# end of Lens drivers
+
+#
+# Flash devices
+#
+# CONFIG_VIDEO_ADP1653 is not set
+# CONFIG_VIDEO_LM3560 is not set
+# CONFIG_VIDEO_LM3646 is not set
+# end of Flash devices
+
+#
+# SPI helper chips
+#
+# CONFIG_VIDEO_GS1662 is not set
+# end of SPI helper chips
+
+#
+# Media SPI Adapters
+#
+# end of Media SPI Adapters
+# end of Media ancillary drivers
 
 #
 # Graphics support

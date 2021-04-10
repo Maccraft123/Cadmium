@@ -19,7 +19,7 @@ Thanks @LoganMD for the logo
 | GPU reclocking		| P			| Y			| Y				| Y			|
 | Audio                   	| P(speakers broken) 	| Y              	| Y				| P			|
 | Bluetooth               	| Y                  	| ?              	| Y				| Y			|
-| Front Camera			| N			| Y			| Y				| ?			|
+| Front Camera			| N			| Y			| Y				| Y			|
 | Back Camera                  	| N                  	|               	| 				|			|
 | USB                     	| Y                  	| Y              	| Y				| Y			|
 | USB Gadget              	| P                  	| ?              	| N				| 			|

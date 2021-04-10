@@ -11,19 +11,19 @@ Thanks @LoganMD for the logo
 | Internal Display              | Y(needs patches)   	| Y		 	| Y				| Y			|
 | External Display		| N			| Y(FW)			| Y				| ?			|
 | Display autorotation    	| Y                  	| N              	| N				| N			|
-| Hardware video decoding	| N			| P			| P				| ?			|
-| Touchscreen             	| Y                  	| Y              	| Y				| ?			|
+| Hardware video decoding	| N			| P			| P				| N(FW)			|
+| Touchscreen             	| Y                  	| Y              	| Y				| Y			|
 | Pen Input			| Y			| Y			| 				| ?			|
-| WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				| N			|
+| WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				| N(FW)			|
 | 3D Acceleration         	| Y                  	| Y              	| Y				| Y(FW)			|
 | GPU reclocking		| P			| Y			| Y				| ?			|
 | Audio                   	| P(speakers broken) 	| Y              	| Y				| P			|
-| Bluetooth               	| Y                  	| ?              	| Y				| N			|
+| Bluetooth               	| Y                  	| ?              	| Y				| Y			|
 | Front Camera			| N			| Y			| Y				| ?			|
 | Back Camera                  	| N                  	|               	| 				|			|
 | USB                     	| Y                  	| Y              	| Y				| Y			|
 | USB Gadget              	| P                  	| ?              	| N				| ?			|
-| Suspending and resuming 	| P                  	| Y              	| P(Fails to resume when booted from USB)	| ?	|
+| Suspending and resuming 	| P                  	| Y              	| P(weird stuff)		| Y			|
 | eMMC installation       	| Y                  	| Y              	| Y				| ?			|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| ?			|
 

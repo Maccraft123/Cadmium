@@ -34,9 +34,9 @@ partx -a ${MMCDEV} 2>/dev/null || true
 sleep 1
 
 # f2fs time boiii
-if [ "$TARGET" = "kevin" ]; then
+if [ "$TARGET" = "kevin" -o "$TARGET" = "lazor" ]; then
 
-	mkfs.f2fs -f ${MMCDEV}p3 -t 0 # kevin doesn't support discard on f2fs?
+	mkfs.f2fs -f ${MMCDEV}p3 -t 0 # kevin and lazor don't support discard on f2fs?
 else
 	mkfs.f2fs -f ${MMCDEV}p3
 fi

@@ -96,6 +96,7 @@ mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 # copy over firmware
 mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
 cp -r $CADMIUMROOT/baseboard/$BASEBOARD/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
+[ -d $CADMIUMROOT/board/$TARGET/firmware/ ] && cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
 
 # install sway config to user dir
 mkdir -p $CADMIUMROOT/tmp/root/etc/sway

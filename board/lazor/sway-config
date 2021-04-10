@@ -4,12 +4,9 @@
 #
 # Read `man 5 sway` for a complete reference.
 
-output DSI-1 scale 1.3 transform 270
-input type:touch map_to_output DSI-1
+input type:touch map_to_output eDP-1
 input type:touchpad click_method clickfinger
 
-# this is for Lenovo's USI pen
-swaymsg input 10182:3632:hid-over-i2c_27C6:0E30 map_to_output DSI-1
 
 bindsym Mod4+F6 exec brightnessctl s 5%-
 bindsym Mod4+F7 exec brightnessctl s 5%+

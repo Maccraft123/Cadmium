@@ -1,0 +1,37 @@
+From 87abf2ba3846d28e4b5f0e5f9cef873b4352a0a9 Mon Sep 17 00:00:00 2001
+From: Stephen Boyd <swboyd@chromium.org>
+Date: Tue, 23 Feb 2021 13:45:37 -0800
+Subject: firmware: qcom_scm: Suppress sysfs bind attributes
+
+We don't want userspace ejecting this driver at runtime. Various other
+drivers call into this code because it provides the mechanism to
+communicate with the secure world on qcom SoCs. It should probe once and
+be present forever after that.
+
+Cc: Elliot Berman <eberman@codeaurora.org>
+Cc: Brian Masney <masneyb@onstation.org>
+Cc: Stephan Gerhold <stephan@gerhold.net>
+Cc: Jeffrey Hugo <jhugo@codeaurora.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/20210223214539.1336155-5-swboyd@chromium.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/firmware/qcom_scm.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+index 9ac84b5d6ce00..ee9cb545e73b9 100644
+--- a/drivers/firmware/qcom_scm.c
++++ b/drivers/firmware/qcom_scm.c
+@@ -1301,6 +1301,7 @@ static struct platform_driver qcom_scm_driver = {
+ 	.driver = {
+ 		.name	= "qcom_scm",
+ 		.of_match_table = qcom_scm_dt_match,
++		.suppress_bind_attrs = true,
+ 	},
+ 	.probe = qcom_scm_probe,
+ 	.shutdown = qcom_scm_shutdown,
+-- 
+cgit 1.2.3-1.el7
+

@@ -11,7 +11,7 @@ chroot /mnt/ /bin/xbps-install -Syu xbps
 chroot /mnt/ /bin/xbps-install -yu
 chroot /mnt/ /bin/xbps-install -y base-system
 chroot /mnt/ /bin/xbps-remove -y base-voidstrap
-chroot /mnt/ /bin/xbps-install -y sudo vim NetworkManager parted f2fs-tools
+chroot /mnt/ /bin/xbps-install -y sudo vim NetworkManager parted f2fs-tools eudev-libudev-devel
 
 ln -s /etc/sv/dbus		/var/service/
 ln -s /etc/sv/NetworkManager	/var/service/

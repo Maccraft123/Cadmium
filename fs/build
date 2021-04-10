@@ -50,7 +50,7 @@ case "$ROOTFS" in
 		[ -n "$foreign" ] && chroot root/ /debootstrap/debootstrap --second-stage
 		# preinstall packages to have wifi
 		chroot root/ $qemu /bin/apt update
-		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools libudev-dev
+		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools libudev-dev build-essential git
 	;;
 	# let's explain this: when void is set, $V is set to -v, so it does 'grep -v musl', printing link without musl
 	# when $V is not set, grep is 'grep musl', printing only link with musl
@@ -71,7 +71,7 @@ case "$ROOTFS" in
 		chroot root/ $qemu /bin/xbps-install -yu
 		chroot root/ $qemu /bin/xbps-install -y base-system
 		chroot root/ $qemu /bin/xbps-remove -y base-voidstrap
-		chroot root/ $qemu /bin/xbps-install -y vim NetworkManager parted f2fs-tools eudev-libudev-devel
+		chroot root/ $qemu /bin/xbps-install -y vim NetworkManager parted f2fs-tools eudev-libudev-devel base-devel git
 		cp void-${ARCH_UNAME}${V}.tar.xz root/void.tar.xz
 	;;
 	ubports)
@@ -98,21 +98,26 @@ mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
 cp -r $CADMIUMROOT/baseboard/$BASEBOARD/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
 [ -d $CADMIUMROOT/board/$TARGET/firmware/ ] && cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
 
-# install rmtfs for lazor
-if [ $TARGET = lazor]; then
-	if [ -d $CADMIUMROOT/tmp/rmtfs ]; then
-		cd $CADMIUMROOT/tmp/rmtfs
-		git pull
-		make clean
-		make CC=${CROSS_COMPILE}gcc DESTDIR=$CADMIUMROOT/tmp/root/
-		make CC=${CROSS_COMPILE}gcc DESTDIR=$CADMIUMROOT/tmp/root/ install
-	else
-		git clone https://github.com/Maccraft123/rmtfs.git $CADMIUMROOT/tmp/rmtfs
-		cd $CADMIUMROOT/tmp/rmtfs
-		make CC=${CROSS_COMPILE}gcc DESTDIR=$CADMIUMROOT/tmp/root/
-		make CC=${CROSS_COMPILE}gcc DESTDIR=$CADMIUMROOT/tmp/root/ install
-	fi
-	chroot $CADMIUMROOT/tmp/root $qemu systemctl enable rmtfs
+# make cadmium dir for future scripts lolol
+mkdir $CADMIUMROOT/tmp/root/CdFiles
+
+# install qcom binaries for lazor
+if [ $TARGET = lazor ]; then
+	# qmic
+	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/git clone https://github.com/andersson/qmic.git /CdFiles/qmic
+	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/make -C /CdFiles/qmic prefix=/usr
+	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/make -C /CdFiles/qmic prefix=/usr install
+
+	# qrtr
+	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/git clone https://github.com/andersson/qrtr.git /CdFiles/qrtr
+	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/make -C /CdFiles/qrtr prefix=/usr
+	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/make -C /CdFiles/qrtr prefix=/usr install
+
+	# rmtfs
+	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/git clone https://github.com/Maccraft123/rmtfs.git /CdFiles/rmtfs
+	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/make -C /CdFiles/rmtfs
+	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/make -C /CdFiles/rmtfs install
+	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/systemctl enable rmtfs
 fi
 
 # install sway config to user dir

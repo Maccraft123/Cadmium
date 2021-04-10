@@ -14,9 +14,9 @@ Thanks @LoganMD for the logo
 | Hardware video decoding	| N			| P			| P				| N(FW)			|
 | Touchscreen             	| Y                  	| Y              	| Y				| Y			|
 | Pen Input			| Y			| Y			| 				| ?			|
-| WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				| N(FW)			|
+| WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				| Y(FW)			|
 | 3D Acceleration         	| Y                  	| Y              	| Y				| Y(FW)			|
-| GPU reclocking		| P			| Y			| Y				| ?			|
+| GPU reclocking		| P			| Y			| Y				| Y			|
 | Audio                   	| P(speakers broken) 	| Y              	| Y				| P			|
 | Bluetooth               	| Y                  	| ?              	| Y				| Y			|
 | Front Camera			| N			| Y			| Y				| ?			|
@@ -24,8 +24,8 @@ Thanks @LoganMD for the logo
 | USB                     	| Y                  	| Y              	| Y				| Y			|
 | USB Gadget              	| P                  	| ?              	| N				| ?			|
 | Suspending and resuming 	| P                  	| Y              	| P(weird stuff)		| Y			|
-| eMMC installation       	| Y                  	| Y              	| Y				| ?			|
-| KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| ?			|
+| eMMC installation       	| Y                  	| Y              	| Y				| Y			|
+| KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| Y			|
 
 ## Official discord server is at https://discord.gg/4QhpsHRygt
 ## Official IRC channel is #cadmium on Freenode IRC, it is bridged to #cadmium-irc channel on discord

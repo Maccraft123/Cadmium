@@ -57,4 +57,5 @@ Thanks @LoganMD for the logo
 - ```curl``` to download the kernel
 - ```bsdtar``` for writing the archive file
 - ```f2fs-tools``` for creating the filesystem used by Cadmium
+- ```parted``` to prepare gpt table to be modified by cgpt
 - Build dependencies for kernel compilation

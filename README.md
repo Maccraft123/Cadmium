@@ -17,7 +17,7 @@ Thanks @LoganMD for the logo
 | WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				| Y(FW)			|
 | 3D Acceleration         	| Y                  	| Y              	| Y				| Y(FW)			|
 | GPU reclocking		| P			| Y			| Y				| Y			|
-| Audio                   	| P(speakers broken) 	| Y              	| Y				| P			|
+| Audio                   	| P(speakers broken) 	| Y              	| Y				| P(only usb)		|
 | Bluetooth               	| Y                  	| ?              	| Y				| Y			|
 | Front Camera			| N			| Y			| Y				| Y			|
 | Back Camera                  	| N                  	|               	| 				|			|

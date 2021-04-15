@@ -1,0 +1,36 @@
+#!/bin/bash
+MMCDEV=$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')
+
+if [ $(id -u) -ne 0 ]; then
+	echo "$0 must be ran by root!"
+	exit 1
+fi
+
+export KERNA_NUM=$(cgpt show -v $MMCDEV | grep 'KERN-A' | awk '{print $3}')
+export KERNAP=$(cgpt show -P -i $KERNA_NUM $MMCDEV)
+export KERNAT=$(cgpt show -T -i $KERNA_NUM $MMCDEV)
+export KERNAS=$(cgpt show -S -i $KERNA_NUM $MMCDEV)
+
+
+export KERNB_NUM=$(cgpt show -v $MMCDEV | grep 'KERN-B' | awk '{print $3}')
+export KERNBP=$(cgpt show -P -i $KERNB_NUM $MMCDEV)
+export KERNBT=$(cgpt show -T -i $KERNB_NUM $MMCDEV)
+export KERNBS=$(cgpt show -S -i $KERNB_NUM $MMCDEV)
+
+#echo "KERNAP: $KERNAP"
+#echo "KERNAT: $KERNAT"
+#echo "KERNAS: $KERNAS"
+#echo "KERNBP: $KERNBP"
+#echo "KERNBT: $KERNBT"
+#echo "KERNBS: $KERNBS"
+
+
+if [ $KERNAP > $KERNBP ]; then
+	#echo "Using cros kernel partition A"
+	cgpt add -i $KERNA_NUM -T 1 -P 15 -S 0 $MMCDEV
+else
+	#echo "Using cros kernel partition B"
+	cgpt add -i $KERNB_NUM -T 1 -P 15 -S 0 $MMCDEV
+fi
+
+echo "Now save all data and reboot"

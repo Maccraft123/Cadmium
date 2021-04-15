@@ -108,6 +108,9 @@ dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_
 # make cadmium dir for future scripts lolol
 mkdir $CADMIUMROOT/tmp/root/CdFiles
 
+# copy over Important Stuff (tm)
+cp -r $CADMIUMROOT/fs/CdFiles/* $CADMIUMROOT/tmp/root/CdFiles/
+
 # install qcom binaries for lazor
 if [ $BASEBOARD = trogdor ]; then
 	# qmic

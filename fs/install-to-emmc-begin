@@ -14,17 +14,35 @@ MMCDEV=$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')
 # give some time to userspace
 sleep 1
 
-# zero out kernel partitions, just in case
-dd if=/dev/zero of=${MMCDEV} bs=512k count=128 seek=$EMMC_OFFSET
+if [ $OXIDE = 0 ]; then
+	# zero out kernel partitions, just in case
+	dd if=/dev/zero of=${MMCDEV} bs=512k count=128 seek=$EMMC_OFFSET
 
-# cgpt doesn't like if we don't do this
-parted --script ${MMCDEV} mklabel gpt >/dev/null 2>&1 || true
+	# cgpt doesn't like if we don't do this
+	parted --script ${MMCDEV} mklabel gpt >/dev/null 2>&1 || true
 
-# create partitions
-cgpt create ${MMCDEV}
-cgpt add -i 1 -t kernel	-b $(expr 8192 + $EMMC_OFFSET)		-s 65536 -l MMCKernelA -S 1 -T 2 -P 10	${MMCDEV}
-cgpt add -i 2 -t kernel	-b $(expr 73728 + $EMMC_OFFSET)		-s 65536 -l MMCKernelB -S 0 -T 2 -P 5	${MMCDEV}
-cgpt add -i 3 -t data	-b $(expr 139264 + $EMMC_OFFSET)	-s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l Root ${MMCDEV}
+	# create partitions
+	cgpt create ${MMCDEV}
+	export PARTOFFSET=0
+	cgpt add -i 3 -t data   -b $(expr 139264 + $EMMC_OFFSET)        -s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l Root ${MMCDEV}
+else
+	# fsck partition to make resize2fs happy
+	e2fsck -f /dev/disk/by-partlabel/STATE
+	# shrink stateful filesystem
+	resize2fs /dev/disk/by-partlabel/STATE 32000M # TODO: ask user for this
+
+	# shrink stateful partition, 2048 * megabytes with some margin for error
+	cgpt add -i 1 -s 67108864 $MMCDEV # TODO: ask user for this
+	export PARTOFFSET=$(cgpt show -q $MMCDEV | wc -l)
+	export EMMC_OFFSET=$(expr $(cgpt show -i 1 $MMCDEV | grep -n1 start | awk '{print $2}' | tail -n1) + $(cgpt show -i 1 $MMCDEV | grep -n1 start | awk '{print $3}' | tail -n1) + $EMMC_OFFSET)
+	cgpt add -i $(expr 3 + $PARTOFFSET) -t data     -b $(expr 139264 + $EMMC_OFFSET)        -s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l Root ${MMCDEV}
+
+fi
+
+	
+	
+cgpt add -i $(expr 1 + $PARTOFFSET) -t kernel	-b $(expr 8192 + $EMMC_OFFSET)		-s 65536 -l MMCKernelA -S 1 -T 2 -P 10	${MMCDEV}
+cgpt add -i $(expr 2 + $PARTOFFSET) -t kernel	-b $(expr 73728 + $EMMC_OFFSET)		-s 65536 -l MMCKernelB -S 0 -T 2 -P 5	${MMCDEV}
 
 sleep 1
 

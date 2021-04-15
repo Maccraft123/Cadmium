@@ -53,7 +53,7 @@ mkdir -p /mnt/lib/modules/$(uname -r)/
 cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/
 
 # copy kernel from usb pendrive/hdd to internal emmc
-dd if=/dev/zero of=${MMCDEV}p1 >/dev/null 2>&1 || true
-dd if=/dev/disk/by-partlabel/SDKernelA of=${MMCDEV}p1 >/dev/null 2>&1
+dd if=/dev/zero of=/dev/disk/by-partlabel/MMCKernelA >/dev/null 2>&1 || true
+dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA >/dev/null 2>&1
 
 # end of install-to-emmc-begin

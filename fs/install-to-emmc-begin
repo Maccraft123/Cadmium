@@ -33,15 +33,17 @@ partx -a ${MMCDEV} 2>/dev/null || true
 
 sleep 1
 
+export ROOTPART=${MMCDEV}p3
+
 # f2fs time boiii
 if [ "$TARGET" = "kevin" -o "$TARGET" = "lazor" ]; then
 
-	mkfs.f2fs -f ${MMCDEV}p3 -t 0 # kevin and lazor don't support discard on f2fs?
+	mkfs.f2fs -f $ROOTPART -t 0 # kevin and lazor don't support discard on f2fs?
 else
-	mkfs.f2fs -f ${MMCDEV}p3
+	mkfs.f2fs -f $ROOTPART
 fi
 
-mount ${MMCDEV}p3 /mnt
+mount $ROOTPART /mnt
 
 mkdir -p /mnt/lib/firmware/
 cp -r /lib/firmware/* /mnt/lib/firmware/

@@ -3,7 +3,7 @@
 Thanks @LoganMD for the logo
 
 # Cadmium++, Linux for ARM chromebooks that don't get attention elsewhere
-### It also doesn't suck! This version has proprietary Mali drivers because Panfrost kinda sucks. It just works...
+### It also doesn't suck! This version has proprietary Mali drivers because Panfrost kinda sucks. This whole OS will work perfectly on your C201
 
 ## Hardware support:
 | Hardware support matrix      	| Duet               	| Kevin and Bob        	| Asus C100PA and C201PA	|

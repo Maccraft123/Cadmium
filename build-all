@@ -7,7 +7,9 @@ CADMIUMROOT=$(pwd)
 
 set -e
 
-sleep 1 # let's give user time if they commit a typo
+echo "You have started the installer script for Cadmium++ If you did not read the Github instructions, please read them. This installer allows you to build directly to a USB drive or to just make a disk image that you can flash later. You have 5 seconds before this program starts installing to your USB device or creating an image."
+
+sleep 5 # let's give user time if they commit a typo
 
 # Usage:
 # build-all <device>
@@ -16,10 +18,7 @@ sleep 1 # let's give user time if they commit a typo
 [ -z "$1" ] && exit 1
 
 if [ -n "$2" ]; then
-	echo "Warning,"
-	echo "Running $0 like that is not recommended"
-	echo "Consider $0 /dev/sdX"
-	sleep 2
+	echo "You have decided to build a disk image. The installer will now start."
 fi
 
 # it deals with env vars

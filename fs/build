@@ -45,7 +45,7 @@ case "$ROOTFS" in
 	debian)
 		echo "Installing Debian"
 		# debootstrap randomly exits with 1, so there's that || true
-		debootstrap $foreign --arch=$ARCH_DEB sid $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ || true
+		debootstrap $foreign --arch=$ARCH_DEB buster $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ || true
 		# probably it can be ran on target device with little shim that does that and then execs init
 		[ -n "$foreign" ] && chroot root/ /debootstrap/debootstrap --second-stage
 		# preinstall packages to have wifi

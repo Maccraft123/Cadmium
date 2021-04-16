@@ -45,8 +45,11 @@ if [ "$CHOSEN" != "none" ]; then
 			chroot /mnt systemctl enable phosh
 			;;
 	esac
+	echo "Installing Mali drivers since we just installed the UI"
+	chroot /mnt apt-get install apt install mali-t76x-wayland-driver
+	echo "Done installing graphics drivers!"
 	echo "Installing common system utilities"
-	chroot /mnt $INSTALLER firefox pulseaudio pavucontrol htop ssh
+	chroot /mnt $INSTALLER firefox pulseaudio pavucontrol chromium htop ssh
 fi
 
 echo "Done installing UI!"

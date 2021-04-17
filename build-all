@@ -1,5 +1,5 @@
 #!/bin/bash
-CADMIUMROOT=$(pwd)
+CADMIUMROOT=$(dirname $(realpath $0))
 
 . $CADMIUMROOT/config
 . $CADMIUMROOT/board/$TARGET/boardinfo
@@ -27,13 +27,13 @@ source $CADMIUMROOT/bootfw/$BOOTFW/prepare_parts
 
 
 # build, package and write kernel
-./kernel/build $CADMIUMROOT
+$CADMIUMROOT/kernel/build
 
 # write filesystem
-./fs/build $CADMIUMROOT $ROOTPART
+$CADMIUMROOT/fs/build $ROOTPART
 
 
-./bootfw/$BOOTFW/package $CADMIUMROOT $DEVICE $ROOTPART
+$CADMIUMROOT/bootfw/$BOOTFW/package $DEVICE $ROOTPART
 dd if=$CADMIUMROOT/tmp/linux-$BASEBOARD/vmlinux.kpart of=$KERNPART
 
 # install modules

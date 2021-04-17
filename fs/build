@@ -1,6 +1,6 @@
 #!/bin/bash
-CADMIUMROOT=$1
-ROOTPART=$2
+CADMIUMROOT=$(dirname $(dirname $(realpath $0)))
+ROOTPART=$1
 
 set -e
 set -v

@@ -6,9 +6,10 @@
 
 if [ -n "$2" ]; then # if $2 is set, it means that user wants a file
 	echo "Making file $1 with size of $2"
-	fallocate $CADMIUMROOT/$1 -l $2
+	IMG=$(realpath $1)
+	fallocate $IMG -l $2
 	DEVICE=$(losetup -f)
-	losetup $DEVICE $CADMIUMROOT/$1
+	losetup $DEVICE $IMG
 
 	KERNPART=${DEVICE}p1
 	KERNPART_B=${DEVICE}p2

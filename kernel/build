@@ -1,7 +1,5 @@
 #!/bin/bash
-CADMIUMROOT=$1
-
-[ -z "$CADMIUMROOT" ] && echo "$0: First parameter has to be root dir of Cadmium" && exit 1
+CADMIUMROOT=$(dirname $(dirname $(realpath $0)))
 
 set -e
 
@@ -10,7 +8,7 @@ set -e
 source $CADMIUMROOT/board/$TARGET/boardinfo
 source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
-mkdir -p tmp
+mkdir -p $CADMIUMROOT/tmp
 cd $CADMIUMROOT/tmp
 
 

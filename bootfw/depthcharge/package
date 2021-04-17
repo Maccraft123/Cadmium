@@ -1,5 +1,5 @@
 #!/bin/bash
-CADMIUMROOT=$1
+CADMIUMROOT=$(dirname $(dirname $(dirname $(realpath $0))))
 
 set -e
 set -v

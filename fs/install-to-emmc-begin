@@ -14,6 +14,8 @@ MMCDEV=$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')
 # give some time to userspace
 sleep 1
 
+[ "$OXIDE" = "" ] && export OXIDE=0
+
 if [ $OXIDE = 0 ]; then
 	# zero out kernel partitions, just in case
 	dd if=/dev/zero of=${MMCDEV} bs=512k count=128 seek=$EMMC_OFFSET

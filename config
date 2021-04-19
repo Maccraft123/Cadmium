@@ -13,3 +13,7 @@ fi
 # RootFS type
 # One of: debian, void, void-musl
 ROOTFS=debian
+
+# Build Cadmium with Oxide support(dualboot)
+# 0: off 1: on
+B_OXIDE=1

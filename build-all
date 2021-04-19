@@ -36,6 +36,11 @@ $CADMIUMROOT/fs/build $ROOTPART
 $CADMIUMROOT/bootfw/$BOOTFW/package $DEVICE $ROOTPART
 dd if=$CADMIUMROOT/tmp/linux-$BASEBOARD/vmlinux.kpart of=$KERNPART
 
+# can't be done in fs/build
+if [ $B_OXIDE = 1 ]; then
+	cp $CADMIUMROOT/tmp/oxide.kpart $CADMIUMROOT/tmp/root/
+fi
+
 # install modules
 make -C $CADMIUMROOT/tmp/linux-$BASEBOARD INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
 

@@ -1,0 +1,1 @@
+console=tty1 root=PARTLABEL=ROOT-C rootfstype=f2fs rootwait rw quiet

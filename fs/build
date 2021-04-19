@@ -149,4 +149,8 @@ cat $CADMIUMROOT/config $CADMIUMROOT/board/$TARGET/boardinfo $CADMIUMROOT/basebo
 cp -r $CADMIUMROOT/ui root/root/ui
 chmod a+x root/root/ui/install
 
+# !!!!!!
+# NOTE:
+# oxide kpart is copied in build-all
+
 #umount root # done in /build-all

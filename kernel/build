@@ -52,7 +52,6 @@ cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 # TODO:
 # make cadmium defconfig from: common-defconfig, soc-defconfig and board-defconfig
 [ -f .config ] || cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel-config .config
-cp $CADMIUMROOT/kernel/cmdline cmdline
 
 #make nconfig # if you want to customize config just uncomment this
 

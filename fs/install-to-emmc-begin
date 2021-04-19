@@ -4,8 +4,11 @@ set -e
 # source the info file
 . ~/info
 
+echo "Installing Cadmium"
+
 # we need internet, TODO: make this run on voidlinux
 nmcli device wifi rescan
+sleep 4 # wait for it to show up
 nmtui connect
 
 # a fancy hack
@@ -26,25 +29,40 @@ if [ $OXIDE = 0 ]; then
 	# create partitions
 	cgpt create ${MMCDEV}
 	export PARTOFFSET=0
+
+	export ROOTPART=/dev/disk/by-partlabel/Root
+	export KERNPART=/dev/disk/by-partlabel/MMCKernelA
+
 	cgpt add -i 3 -t data   -b $(expr 139264 + $EMMC_OFFSET)        -s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l Root ${MMCDEV}
+	cgpt add -i $(expr 1 + $PARTOFFSET) -t kernel   -b $(expr 8192 + $EMMC_OFFSET)          -s 65536 -l MMCKernelA -S 1 -T 2 -P 10  ${MMCDEV}
+	cgpt add -i $(expr 2 + $PARTOFFSET) -t kernel   -b $(expr 73728 + $EMMC_OFFSET)         -s 65536 -l MMCKernelB -S 0 -T 2 -P 5   ${MMCDEV}
 else
-	# fsck partition to make resize2fs happy
-	e2fsck -f /dev/disk/by-partlabel/STATE
+	if [ $B_OXIDE = 0 ]; then
+		echo "Cadmium was NOT build with support for dualbooting"
+		exit 1
+	fi
+	# fsck partition to make resize2fs happy. need to fsck 2 times
+	e2fsck -f /dev/disk/by-partlabel/STATE -y || true
+	e2fsck -f /dev/disk/by-partlabel/STATE -y || true
+
 	# shrink stateful filesystem
 	resize2fs /dev/disk/by-partlabel/STATE 32000M # TODO: ask user for this
 
-	# shrink stateful partition, 2048 * megabytes with some margin for error
-	cgpt add -i 1 -s 67108864 $MMCDEV # TODO: ask user for this
-	export PARTOFFSET=$(cgpt show -q $MMCDEV | wc -l)
-	export EMMC_OFFSET=$(expr $(cgpt show -i 1 $MMCDEV | grep -n1 start | awk '{print $2}' | tail -n1) + $(cgpt show -i 1 $MMCDEV | grep -n1 start | awk '{print $3}' | tail -n1) + $EMMC_OFFSET)
-	cgpt add -i $(expr 3 + $PARTOFFSET) -t data     -b $(expr 139264 + $EMMC_OFFSET)        -s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l Root ${MMCDEV}
+        ROOTPART_I=$(cgpt show $MMCDEV | egrep 'ROOT-C' | head -n1 | awk '{print $3}')
+        KERNPART_I=$(cgpt show $MMCDEV | egrep 'KERN-C' | head -n1 | awk '{print $3}')
+
+        echo "Root partition is $ROOTPART_I and kernel is $KERNPART_I"
+
+        export EMMC_OFFSET=$(expr $(cgpt show -i 1 $MMCDEV | grep -n1 start | awk '{print $2}' | tail -n1) + $(cgpt show -i 1 $MMCDEV | grep -n1 start | awk '{print $3}' | tail -n1) + $EMMC_OFFSET)
+        cgpt add -i $ROOTPART_I -t data     -b $(expr 139264 + $EMMC_OFFSET)        -s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l ROOT-C ${MMCDEV}
+        cgpt add -i $KERNPART_I -t kernel   -b $(expr 8192 + $EMMC_OFFSET)          -s 65536 -l KERN-C -S 0 -T 1 -P 10  ${MMCDEV}
+
+        export ROOTPART=/dev/disk/by-partlabel/ROOT-C
+        export KERNPART=/dev/disk/by-partlabel/KERN-C
 
 fi
 
-	
-	
-cgpt add -i $(expr 1 + $PARTOFFSET) -t kernel	-b $(expr 8192 + $EMMC_OFFSET)		-s 65536 -l MMCKernelA -S 1 -T 2 -P 10	${MMCDEV}
-cgpt add -i $(expr 2 + $PARTOFFSET) -t kernel	-b $(expr 73728 + $EMMC_OFFSET)		-s 65536 -l MMCKernelB -S 0 -T 2 -P 5	${MMCDEV}
+
 
 sleep 1
 
@@ -53,8 +71,7 @@ partx -a ${MMCDEV} 2>/dev/null || true
 
 sleep 1
 
-export ROOTPART=${MMCDEV}p3
-
+echo "Installing to $ROOTPART"
 # f2fs time boiii
 if [ "$TARGET" = "kevin" -o "$TARGET" = "lazor" ]; then
 
@@ -73,7 +90,12 @@ mkdir -p /mnt/lib/modules/$(uname -r)/
 cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/
 
 # copy kernel from usb pendrive/hdd to internal emmc
-dd if=/dev/zero of=/dev/disk/by-partlabel/MMCKernelA >/dev/null 2>&1 || true
-dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA >/dev/null 2>&1
+dd if=/dev/zero of=$KERNPART >/dev/null 2>&1 || true
+
+if [ $OXIDE = 0 ]; then
+	dd if=/dev/disk/by-partlabel/SDKernelA of=$KERNPART >/dev/null 2>&1
+else
+	dd if=/oxide.kpart of=$KERNPART >/dev/null 2>&1
+fi
 
 # end of install-to-emmc-begin

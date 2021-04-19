@@ -45,6 +45,8 @@ if [ $TARGET = lazor ]; then
 	chroot /mnt systemctl enable rmtfs
 fi
 
+echo $OXIDE > /mnt/CdFiles/is_oxide
+
 # install ui, yes this uses source. deal with it.
 source ~/ui/install
 

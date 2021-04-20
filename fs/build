@@ -140,6 +140,9 @@ if [ ! "$ROOTFS" = "ubports" ]; then
 	[ "$ROOTFS" = "void-musl" ] && export ROOTFS=void # those 2 are the same in cadmium
 	cat $CADMIUMROOT/fs/install-to-emmc-begin $CADMIUMROOT/fs/$ROOTFS/install-to-emmc-middle $CADMIUMROOT/fs/install-to-emmc-end > root/root/install-to-emmc
 	chmod a+x root/root/install-to-emmc
+
+	cp $CADMIUMROOT/fs/install-to-here $CADMIUMROOT/tmp/root/root/install-to-here
+	chmod a+x $CADMIUMROOT/tmp/root/root/install-to-here
 fi
 
 # copy config, boardinfo and baseboard info over

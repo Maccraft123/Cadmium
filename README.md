@@ -6,6 +6,7 @@ Thanks @LoganMD for the logo
 ### It also doesn't suck!
 
 ## Hardware support:
+### Note: (FW) entries are meant to indicate that hardware needs blobs to work correctly. It does NOT say anything about boot firmware
 | Hardware support matrix      	| Duet               	| Kevin and Bob        	| Asus C100PA and C201PA	| Acer Spin 513		|
 |-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|
 | Internal Display              | Y(needs patches)   	| Y		 	| Y				| Y			|

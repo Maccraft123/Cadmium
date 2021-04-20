@@ -1,7 +1,9 @@
 # start of install-to-emmc-end
 
-echo "Enter root password"
-chroot /mnt passwd
+echo "Enter root password:"
+until chroot /mnt passwd; do
+	echo "Enter root password:"
+done
 
 read -p "Enter username, no spaces or big letters: "
 chroot /mnt useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
@@ -9,7 +11,6 @@ chroot /mnt useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
 echo "Enter user password:"
 until chroot /mnt passwd $REPLY; do
 	echo "Enter user password:"
-	chroot /mnt passwd $REPLY
 done
 
 export USERNAME=$REPLY

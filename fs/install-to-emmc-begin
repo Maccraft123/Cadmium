@@ -48,6 +48,10 @@ else
 	# shrink stateful filesystem
 	resize2fs /dev/disk/by-partlabel/STATE 32000M # TODO: ask user for this
 
+	# shrink stateful partition, 2048 * megabytes with some margin for error
+	cgpt add -i 1 -s 67108864 $MMCDEV # TODO: ask user for this
+
+
         ROOTPART_I=$(cgpt show $MMCDEV | egrep 'ROOT-C' | head -n1 | awk '{print $3}')
         KERNPART_I=$(cgpt show $MMCDEV | egrep 'KERN-C' | head -n1 | awk '{print $3}')
 

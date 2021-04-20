@@ -52,5 +52,5 @@ source ~/ui/install
 
 umount /mnt
 
-echo "Done! :D, Don't forget to install your favourite DE/WM after rebooting"
+echo "Done! :D"
 echo "$EXTRAPRINT"

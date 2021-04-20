@@ -30,23 +30,28 @@ if [ "$CHOSEN" != "none" ]; then
 			;;
 	esac
 	# magic line that installs all the packages
-	chroot /mnt/ $INSTALLER $PKGS
+	$CHRT $INSTALLER $PKGS
 	case $CHOSEN in
 		sway)
-			echo "Copying sway config"
-			mkdir -p /mnt/etc/sway
-			cp ~/swayconfig /mnt/etc/sway/config
-			# TODO: $RUN_COMMAND setting in ui information
-			echo 'tty | grep tty1 && exec sway' >> /mnt/home/$USERNAME/.bashrc
+			if [ $INST_EMMC = 1 ]; then
+                                echo "Copying sway config"
+                                mkdir -p /mnt/etc/sway
+                                cp ~/swayconfig /mnt/etc/sway/config
+                                echo 'tty | grep tty1 && exec sway' >> /mnt/home/$USERNAME/.bashrc
+                                # TODO: $RUN_COMMAND setting in ui information
+                        else
+                                mv ~/swayconfig /etc/sway/config
+                                echo 'tty | grep tty1 && exec sway' >> /home/$USERNAME/.bashrc
+                        fi
 			;;
 		phosh)
 			echo "Phosh NEEDS password that is only digits"
-			chroot /mnt passwd $USERNAME
-			chroot /mnt systemctl enable phosh
+			$CHRT passwd $USERNAME
+			$CHRT systemctl enable phosh
 			;;
 	esac
 	echo "Installing common system utilities"
-	chroot /mnt $INSTALLER firefox pulseaudio pavucontrol htop ssh
+	$CHRT $INSTALLER firefox pulseaudio pavucontrol htop ssh
 fi
 
 echo "Done installing UI!"

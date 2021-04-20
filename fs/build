@@ -93,17 +93,12 @@ mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 # copy iio sensor proxy accel file
 [ -f $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb ] && cp $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb root/
 
-# copy over firmware
-mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
-cp -r $CADMIUMROOT/baseboard/$BASEBOARD/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
-[ -d $CADMIUMROOT/board/$TARGET/firmware/ ] && cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
-
-# dd rmtfs firmware files for lazor
-mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/rmtfs
-dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs1
-dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs2
-dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsg
-dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsc
+# copy over firmware if not libre
+if [ -n $KERNEL = libre ]; then
+	mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
+	cp -r $CADMIUMROOT/baseboard/$BASEBOARD/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
+	[ -d $CADMIUMROOT/board/$TARGET/firmware/ ] && cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
+fi
 
 # make cadmium dir for future scripts lolol
 mkdir $CADMIUMROOT/tmp/root/CdFiles
@@ -113,6 +108,13 @@ cp -r $CADMIUMROOT/fs/CdFiles/* $CADMIUMROOT/tmp/root/CdFiles/
 
 # install qcom binaries for lazor
 if [ $BASEBOARD = trogdor ]; then
+	# TODO: units with lte modem probably wont work
+	mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/rmtfs
+	dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs1
+	dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs2
+	dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsg
+	dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsc
+
 	# qmic
 	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/git clone https://github.com/andersson/qmic.git /CdFiles/qmic
 	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/make -C /CdFiles/qmic prefix=/usr

@@ -18,9 +18,17 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 	rm -rf linux-$BASEBOARD
 
 	if [ "$BASEBOARD" = "kukui" ]; then #      -.-
-		curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.25.tar.xz -o Linux-archive
+		if [ $KERNEL = libre ]; then
+			curl -L https://linux-libre.fsfla.org/pub/linux-libre/releases/5.10.25-gnu/linux-libre-5.10.25-gnu.tar.xz -o Linux-archive
+		else
+			curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.25.tar.xz -o Linux-archive
+		fi
 	else
-		curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+		if [ $KERNEL = libre ]; then
+			curl -L "https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/$(curl https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/ | egrep -o 'linux-libre-....-gnu.tar.xz' | head -n1)" -o Linux-archive
+		else
+			curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+		fi
 	fi
 	mkdir linux-$BASEBOARD
 	bsdtar xf Linux-archive --strip-components=1 -C linux-$BASEBOARD
@@ -52,6 +60,11 @@ cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 # TODO:
 # make cadmium defconfig from: common-defconfig, soc-defconfig and board-defconfig
 [ -f .config ] || cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel-config .config
+
+if [ $KERNEL = libre ]; then
+	# it looks better this way
+	sed -i'' 's/cadmium/-cadmium/' .config
+fi
 
 #make nconfig # if you want to customize config just uncomment this
 

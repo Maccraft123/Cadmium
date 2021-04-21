@@ -10,3 +10,5 @@ export EMMC_OFFSET=0
 export SOC=mt8183
 
 export BOOTFW=depthcharge
+
+export CROS_KERN_BRANCH=release-R90-13816.B-chromeos-4.19

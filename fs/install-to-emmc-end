@@ -48,7 +48,7 @@ fi
 
 echo $OXIDE > /mnt/CdFiles/is_oxide
 
-export chrt='chroot /mnt'
+export CHRT='chroot /mnt'
 export INST_EMMC=1
 
 # install ui, yes this uses source. deal with it.

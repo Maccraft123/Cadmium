@@ -20,9 +20,10 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 			mkdir -p linux-$BASEBOARD
 			cd linux-$BASEBOARD
 			git clone https://chromium.googlesource.com/chromiumos/third_party/kernel.git --single-branch --depth 1 -b $CROS_KERN_BRANCH ./
-			for x in $(echo chromeos/config/*.config chromeos/config/$ARCH/common.config chromeos/config/$ARCH/*mediatek.flavour.config); do
+			cp $CADMIUMROOT/baseboard/$BASEBOARD/crosbase.config ./.config
+			for x in $(echo chromeos/config/*.config chromeos/config/$ARCH/common.config chromeos/config/$ARCH/*flavour.config); do
 				echo "Applying $x config"
-				cat $x | grep -v "CONFIG_SECURITY" | grep -v "CONFIG_DEBUG_INFO" | grep -v "CORESIGHT" >> .config
+				cat $x | grep -v "\#" | grep -v "CONFIG_SECURITY" | grep -v "CONFIG_DEBUG_INFO" | grep -v "CORESIGHT" >> .config
 			done
 			echo "KBUILD_CFLAGS += -Wno-error" >> Makefile
 			yes "" | make config # *shrugs*
@@ -75,14 +76,14 @@ cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 
 # TODO:
 # make cadmium defconfig from: common-defconfig, soc-defconfig and board-defconfig
-[ -f .config ] || cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel-config .config
+#[ -f .config ] || cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel-config .config
 
 if [ $KERNEL = libre ]; then
 	# it looks better this way
 	sed -i'' 's/cadmium/-cadmium/' .config
 fi
 
-#make nconfig # if you want to customize config just uncomment this
+make nconfig # if you want to customize config just uncomment this
 
 echo Bulding $KERNEL kernel for $BASEBOARD/$TARGET/$ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
 time make -j$(nproc)

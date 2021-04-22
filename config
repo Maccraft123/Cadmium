@@ -16,7 +16,7 @@ ROOTFS=debian
 
 # Build Cadmium with Oxide support(dualboot)
 # 0: off 1: on
-B_OXIDE=1
+B_OXIDE=0
 
 # Which kernel should be built. disables firmware
 # kernelorg: from kernel.org libre: from linux-libre.fsfla.org cros: chrome os kernel

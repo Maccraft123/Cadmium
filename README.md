@@ -17,14 +17,14 @@ Thanks @LoganMD for the logo
 | Pen Input			| Y			| Y			| 				| Y			|
 | WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				| Y(FW)			|
 | 3D Acceleration         	| Y                  	| Y              	| Y				| Y(FW)			|
-| GPU reclocking		| P			| Y			| Y				| Y			|
-| Audio                   	| P(speakers broken) 	| Y              	| Y				| P(only usb)		|
-| Bluetooth               	| Y                  	| ?              	| Y				| Y			|
+| GPU reclocking		| P			| Y			| ?				| Y			|
+| Audio                   	| P(only usb)	 	| Y              	| Y				| P(only usb)		|
+| Bluetooth               	| Y                  	| ?              	| N				| Y			|
 | Front Camera			| N			| Y			| Y				| Y			|
 | Back Camera                  	| N                  	|               	| 				|			|
 | USB                     	| Y                  	| Y              	| Y				| Y			|
 | USB Gadget              	| P                  	| ?              	| N				| 			|
-| Suspending and resuming 	| P                  	| Y              	| P(weird stuff)		| Y			|
+| Suspending and resuming 	| P                  	| Y              	| Y				| Y			|
 | eMMC installation       	| Y                  	| Y              	| Y				| Y			|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| Y			|
 

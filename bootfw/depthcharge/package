@@ -20,6 +20,7 @@ cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 # TODO: generate
 cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel.its kernel.its
 cp $CADMIUMROOT/kernel/cmdline cmdline
+cp $CADMIIMROOT/kernel/cmdline.p2 cmdline.p2
 
 # make kernel partition
 # yes this is stolen from solidhal's prawnos, that's how open source works :D
@@ -35,6 +36,17 @@ vbutil_kernel --pack vmlinux.kpart \
 	--bootloader bootloader.bin
 
 cp vmlinux.kpart $CADMIUMROOT/tmp/
+
+vbutil_kernel --pack vmlinux.kpart.p2 \
+	--version 1 \
+	--vmlinuz vmlinux.uimg \
+	--arch arm \
+	--keyblock /usr/share/vboot/devkeys/kernel.keyblock \
+	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
+	--config cmdline.p2 \
+	--bootloader bootloader.bin
+
+cp vmlinux.kpart.p2 $CADMIUMROOT/tmp/
 
 if [ $B_OXIDE = 1 ]; then
 	cp $CADMIUMROOT/kernel/cmdline.oxide ./

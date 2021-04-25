@@ -46,6 +46,8 @@ if [ $BASEBOARD = trogdor ]; then
 	chroot /mnt systemctl enable rmtfs
 fi
 
+cp ~/info /mnt/CdFiles/info
+
 echo $OXIDE > /mnt/CdFiles/is_oxide
 
 export CHRT='chroot /mnt'

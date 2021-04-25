@@ -47,4 +47,5 @@ source ~/ui/install
 
 echo "Done!"
 
+mv ~/info /CdFiles/info
 exec rm -r ~/install-to-here ~/install-to-emmc ~/ui

@@ -39,7 +39,7 @@ if [ -f /accel-matrix.hwdb ]; then
 fi
 
 cp -r /CdFiles /mnt/CdFiles
-if [ $TARGET = lazor ]; then
+if [ $BASEBOARD = trogdor ]; then
 	chroot /mnt make -C /CdFiles/qmic prefix=/usr install
 	chroot /mnt make -C /CdFiles/qrtr prefix=/usr install
 	chroot /mnt make -C /CdFiles/rmtfs prefix=/usr install

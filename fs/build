@@ -94,7 +94,7 @@ mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 [ -f $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb ] && cp $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb root/
 
 # copy over firmware if not libre
-if [ -n $KERNEL = libre ]; then
+if [ $KERNEL != libre ]; then
 	mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
 	cp -r $CADMIUMROOT/baseboard/$BASEBOARD/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
 	[ -d $CADMIUMROOT/board/$TARGET/firmware/ ] && cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/

@@ -14,6 +14,10 @@ fi
 # One of: debian, void, void-musl
 ROOTFS=debian
 
+# Debian and debian-ish distro suite
+# sid, testing, stable
+SUITE=sid
+
 # Build Cadmium with Oxide support(dualboot)
 # 0: off 1: on
 B_OXIDE=1

@@ -6,11 +6,23 @@ set -v
 
 CHOSEN=no
 
+MESACHOSEN=no
+
 until [ "$CHOSEN" != "no" ]; do
 	echo "Which UI do you want installed?"
 	echo -n "Choose one of: phosh, sway or none for no ui"
 	read -p '? ' CHOSEN
 done
+
+until [ "$MESACHOSEN" != "no" ]; do
+	echo "Would you like proprietary Mesa Drivers? Mesa currently works better than Panfrost Open Source but again, is proprietary."
+	echo -n "Choose: mesa, panfrost"
+	read -p '? ' CHOSEN
+done
+
+if [ "$MESACHOSEN" != "panfrost" ]; then
+	if [ $INST_EMMC = 1 ]; then
+		chroot /mnt 
 
 if [ "$CHOSEN" != "none" ]; then
 	source ~/ui/$CHOSEN/include

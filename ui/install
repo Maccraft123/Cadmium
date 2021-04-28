@@ -17,12 +17,34 @@ done
 until [ "$MESACHOSEN" != "no" ]; do
 	echo "Would you like proprietary Mesa Drivers? Mesa currently works better than Panfrost Open Source but again, is proprietary."
 	echo -n "Choose: mesa, panfrost"
-	read -p '? ' CHOSEN
+	read -p '? ' MESACHOSEN
 done
 
 if [ "$MESACHOSEN" != "panfrost" ]; then
 	if [ $INST_EMMC = 1 ]; then
-		chroot /mnt 
+		chroot /mnt sudo apt update
+		chroot /mnt sudo apt install software-properties-common
+		chroot /mnt sudo add-apt-repository 'deb-src https://deb.debian.org/debian sid main'
+		chroot /mnt sudo apt-get install git
+		chroot /mnt sudo apt build-dep mesa
+		chroot /mnt git clone https://github.com/Maccraft123/armhf-tools
+		chroot /mnt ./armhf-tools/build-mesa
+		chroot /mnt sudo ./armhf-tools/install-mesa
+	else
+		sudo apt update
+		sudo apt install software-properties-common
+		sudo add-apt-repository 'deb-src https://deb.debian.org/debian sid main'
+		sudo apt-get install git
+		sudo apt build-dep mesa
+		git clone https://github.com/Maccraft123/armhf-tools
+		./armhf-tools/build-mesa
+		sudo ./armhf-tools/install-mesa
+	
+	fi
+
+fi
+		
+		
 
 if [ "$CHOSEN" != "none" ]; then
 	source ~/ui/$CHOSEN/include

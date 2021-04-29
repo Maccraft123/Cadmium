@@ -21,7 +21,8 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 		if [ $KERNEL = libre ]; then
 			curl -L https://linux-libre.fsfla.org/pub/linux-libre/releases/5.10.25-gnu/linux-libre-5.10.25-gnu.tar.xz -o Linux-archive
 		else
-			curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.25.tar.xz -o Linux-archive
+		#	curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.25.tar.xz -o Linux-archive
+			git clone https://github.com/torvalds/linux.git --depth 1 linux-kukui
 		fi
 	else
 		if [ $KERNEL = libre ]; then
@@ -30,8 +31,8 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 			curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
 		fi
 	fi
-	mkdir linux-$BASEBOARD
-	bsdtar xf Linux-archive --strip-components=1 -C linux-$BASEBOARD
+	#mkdir linux-$BASEBOARD
+	#bsdtar xf Linux-archive --strip-components=1 -C linux-$BASEBOARD
 	echo "$(date +'%V%y') $KERNEL" > kern-dl-date-$BASEBOARD
 
 	cd linux-$BASEBOARD
@@ -46,13 +47,13 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 	done
 
 	# TODO: this is probably wrong
-	if [ $BASEBOARD = kukui ]; then
-		patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
-		patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch || true
-	else
+	#if [ $BASEBOARD = kukui ]; then
+	#	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
+	#	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch || true
+	#else
 		patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
 		patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt || true
-	fi
+	#fi
 fi
 
 cd $CADMIUMROOT/tmp/linux-$BASEBOARD

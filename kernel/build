@@ -37,11 +37,11 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 
 	cd linux-$BASEBOARD
 
-	for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch); do
+	for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch | grep -v IGNORE); do
 		echo "Applying $x"
 		patch -p1 --forward < $x || true
 	done
-	for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch); do
+	for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch | grep -v IGNORE); do
 		echo "Applying $x"
 		patch -p1 --forward < $x || true
 	done

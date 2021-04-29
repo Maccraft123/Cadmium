@@ -30,6 +30,7 @@ Thanks @LoganMD for the logo
 
 ## Official discord server is at https://discord.gg/4QhpsHRygt
 ## Official IRC channel is #cadmium on Freenode IRC, it is bridged to #cadmium-irc channel on discord
+## You can also join it via Matrix, #freenode_#cadmium:matrix.org
 
 ## Installation
 - *Edit ./config to reflect your board*

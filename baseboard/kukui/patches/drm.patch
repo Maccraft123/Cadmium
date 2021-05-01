@@ -1,22 +1,27 @@
+From 675d13de7012b32bf427eee629a01b727c324bb0 Mon Sep 17 00:00:00 2001
+From: Maccraft123 <maccraft123mc@gmail.com>
+Date: Sat, 1 May 2021 18:32:52 +0200
+Subject: [PATCH] display goes brrr
+
+---
+ drivers/gpu/drm/mediatek/mtk_dsi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
 diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index 4a188a942..cca483a07 100644
+index ae403c67c..dd9b5286a 100644
 --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
 +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -908,24 +925,41 @@ static ssize_t mtk_dsi_host_transfer(struct mipi_dsi_host *host,
- 	u8 read_data[16];
- 	void *src_addr;
+@@ -892,8 +892,8 @@ static ssize_t mtk_dsi_host_transfer(struct mipi_dsi_host *host,
  	u8 irq_flag = CMD_DONE_INT_FLAG;
-+
-+	ret = pm_runtime_get_sync(host->dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Switch back to CMD mode if needed. */
-+	if (readl(dsi->regs + DSI_MODE_CTRL) & MODE) {
-+		mtk_dsi_stop(dsi);
-+		mtk_dsi_switch_to_cmd_mode(dsi, VM_DONE_INT_FLAG, 500);
-+	}
  
  	if (readl(dsi->regs + DSI_MODE_CTRL) & MODE) {
- 		DRM_ERROR("dsi engine is not command mode\n");
-		return -EINVAL;
+-		DRM_ERROR("dsi engine is not command mode\n");
+-		return -EINVAL;
++		mtk_dsi_stop(dsi);
++		mtk_dsi_switch_to_cmd_mode(dsi, VM_DONE_INT_FLAG, 500);
+ 	}
+ 
+ 	if (MTK_DSI_HOST_IS_READ(msg->type))
+-- 
+2.31.1
+

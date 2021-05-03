@@ -8,6 +8,8 @@ CHOSEN=no
 
 MESACHOSEN=no
 
+ARCH
+
 until [ "$CHOSEN" != "no" ]; do
 	echo "Which UI do you want installed?"
 	echo -n "Choose one of: phosh, sway or none for no ui"
@@ -22,23 +24,57 @@ done
 
 if [ "$MESACHOSEN" != "panfrost" ]; then
 	if [ $INST_EMMC = 1 ]; then
-		chroot /mnt sudo apt update
-		chroot /mnt sudo apt install software-properties-common
-		chroot /mnt sudo add-apt-repository 'deb-src https://deb.debian.org/debian sid main'
-		chroot /mnt sudo apt-get install git
-		chroot /mnt sudo apt build-dep mesa
-		chroot /mnt git clone https://github.com/Maccraft123/armhf-tools
-		chroot /mnt ./armhf-tools/build-mesa
-		chroot /mnt sudo ./armhf-tools/install-mesa
+		until [ "$ARCH" != "no" ]; do
+			echo "Do you have a 32-bit chip (ARMV7) like the C201PA, or do you have a 64-bit chip like the Lenovo Duet?"
+			echo -n "Choose: 32, 64"
+			read -p '? ' ARCH
+		done
+	
+		
+		if [ "$ARCH" != "64" ]; then
+		
+			chroot /mnt apt update
+			chroot /mnt apt install software-properties-common
+			chroot /mnt add-apt-repository 'deb-src https://deb.debian.org/debian sid main'
+			chroot /mnt apt-get install git
+			chroot /mnt apt build-dep mesa
+			chroot /mnt git clone https://github.com/ENJ1/armhf-tools
+			chroot /mnt env TRIPLET=arm-linux-gnueabihf ./armhf-tools/build-mesa
+			chroot /mnt env TRIPLET=arm-linux-gnueabihf ./armhf-tools/install-mesa
+		
+		else
+			chroot /mnt apt update
+			chroot /mnt apt install software-properties-common
+			chroot /mnt add-apt-repository 'deb-src https://deb.debian.org/debian sid main'
+			chroot /mnt apt-get install git
+			chroot /mnt apt build-dep mesa
+			chroot /mnt git clone https://github.com/ENJ1/armhf-tools
+			chroot /mnt env TRIPLET=aarch64-linux-gnu ./armhf-tools/build-mesa
+			chroot /mnt env TRIPLET=aarch64-linux-gnu ./armhf-tools/install-mesa
+		fi
+					
 	else
-		sudo apt update
-		sudo apt install software-properties-common
-		sudo add-apt-repository 'deb-src https://deb.debian.org/debian sid main'
-		sudo apt-get install git
-		sudo apt build-dep mesa
-		git clone https://github.com/Maccraft123/armhf-tools
-		./armhf-tools/build-mesa
-		sudo ./armhf-tools/install-mesa
+		if [ "$ARCH" != "64" ]; then
+		
+			chroot /mnt apt update
+			chroot /mnt apt install software-properties-common
+			chroot /mnt add-apt-repository 'deb-src https://deb.debian.org/debian sid main'
+			chroot /mnt apt-get install git
+			chroot /mnt apt build-dep mesa
+			chroot /mnt git clone https://github.com/ENJ1/armhf-tools
+			chroot /mnt env TRIPLET=arm-linux-gnueabihf ./armhf-tools/build-mesa
+			chroot /mnt env TRIPLET=arm-linux-gnueabihf ./armhf-tools/install-mesa
+		
+		else
+			chroot /mnt apt update
+			chroot /mnt apt install software-properties-common
+			chroot /mnt add-apt-repository 'deb-src https://deb.debian.org/debian sid main'
+			chroot /mnt apt-get install git
+			chroot /mnt apt build-dep mesa
+			chroot /mnt git clone https://github.com/ENJ1/armhf-tools
+			chroot /mnt env TRIPLET=aarch64-linux-gnu ./armhf-tools/build-mesa
+			chroot /mnt env TRIPLET=aarch64-linux-gnu ./armhf-tools/install-mesa
+		
 	
 	fi
 

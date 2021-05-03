@@ -28,7 +28,8 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 		if [ $KERNEL = libre ]; then
 			curl -L "https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/$(curl https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/ | egrep -o 'linux-libre-....-gnu.tar.xz' | head -n1)" -o Linux-archive
 		else
-			curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+			#curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+			git clone https://github.com/torvalds/linux.git --depth 1 linux-$BASEBOARD
 		fi
 	fi
 	#mkdir linux-$BASEBOARD

@@ -9,16 +9,6 @@ source $CADMIUMROOT/config
 source $CADMIUMROOT/board/$TARGET/boardinfo
 source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
-# set up alias areweontarget so "if areweontarget; then X" works fine
-if cat /sys/firmware/devicetree/base/compatible | egrep -si "$BASEBOARD|$BOARD" then
-
-	alias areweontarget=true
-else
-	alias areweontarget=false
-fi
-
-areweontarget || exit 1
-
 uname -a > $CADMIUMROOT/tmp/linux-good
 
 cd $CADMIUMROOT/tmp/linux-$BASEBOARD
@@ -26,13 +16,7 @@ cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 make modules_install
 
 # FIXME: board-specific, maybe add $DTB to boardinfo?
-if [ "$TARGET" = "duet" ]; then
-	echo "loading duet dtb"
-	kexec -s -l --reuse-cmdline --dtb=arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dtb  arch/arm64/boot/Image
-else
-	echo "loading kevin dtb"
-	kexec -s -l --reuse-cmdline --dtb=arch/arm64/boot/dts/rockchip/rk3399-gru-kevin.dts arch/arm64/boot/Image
-fi
+kexec -s -l --reuse-cmdline --dtb=$2 arch/arm64/boot/Image
 
 echo 'Now execute systemctl kexec to reboot to test kernel'
 

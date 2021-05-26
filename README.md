@@ -6,7 +6,7 @@ Thanks @LoganMD for the logo
 ### It also doesn't suck!
 
 ## Hardware support:
-### Note: (FW) entries are meant to indicate that hardware needs blobs to work correctly. It does NOT say anything about boot firmware
+### Note: (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
 | Hardware support matrix      	| Duet               	| Kevin and Bob        	| Asus C100PA and C201PA	| Acer Spin 513		|
 |-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|
 | Internal Display              | Y(needs patches)   	| Y		 	| Y				| Y			|
@@ -28,7 +28,7 @@ Thanks @LoganMD for the logo
 | eMMC installation       	| Y                  	| Y              	| Y				| Y			|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| Y			|
 
-## Official discord server is at https://discord.gg/4QhpsHRygt
+## Official discord server is at https://discord.gg/ZZbwyvKCmV
 
 ## Installation
 - *Edit ./config to reflect your board*

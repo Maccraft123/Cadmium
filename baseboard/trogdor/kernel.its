@@ -4,11 +4,11 @@
 	images {
 		kernel@1{
 			description = "kernel";
-			data = /incbin/("arch/arm64/boot/Image");
+			data = /incbin/("c_linux.lz4");
 			type = "kernel_noload";
 			arch = "arm64";
 			os = "linux";
-			compression = "none";
+			compression = "lz4";
 			load = <0>;
 			entry = <0>;
 		};

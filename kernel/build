@@ -53,6 +53,8 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 		patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
 		patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt || true
 	fi
+
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/add-custom-logo-and-show-it-regardless-of-loglevel.patch
 fi
 
 cd $CADMIUMROOT/tmp/linux-$BASEBOARD
@@ -70,5 +72,6 @@ fi
 
 echo Bulding $KERNEL kernel for $BASEBOARD/$TARGET/$ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
 time make -j$(nproc)
+lz4 -z -f -k arch/$ARCH/boot/Image c_linux.lz4
 
 make tarxz-pkg

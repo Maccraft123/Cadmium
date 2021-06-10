@@ -1,0 +1,58 @@
+From: Punit Agrawal <punitagrawal@gmail.com>
+To: helgaas@kernel.org, robh+dt@kernel.org
+Cc: Punit Agrawal <punitagrawal@gmail.com>,
+	linux-rockchip@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	alexandru.elisei@arm.com, wqu@suse.com, robin.murphy@arm.com,
+	pgwipeout@gmail.com, ardb@kernel.org, briannorris@chromium.org,
+	shawn.lin@rock-chips.com, Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH v3 4/4] arm64: dts: rockchip: Update PCI host bridge window to 32-bit address memory
+Date: Mon,  7 Jun 2021 20:28:56 +0900
+Message-ID: <20210607112856.3499682-5-punitagrawal@gmail.com> (raw)
+In-Reply-To: <20210607112856.3499682-1-punitagrawal@gmail.com>
+
+The PCIe host bridge on RK3399 advertises a single 64-bit memory
+address range even though it lies entirely below 4GB.
+
+Previously the OF PCI range parser treated 64-bit ranges more
+leniently (i.e., as 32-bit), but since commit 9d57e61bf723 ("of/pci:
+Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
+the code takes a stricter view and treats the ranges as advertised in
+the device tree (i.e, as 64-bit).
+
+The change in behaviour causes failure when allocating bus addresses
+to devices connected behind a PCI-to-PCI bridge that require
+non-prefetchable memory ranges. The allocation failure was observed
+for certain Samsung NVMe drives connected to RockPro64 boards.
+
+Update the host bridge window attributes to treat it as 32-bit address
+memory. This fixes the allocation failure observed since commit
+9d57e61bf723.
+
+Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
+Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com
+Suggested-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+Cc: Heiko Stuebner <heiko@sntech.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+---
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 634a91af8e83..4b854eb21f72 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -227,7 +227,7 @@ pcie0: pcie@f8000000 {
+ 		       <&pcie_phy 2>, <&pcie_phy 3>;
+ 		phy-names = "pcie-phy-0", "pcie-phy-1",
+ 			    "pcie-phy-2", "pcie-phy-3";
+-		ranges = <0x83000000 0x0 0xfa000000 0x0 0xfa000000 0x0 0x1e00000>,
++		ranges = <0x82000000 0x0 0xfa000000 0x0 0xfa000000 0x0 0x1e00000>,
+ 			 <0x81000000 0x0 0xfbe00000 0x0 0xfbe00000 0x0 0x100000>;
+ 		resets = <&cru SRST_PCIE_CORE>, <&cru SRST_PCIE_MGMT>,
+ 			 <&cru SRST_PCIE_MGMT_STICKY>, <&cru SRST_PCIE_PIPE>,
+-- 
+2.30.2

@@ -6,8 +6,7 @@
 
 output eDP-1 scale 1
 
-input 11551:355:hid-over-i2c_2D1F:0163 map_to_output eDP-1
-input 0:0:Atmel_maXTouch_Touchscreen map_to_output eDP-1
+input 0:0:Elan_Touchscreen map_to_output eDP-1
 input type:touchpad click_method clickfinger
 
 bindsym Mod4+F6 exec brightnessctl s 5%-
@@ -219,7 +218,7 @@ bar {
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
     #status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
-    status_command while echo B: $(cat /sys/class/power_supply/sbs-9-000b/capacity)\%, $(date --date="@$(cat /sys/class/power_supply/sbs-9-000b/time_to_empty_avg)" +"%H:%m") \| T: $(date +'%d-%m-%Y  %k:%M:%S'); do sleep 1; done
+    status_command while echo B: $(cat /sys/class/power_supply/bq27500-0/capacity)\%, $(date --date="@$(cat /sys/class/power_supply/bq27500-0/time_to_empty_avg)" +"%H:%m") \| T: $(date +'%d-%m-%Y  %k:%M:%S'); do sleep 1; done
 
     colors {
         statusline #ffffff

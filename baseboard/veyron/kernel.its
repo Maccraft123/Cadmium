@@ -4,7 +4,7 @@
 	images {
 		kernel@1{
 			description = "kernel";
-			data = /incbin/("c_linux.lz4");
+			data = /incbin/("arch/arm/boot/zImage");
 			type = "kernel_noload";
 			arch = "arm";
 			os = "linux";

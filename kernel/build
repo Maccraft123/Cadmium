@@ -72,6 +72,8 @@ fi
 
 echo Bulding $KERNEL kernel for $BASEBOARD/$TARGET/$ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
 time make -j$(nproc)
-lz4 -z -f -k arch/$ARCH/boot/Image c_linux.lz4
+
+# decompression in depthcharge exists only for arm64 devices
+[ "$ARCH" -n armv7l ] && lz4 -z -f -k arch/$ARCH/boot/Image c_linux.lz4
 
 make tarxz-pkg

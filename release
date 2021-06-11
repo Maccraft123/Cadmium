@@ -4,7 +4,7 @@ set -e
 
 for RELEASE in bob duet kevin minnie speedy; do
 	export RELEASE
-	./build-all cadmium-$RELEASE.img 1G
+	./build-all cadmium-$RELEASE.img 2G
 	gzip cadmium-$RELEASE.img
 	chmod 666 cadmium-$RELEASE.img.gz
 done

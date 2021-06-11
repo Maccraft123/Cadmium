@@ -31,6 +31,11 @@ Thanks @LoganMD for the logo
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV
 
 ## Installation
+- Make sure that you have developer mode unlocked
+- Enable booting from usb, by running ```enable_dev_usb_boot``` in ChromeOS root shell accessible when you log in as root after pressing ctrl + alt + refresh.
+- Reboot
+Once you have this out, continue with instructions:
+
 - *Edit ./config to reflect your board*
 - ``` ./build-all /dev/sdX ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt and debootstrap are needed to work correctly.
 - When ```build-all``` is ran like ```./build-all <file> <size>```, it builds Cadmium to <file> with size of <size>(2G should be fine)

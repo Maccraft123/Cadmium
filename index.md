@@ -1,37 +1,63 @@
-## Welcome to GitHub Pages
+# Cadmium is *the* Linux for ARM chromebooks
+### It also doesn't suck!
 
-You can use the [editor on GitHub](https://github.com/Maccraft123/Cadmium/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+## Hardware support:
+### Note: (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
+| Hardware support matrix      	| Duet               	| Kevin and Bob        	| Asus C100PA and C201PA	| Acer Spin 513		|
+|-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|
+| Internal Display              | Y(needs patches)   	| Y		 	| Y				| Y			|
+| External Display		| N			| Y(FW)			| Y				| N			|
+| Display autorotation    	| Y                  	| N              	| N				| N			|
+| Hardware video decoding	| N			| P			| P				| P(FW)			|
+| Touchscreen             	| Y                  	| Y              	| Y				| Y			|
+| Pen Input			| Y			| Y			| 				| Y			|
+| WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				| Y(FW)			|
+| 3D Acceleration         	| Y                  	| Y              	| Y				| Y(FW)			|
+| GPU reclocking		| P			| Y			| ?				| Y			|
+| Audio                   	| P(only usb)	 	| Y              	| Y				| P(only usb + bt)	|
+| Bluetooth               	| Y                  	| ?              	| N				| Y			|
+| Front Camera			| N			| Y			| Y				| Y			|
+| Back Camera                  	| N                  	|               	| 				|			|
+| USB                     	| Y                  	| Y              	| Y				| Y			|
+| USB Gadget              	| P                  	| ?              	| N				| 			|
+| Suspending and resuming 	| P                  	| Y              	| Y				| Y			|
+| eMMC installation       	| Y                  	| Y              	| Y				| Y			|
+| KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| Y			|
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Official discord server is at https://discord.gg/ZZbwyvKCmV
 
-### Markdown
+## Installation
+- Make sure that you have developer mode unlocked
+- Enable booting from usb, by running ```enable_dev_usb_boot``` in ChromeOS root shell accessible when you log in as root after pressing ctrl + alt + refresh.
+- Reboot
+Once you have this out, continue with instructions:
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+- *Edit ./config to reflect your board*
+- ``` ./build-all /dev/sdX ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt and debootstrap are needed to work correctly.
+- When ```build-all``` is ran like ```./build-all <file> <size>```, it builds Cadmium to <file> with size of <size>(2G should be fine)
+- Enable developer mode
+- Plug pendrive into your laptop.
+- Boot from USB
+- After running ``` ./install-to-emmc ``` after connecting to internet, Cadmium will be installed on internal emmc memory
+- To update kernel on eMMC memory run: ```./install-kernel``` from pendrive
 
-```markdown
-Syntax highlighted code block
+### OR
+- Enable developer mode(instructions are in the wiki for duet)
+- Download and uncompress ```cadmium-<device>.tar.gz``` to your pendrive
+- Boot from USB
+- Run ```./install-to-emmc```
 
-# Header 1
-## Header 2
-### Header 3
+#### *Binary drivers are unsupported in Cadmium and never will be*
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Maccraft123/Cadmium/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+## Dependencies on build machine
+- Recent Linux distribution
+- Binfmt when Debian rootfs is used
+- ```debootstrap``` when Debian rootfs is used
+- ```qemu-user-static``` when build machine can't run binaries for target machine
+- ```vboot-utils u-boot-tools``` (vbutil_kernel, cgpt and mkimage) to pack kernel into format understandable by depthcharge
+- ```gcc-aarch64-linux-gnu``` for compiling to ARM64 or ```gcc-arm-linux-gnueabihf``` for compiling to ARMv7
+- ```curl``` to download the kernel
+- ```bsdtar``` for writing the archive file
+- ```f2fs-tools``` for creating the filesystem used by Cadmium
+- ```parted``` to prepare gpt table to be modified by cgpt
+- Build dependencies for kernel compilation

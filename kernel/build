@@ -22,7 +22,8 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 			curl -L https://linux-libre.fsfla.org/pub/linux-libre/releases/5.10.25-gnu/linux-libre-5.10.25-gnu.tar.xz -o Linux-archive
 		else
 		#	curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.25.tar.xz -o Linux-archive
-			git clone https://github.com/torvalds/linux.git --depth 1 linux-kukui
+			#git clone https://github.com/torvalds/linux.git --depth 1 linux-kukui
+			git clone https://gitlab.collabora.com/eballetbo/linux.git --depth 1 linux-kukui --single-branch -b topic/chromeos/chromeos-5.13
 		fi
 	else
 		if [ $KERNEL = libre ]; then

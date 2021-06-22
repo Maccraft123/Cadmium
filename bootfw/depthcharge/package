@@ -19,7 +19,6 @@ cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 
 # TODO: generate
 cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel.its kernel.its
-cp $CADMIUMROOT/kernel/cmdline cmdline
 cp $CADMIUMROOT/kernel/cmdline.p2 cmdline.p2
 
 # make kernel partition

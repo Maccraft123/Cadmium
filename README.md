@@ -12,7 +12,7 @@ Thanks @LoganMD for the logo
 | Internal Display              | Y(needs patches)   	| Y		 	| Y				| Y			|
 | External Display		| N			| Y(FW)			| Y				| N			|
 | Display autorotation    	| Y                  	| N              	| N				| N			|
-| Hardware video decoding	| N			| P			| P				| Y			|
+| Hardware video decoding	| N			| P			| P				| Y(FW)			|
 | Touchscreen             	| Y                  	| Y              	| Y				| Y			|
 | Pen Input			| Y			| Y			| 				| Y			|
 | WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				| Y(FW)			|

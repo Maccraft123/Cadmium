@@ -17,23 +17,14 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 	echo "Downloading kernel for $BASEBOARD/$TARGET"
 	rm -rf linux-$BASEBOARD
 
-	if [ "$BASEBOARD" = "kukui" ]; then #      -.-
-		if [ $KERNEL = libre ]; then
-			curl -L https://linux-libre.fsfla.org/pub/linux-libre/releases/5.10.25-gnu/linux-libre-5.10.25-gnu.tar.xz -o Linux-archive
-		else
-		#	curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.25.tar.xz -o Linux-archive
-			#git clone https://github.com/torvalds/linux.git --depth 1 linux-kukui
-			git clone https://gitlab.collabora.com/eballetbo/linux.git --depth 1 linux-kukui --single-branch -b topic/chromeos/chromeos-5.13
-		fi
+
+	if [ $KERNEL = libre ]; then
+		curl -L "https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/$(curl https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/ | egrep -o 'linux-libre-....-gnu.tar.xz' | head -n1)" -o Linux-archive
 	else
-		if [ $KERNEL = libre ]; then
-			curl -L "https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/$(curl https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/ | egrep -o 'linux-libre-....-gnu.tar.xz' | head -n1)" -o Linux-archive
-		else
-			curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
-		fi
+		curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
 	fi
-	#mkdir linux-$BASEBOARD
-	#bsdtar xf Linux-archive --strip-components=1 -C linux-$BASEBOARD
+	mkdir linux-$BASEBOARD
+	bsdtar xf Linux-archive --strip-components=1 -C linux-$BASEBOARD
 	echo "$(date +'%V%y') $KERNEL" > kern-dl-date-$BASEBOARD
 
 	cd linux-$BASEBOARD
@@ -47,14 +38,8 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 		patch -p1 --forward < $x || true
 	done
 
-	# TODO: this is probably wrong
-	#if [ $BASEBOARD = kukui ]; then
-	#	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
-	#	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch || true
-	#else
-		patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
-		patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt || true
-	#fi
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt || true
 fi
 
 cd $CADMIUMROOT/tmp/linux-$BASEBOARD

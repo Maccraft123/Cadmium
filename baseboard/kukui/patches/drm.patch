@@ -29,21 +29,14 @@ diff -Nur linux-5135/arch/arm64/boot/dts/mediatek/mt8183.dtsi linux-kukui-ok/arc
 +				"clk_sub_parent",
 +				"subsys_mfg_cg";
 +
-+			power-domains = <&spm MT8183_POWER_DOMAIN_MFG_CORE0>;
++			power-domains = <&spm MT8183_POWER_DOMAIN_MFG_CORE0>,
++					<&spm MT8183_POWER_DOMAIN_MFG_CORE1>,
++					<&spm MT8183_POWER_DOMAIN_MFG_2D>;
++			power-domain-names = "core0", "core1", "core2";
 +
 +			#cooling-cells = <2>;
 +			cooling-min-level = <0>;
 +			cooling-max-level = <15>;
-+		};
-+
-+		gpu_core1: mali_gpu_core1 {
-+			compatible = "mediatek,gpu_core1";
-+			power-domains = <&spm MT8183_POWER_DOMAIN_MFG_CORE1>;
-+		};
-+
-+		gpu_core2: mali_gpu_core2 {
-+			compatible = "mediatek,gpu_core2";
-+			power-domains = <&spm MT8183_POWER_DOMAIN_MFG_2D>;
 +		};
 +
 +		gpu_opp_table: opp_table0 {
@@ -189,9 +182,9 @@ diff -Nur linux-5135/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi linux-kukui-
  };
  
 +&gpu {
-+	supply-names = "mali","mali_sram";
++	supply-names = "mali","sram";
 +	mali-supply = <&mt6358_vgpu_reg>;
-+	mali_sram-supply = <&mt6358_vsram_gpu_reg>;
++	sram-supply = <&mt6358_vsram_gpu_reg>;
 +	operating-points-v2 = <&gpu_opp_table>;
 +	power_model@0 {
 +		compatible = "arm,mali-simple-power-model";

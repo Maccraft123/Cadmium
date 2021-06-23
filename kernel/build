@@ -31,11 +31,11 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 
 	for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch | grep -v IGNORE); do
 		echo "Applying $x"
-		patch -p1 --forward < $x || true
+		patch -p1 --forward < $x
 	done
 	for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch | grep -v IGNORE); do
 		echo "Applying $x"
-		patch -p1 --forward < $x || true
+		patch -p1 --forward < $x
 	done
 
 	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true

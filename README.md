@@ -9,21 +9,21 @@ Thanks @LoganMD for the logo
 ### Note: (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
 | Hardware support matrix      	| Duet               	| Kevin and Bob        	| Asus C100PA and C201PA	| Acer Spin 513		|
 |-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|
-| Internal Display              | Y(needs patches)   	| Y		 	| Y				| Y			|
+| Internal Display              | Y		   	| Y		 	| Y				| Y			|
 | External Display		| N			| Y(FW)			| Y				| N			|
 | Display autorotation    	| Y                  	| N              	| N				| N			|
 | Hardware video decoding	| N			| P			| P				| Y(FW)			|
 | Touchscreen             	| Y                  	| Y              	| Y				| Y			|
 | Pen Input			| Y			| Y			| 				| Y			|
 | WiFi                    	| Y(FW)              	| Y(FW)          	| Y(FW)				| Y(FW)			|
-| 3D Acceleration         	| Y                  	| Y              	| Y				| Y(FW)			|
-| GPU reclocking		| P			| Y			| ?				| Y			|
+| 3D Acceleration         	| ?                  	| Y              	| Y				| Y(FW)			|
+| GPU reclocking		| N			| Y			| ?				| Y			|
 | Audio                   	| P(only usb)	 	| Y              	| Y				| P(only usb + bt)	|
 | Bluetooth               	| Y                  	| ?              	| N				| Y			|
 | Front Camera			| N			| Y			| Y				| Y			|
 | Back Camera                  	| N                  	|               	| 				|			|
 | USB                     	| Y                  	| Y              	| Y				| Y			|
-| USB Gadget              	| P                  	| ?              	| N				| 			|
+| USB Gadget              	| ?                  	| ?              	| N				| 			|
 | Suspending and resuming 	| P                  	| Y              	| Y				| Y			|
 | eMMC installation       	| Y                  	| Y              	| Y				| Y			|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| Y			|

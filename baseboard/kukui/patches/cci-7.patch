@@ -1,0 +1,65 @@
+diff --git a/drivers/devfreq/mt8183-cci-devfreq.c b/drivers/devfreq/mt8183-cci-devfreq.c
+index 018543db7bae..6942a48f3f4f 100644
+--- a/drivers/devfreq/mt8183-cci-devfreq.c
++++ b/drivers/devfreq/mt8183-cci-devfreq.c
+@@ -21,6 +21,7 @@ struct cci_devfreq {
+ 	struct clk *cci_clk;
+ 	int old_vproc;
+ 	unsigned long old_freq;
++	struct notifier_block opp_nb;
+ };
+ 
+ static int mtk_cci_set_voltage(struct cci_devfreq *cci_df, int vproc)
+@@ -89,6 +90,26 @@ static int mtk_cci_devfreq_target(struct device *dev, unsigned long *freq,
+ 	return 0;
+ }
+ 
++static int ccidevfreq_opp_notifier(struct notifier_block *nb,
++				   unsigned long event, void *data)
++{
++	struct dev_pm_opp *opp = data;
++	struct cci_devfreq *cci_df = container_of(nb, struct cci_devfreq,
++						  opp_nb);
++	unsigned long	freq, volt;
++
++	if (event == OPP_EVENT_ADJUST_VOLTAGE) {
++		freq = dev_pm_opp_get_freq(opp);
++		/* current opp item is changed */
++		if (freq == cci_df->old_freq) {
++			volt = dev_pm_opp_get_voltage(opp);
++			mtk_cci_set_voltage(cci_df, volt);
++		}
++	}
++
++	return 0;
++}
++
+ static struct devfreq_dev_profile cci_devfreq_profile = {
+ 	.target = mtk_cci_devfreq_target,
+ };
+@@ -98,12 +119,15 @@ static int mtk_cci_devfreq_probe(struct platform_device *pdev)
+ 	struct device *cci_dev = &pdev->dev;
+ 	struct cci_devfreq *cci_df;
+ 	struct devfreq_passive_data *passive_data;
++	struct notifier_block *opp_nb;
+ 	int ret;
+ 
+ 	cci_df = devm_kzalloc(cci_dev, sizeof(*cci_df), GFP_KERNEL);
+ 	if (!cci_df)
+ 		return -ENOMEM;
+ 
++	opp_nb = &cci_df->opp_nb;
++
+ 	cci_df->cci_clk = devm_clk_get(cci_dev, "cci_clock");
+ 	ret = PTR_ERR_OR_ZERO(cci_df->cci_clk);
+ 	if (ret) {
+@@ -152,6 +176,9 @@ static int mtk_cci_devfreq_probe(struct platform_device *pdev)
+ 		goto err_opp;
+ 	}
+ 
++	opp_nb->notifier_call = ccidevfreq_opp_notifier;
++	dev_pm_opp_register_notifier(cci_dev, opp_nb);
++
+ 	return 0;
+ 
+ err_opp:

@@ -50,7 +50,7 @@ case "$ROOTFS" in
 		[ -n "$foreign" ] && chroot root/ /debootstrap/debootstrap --second-stage
 		# preinstall packages to have wifi
 		chroot root/ $qemu /bin/apt update
-		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube
+		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston
 	;;
 	# let's explain this: when void is set, $V is set to -v, so it does 'grep -v musl', printing link without musl
 	# when $V is not set, grep is 'grep musl', printing only link with musl

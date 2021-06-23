@@ -7,7 +7,7 @@ export EUDEV=0
 debootstrap --arch=$ARCH_DEB $SUITE /mnt https://deb.debian.org/debian/ || true
 
 # install packages needed to get wifi working and to be ready to compile stuff
-chroot /mnt apt install -y f2fs-tools git build-essential network-manager locales sudo vim libudev-dev
+chroot /mnt apt install -y f2fs-tools git build-essential network-manager locales sudo vim libudev-dev firmware-ath9k-htc
 
 # this is last, because if user walks away during install they go back,
 # configure their system and have it ready immediately

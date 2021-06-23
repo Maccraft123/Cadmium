@@ -6,7 +6,7 @@ Thanks @LoganMD for the logo
 ### It also doesn't suck!
 
 ## Hardware support:
-### Note: (FW) entries are meant to indicate that hardware needs blobs to work correctly. It does NOT say anything about boot firmware
+### Note: (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
 | Hardware support matrix      	| Duet               	| Kevin and Bob        	| Asus C100PA and C201PA	| Acer Spin 513		|
 |-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|
 | Internal Display              | Y		   	| Y		 	| Y				| Y			|
@@ -28,11 +28,14 @@ Thanks @LoganMD for the logo
 | eMMC installation       	| Y                  	| Y              	| Y				| Y			|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| Y			|
 
-## Official discord server is at https://discord.gg/4QhpsHRygt
-## Official IRC channel is #cadmium on Freenode IRC, it is bridged to #cadmium-irc channel on discord
-## You can also join it via Matrix, #freenode_#cadmium:matrix.org
+## Official discord server is at https://discord.gg/ZZbwyvKCmV
 
 ## Installation
+- Make sure that you have developer mode unlocked
+- Enable booting from usb, by running ```enable_dev_usb_boot``` in ChromeOS root shell accessible when you log in as root after pressing ctrl + alt + refresh.
+- Reboot
+Once you have this out, continue with instructions:
+
 - *Edit ./config to reflect your board*
 - ``` ./build-all /dev/sdX ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt and debootstrap are needed to work correctly.
 - When ```build-all``` is ran like ```./build-all <file> <size>```, it builds Cadmium to <file> with size of <size>(2G should be fine)

@@ -25,14 +25,7 @@ cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 
 make modules_install
 
-# FIXME: board-specific, maybe add $DTB to boardinfo?
-if [ "$TARGET" = "duet" ]; then
-	echo "loading duet dtb"
-	kexec -s -l --reuse-cmdline --dtb=arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dtb  arch/arm64/boot/Image
-else
-	echo "loading kevin dtb"
-	kexec -s -l --reuse-cmdline --dtb=arch/arm64/boot/dts/rockchip/rk3399-gru-kevin.dts arch/arm64/boot/Image
-fi
+kexec -s -l --reuse-cmdline arch/arm64/boot/Image
 
 echo 'Now execute systemctl kexec to reboot to test kernel'
 

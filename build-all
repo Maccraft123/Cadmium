@@ -14,6 +14,8 @@ sleep 1 # let's give user time if they commit a typo
 # build-all <file> <size>
 
 [ -z "$1" ] && exit 1
+[ $IN_RAM = true -a -z "$2" ] && exit 2
+
 
 if [ -n "$2" ]; then
 	echo "Warning,"
@@ -22,9 +24,14 @@ if [ -n "$2" ]; then
 	sleep 2
 fi
 
+umount $CADMIUMROOT/tmp 2>/dev/null || true
+
+if [ $IN_RAM = true ]; then
+	mount -t tmpfs tmpfs $CADMIUMROOT/tmp
+fi
+
 # it deals with env vars
 source $CADMIUMROOT/bootfw/$BOOTFW/prepare_parts
-
 
 # build, package and write kernel
 $CADMIUMROOT/kernel/build
@@ -53,3 +60,4 @@ losetup -d $DEVICE 2>/dev/null || true
 sync
 
 echo "Done!"
+[ $IN_RAM = true ] && echo "Don't forget to umount $CADMIUMROOT/tmp"

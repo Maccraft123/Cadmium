@@ -8,7 +8,7 @@
 			type = "kernel_noload";
 			arch = "arm";
 			os = "linux";
-			compression = "none";
+			compression = "lz4";
 			load = <0>;
 			entry = <0>;
 		};

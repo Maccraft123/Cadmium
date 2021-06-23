@@ -25,3 +25,6 @@ B_OXIDE=1
 # Which kernel should be built. disables firmware
 # kernelorg: from kernel.org libre: from linux-libre.fsfla.org
 KERNEL=kernelorg
+
+# Build Cadmium inside tmpfs?
+IN_RAM=false

@@ -28,6 +28,7 @@ Thanks @LoganMD for the logo
 | eMMC installation		| Y		    	| Y			| Y				| Y			|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| Y			|
 
+## Official IRC channel is #cadmium on Libera.chat
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV
 
 ## Installation

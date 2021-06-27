@@ -56,6 +56,7 @@ export INST_EMMC=1
 # install ui, yes this uses source. deal with it.
 source ~/ui/install
 
+umount /mnt/proc
 umount /mnt
 
 echo "Done! :D"

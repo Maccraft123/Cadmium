@@ -1,0 +1,15 @@
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+index ff56bcfa3370..1512605a438e 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+@@ -816,6 +816,10 @@ usbc_extcon: extcon0 {
+ 			compatible = "google,extcon-usbc-cros-ec";
+ 			google,usb-port-id = <0>;
+ 		};
++
++		cbas {
++			compatible = "google,cros-cbas";
++		};
+ 	};
+ };
+ 

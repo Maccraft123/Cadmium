@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm64 5.13.0-rc7 Kernel Configuration
+# Linux/arm64 5.13.0 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110"
 CONFIG_CC_IS_GCC=y

@@ -8,7 +8,7 @@ CHOSEN=no
 
 until [ "$CHOSEN" != "no" ]; do
 	echo "Which UI do you want installed?"
-	echo -n "Choose one of: phosh, sway or none for no ui"
+	echo -n "Choose one of: phosh, sway, gnome or none for no ui"
 	read -p '? ' CHOSEN
 done
 
@@ -48,6 +48,9 @@ if [ "$CHOSEN" != "none" ]; then
 			echo "Phosh NEEDS password that is only digits"
 			$CHRT passwd $USERNAME
 			$CHRT systemctl enable phosh
+			;;
+		gnome)
+			$CHRT systemctl enable gdm3
 			;;
 	esac
 	echo "Installing common system utilities"

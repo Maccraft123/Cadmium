@@ -1,0 +1,7 @@
+#!/bin/false
+export DEBS="xfce4-terminal gnome gdm3 xwayland"
+export XBPS="; echo TODO"
+
+export WM="gnome"
+export DISPSERVER="wayland"
+export DISPSERVER_EXTRA="gnome"

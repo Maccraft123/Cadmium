@@ -1,5 +1,7 @@
 # start of install-to-emmc-end
 
+mount proc /mnt/proc -t proc # just in case something((gdm)) wants it
+
 echo "Enter root password:"
 until chroot /mnt passwd; do
 	echo "Enter root password:"

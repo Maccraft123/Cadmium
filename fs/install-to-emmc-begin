@@ -85,7 +85,6 @@ else
 fi
 
 mount $ROOTPART /mnt
-mount proc /mnt/proc -t proc # useful... sometimes
 
 mkdir -p /mnt/lib/firmware/
 cp -r /lib/firmware/* /mnt/lib/firmware/

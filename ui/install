@@ -52,6 +52,9 @@ if [ "$CHOSEN" != "none" ]; then
 	esac
 	echo "Installing common system utilities"
 	$CHRT $INSTALLER firefox pulseaudio pavucontrol htop ssh
+
+	echo 'MOZ_ENABLE_WAYLAND=1' > /mnt/etc/environment
+	echo 'MOZ_USE_XINPUT2=1' >> /mnt/etc/environment
 fi
 
 echo "Done installing UI!"

@@ -61,8 +61,8 @@ case "$ROOTFS" in
 		echo "Installing Void Linux"
 		ROOTFS_TAR="$(curl -s -L https://voidlinux.org/download/ | grep $ARCH_UNAME | tr '"' ' ' | awk '{print $3}' | grep $V musl)"
 		if [ ! -f "$ROOTFS_TAR" ]; then
-			rm void-${ARCH_UNAME}${V}tar.xz || true
-			wget $ROOTFS_TAR -O void-aarch64$V.tar.xz # musl: void-aarch64, non-musl: void-aarch64-v
+			rm void-${ARCH_UNAME}${V}.tar.xz || true
+			wget $ROOTFS_TAR -O void-$ARCH_UNAME$V.tar.xz # musl: void-aarch64, non-musl: void-aarch64-v
 
 		fi
 		tar xfp void-${ARCH_UNAME}${V}.tar.xz -C $CADMIUMROOT/tmp/root

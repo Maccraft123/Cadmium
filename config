@@ -11,11 +11,11 @@ else
 fi
 
 # RootFS type
-# One of: debian, void, void-musl
+# One of: debian, void, void-musl, ubuntu
 ROOTFS=debian
 
 # Debian and debian-ish distro suite
-# sid, testing, stable
+# sid, testing, stable, hirsute
 SUITE=sid
 
 # Build Cadmium with Oxide support(dualboot)

@@ -11,7 +11,16 @@ source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
 cd $CADMIUMROOT/tmp
 mkdir -p root
-mkfs.f2fs -f $ROOTPART
+
+case "$FILESYSTEM" in
+	f2fs)
+		mkfs.f2fs -f $ROOTPART
+	;;
+	ext4)
+		mkfs.ext4 -F $ROOTPART
+	;;
+esac
+
 mount $ROOTPART root
 
 # if we are on arm64 machine, don't use qemu to execute arm64 code

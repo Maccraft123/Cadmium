@@ -16,7 +16,7 @@ ROOTFS=debian
 
 # Debian and debian-ish distro suite
 # sid, testing, stable
-# <work-in-progress ubuntu release>, <newest ubuntu release>, <newest lts release>
+# impish, hirsute, focal
 SUITE=sid
 
 # Build Cadmium with Oxide support(dualboot)

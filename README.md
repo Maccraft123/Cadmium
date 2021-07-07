@@ -5,15 +5,15 @@
 | Hardware support matrix      	| Duet		 	| Kevin and Bob	 	| Asus C100PA and C201PA	| Acer Spin 513		|
 |-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|
 | Internal Display		| Y		   	| Y		 	| Y				| Y			|
-| External Display		| N			| Y(FW)			| Y				| N			|
+| External Display		| N			| Y (FW)			| Y				| N			|
 | Display autorotation    	| Y		    	| N			| N				| N			|
-| Hardware video decoding	| N			| P			| P				| Y(FW)			|
+| Hardware video decoding	| N			| P			| P				| Y (FW)			|
 | Touchscreen	    	  	| Y		    	| Y			| Y				| Y			|
 | Pen Input			| Y			| Y			| 				| Y			|
-| WiFi		     	 	| Y(FW)			| Y(FW)	   		| Y(FW)				| Y(FW)			|
-| 3D Acceleration	  	| Y		    	| Y			| Y				| Y(FW)			|
+| WiFi		     	 	| Y (FW)			| Y (FW)	   		| Y (FW)				| Y (FW)			|
+| 3D Acceleration	  	| Y		    	| Y			| Y				| Y (FW)			|
 | GPU reclocking		| Y			| Y			| ?				| Y			|
-| Audio		     		| Y			| Y			| Y				| P(only usb + bt)	|
+| Audio		     		| Y			| Y			| Y				| P (only usb + bt)	|
 | Bluetooth		 	| Y		    	| ?			| N				| Y			|
 | Front Camera			| N			| Y			| Y				| Y			|
 | Back Camera		    	| N		    	|		 	| 				|			|
@@ -21,7 +21,7 @@
 | USB Gadget			| ?		    	| ?			| N				| 			|
 | Suspending and resuming 	| P		    	| Y			| Y				| Y			|
 | eMMC installation		| Y		    	| Y			| Y				| Y			|
-| KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| Y			|
+| KVM Virtualtization		| Y (read wiki)		| Y (read wiki)		| N				| Y			|
 
 ## Official IRC channel is #cadmium on Libera.chat
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV

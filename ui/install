@@ -20,11 +20,9 @@ if [ "$CHOSEN" != "none" ]; then
 		exit 1
 	fi
 	case $ROOTFS in
-		debian)
-			export INSTALLER='apt install -y'
-			export PKGS="$DEBS"
-			;;
 		ubuntu)
+			;&
+		debian)
 			export INSTALLER='apt install -y'
 			export PKGS="$DEBS"
 			;;

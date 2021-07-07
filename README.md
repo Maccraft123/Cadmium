@@ -1,8 +1,4 @@
-<p align="center"><img src="/pics/logo/cd_smol.png" alt="Logo" data-canonical-src="/pics/cd_smol.png"/></p>
-
-Thanks @LoganMD for the logo
-
-# Cadmium, Linux for ARM chromebooks that don't get attention elsewhere
+# Kadmium, Linux for ARM chromebooks that don't get attention elsewhere
 ### It also doesn't suck!
 
 ## Hardware support:

@@ -42,6 +42,16 @@ cd $CADMIUMROOT/tmp
 
 # rootfs-specific setup
 case "$ROOTFS" in
+	ubuntu)
+		echo "Installing Ubuntu"
+		# debootstrap randomly exits with 1, so there's that || true
+		debootstrap --components=main,restricted,universe,multiverse $foreign --arch=$ARCH_DEB $SUITE $CADMIUMROOT/tmp/root/ http://ports.ubuntu.com/ubuntu-ports/ || true
+		# probably it can be ran on target device with little shim that does that and then execs init
+		[ -n "$foreign" ] && chroot root/ /debootstrap/debootstrap --second-stage
+		# preinstall packages to have wifi
+		chroot root/ $qemu /bin/apt update
+		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston
+	;;
 	debian)
 		echo "Installing Debian"
 		# debootstrap randomly exits with 1, so there's that || true

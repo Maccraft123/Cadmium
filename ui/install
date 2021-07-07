@@ -24,6 +24,10 @@ if [ "$CHOSEN" != "none" ]; then
 			export INSTALLER='apt install -y'
 			export PKGS="$DEBS"
 			;;
+		ubuntu)
+			export INSTALLER='apt install -y'
+			export PKGS="$DEBS"
+			;;
 		void*)
 			export INSTALLER='xbps-install -y'
 			export PKGS="$XBPS"

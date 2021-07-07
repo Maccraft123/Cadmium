@@ -1,8 +1,7 @@
-# Kadmium, Linux for ARM chromebooks that don't get attention elsewhere
-### It also doesn't suck!
+# Kadmium, Linux for ARM Chromebooks
 
 ## Hardware support:
-### Note: (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
+### Note: (FW) entries are meant to indicate that firmware (that is included in Kadmium) is needed for piece of hardware to work correctly.
 | Hardware support matrix      	| Duet		 	| Kevin and Bob	 	| Asus C100PA and C201PA	| Acer Spin 513		|
 |-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|
 | Internal Display		| Y		   	| Y		 	| Y				| Y			|

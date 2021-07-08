@@ -58,6 +58,10 @@ export INST_EMMC=1
 # install ui, yes this uses source. deal with it.
 source ~/ui/install
 
+# copy over ucm files
+cp -r /ucm/* /mnt/usr/share/alsa/ucm2/
+
+
 umount /mnt/proc
 umount /mnt
 

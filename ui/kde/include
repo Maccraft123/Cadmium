@@ -1,5 +1,5 @@
 #!/bin/false
-export DEBS="xfce4-terminal gnome gdm3 xwayland"
+export DEBS="sudo apt install plasma-desktop kde-full kubuntu-desktop krusader konsole plasma-nm muon kwin-x11 sddm kinfocenter systemsettings powerdevil kde-config-sddm kde-config-screenlocker kde-config-gtk-style partitionmanager kubuntu-notification-helper libkf5su-bin"
 export XBPS="; echo TODO"
 
 export WM="kde"

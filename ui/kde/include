@@ -1,5 +1,5 @@
 #!/bin/false
-export DEBS="sudo apt install plasma-desktop kde-full krusader konsole plasma-nm muon kwin-x11 sddm kinfocenter systemsettings powerdevil kde-config-sddm kde-config-screenlocker kde-config-gtk-style partitionmanager libkf5su-bin"
+export DEBS="plasma-desktop kde-full krusader konsole plasma-nm muon kwin-x11 sddm kinfocenter systemsettings powerdevil kde-config-sddm kde-config-screenlocker kde-config-gtk-style partitionmanager libkf5su-bin"
 export XBPS="; echo TODO"
 
 export WM="kde"

@@ -45,6 +45,9 @@ export USERNAME=$REPLY
 
 source ~/ui/install
 
+# move ucm files
+mv /ucm/* /mnt/usr/share/alsa/ucm2/
+
 echo "Done!"
 
 mv ~/info /CdFiles/info

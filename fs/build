@@ -138,8 +138,10 @@ cp $CADMIUMROOT/board/$TARGET/sway-config $CADMIUMROOT/tmp/root/root/swayconfig
 
 # copy over ucm files
 mkdir $CADMIUMROOT/tmp/root/ucm
-cp -r $CADMIUMROOT/board/$TARGET/ucm/* $CADMIUMROOT/tmp/root/usr/share/alsa/ucm2/
-cp -r $CADMIUMROOT/board/$TARGET/ucm/* $CADMIUMROOT/tmp/root/ucm/
+if ls $CADMIUMROOT/board/$TARGET/ucm; then
+	cp -r $CADMIUMROOT/board/$TARGET/ucm/* $CADMIUMROOT/tmp/root/usr/share/alsa/ucm2/
+	cp -r $CADMIUMROOT/board/$TARGET/ucm/* $CADMIUMROOT/tmp/root/ucm/
+fi
 
 # copy installation scripts if not ubports, double root is not a typo
 if [ ! "$ROOTFS" = "ubports" ]; then

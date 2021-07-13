@@ -1,0 +1,11 @@
+--- linux-kukui-2/arch/arm64/boot/dts/mediatek/mt8183.dtsi	2021-07-13 17:13:43.706654294 +0200
++++ linux-kukui/arch/arm64/boot/dts/mediatek/mt8183.dtsi	2021-07-13 17:14:03.978385800 +0200
+@@ -197,7 +197,7 @@
+ 		};
+ 	};
+ 
+-	gpu_opp_table: opp_table0 {
++	gpu_opp_table: opp_table3 {
+ 		compatible = "operating-points-v2";
+ 		opp-shared;
+ 

@@ -1,0 +1,48 @@
+--- linux-kukui/drivers/usb/host/xhci-mtk-sch.c	2021-07-12 00:07:40.000000000 +0200
++++ linux-kukui-fixed/drivers/usb/host/xhci-mtk-sch.c	2021-07-14 05:54:11.185260151 +0200
+@@ -385,13 +385,17 @@
+ 		} else { /* INT_IN_EP or ISOC_IN_EP */
+ 			bwb_table[0] = 0; /* start split */
+ 			bwb_table[1] = 0; /* idle */
++
++			sch_ep->num_budget_microframes += 2;
++			if (sch_ep->num_budget_microframes > sch_ep->esit)
++				sch_ep->num_budget_microframes = sch_ep->esit;
+ 			/*
+ 			 * due to cs_count will be updated according to cs
+ 			 * position, assign all remainder budget array
+ 			 * elements as @bw_cost_per_microframe, but only first
+ 			 * @num_budget_microframes elements will be used later
+ 			 */
+-			for (i = 2; i < TT_MICROFRAMES_MAX; i++)
++			for (i = 2; i < sch_ep->num_budget_microframes; i++)
+ 				bwb_table[i] =	sch_ep->bw_cost_per_microframe;
+ 		}
+ 	}
+@@ -446,20 +450,20 @@
+ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
+ {
+ 	struct mu3h_sch_tt *tt = sch_ep->sch_tt;
+-	u32 num_esit, tmp;
+ 	int base;
+ 	int i, j;
++	u32 tmp;
++	const int nr_lower_uframes =
++		DIV_ROUND_UP(sch_ep->maxpkt, FS_PAYLOAD_MAX);
+ 
+-	num_esit = XHCI_MTK_MAX_ESIT / sch_ep->esit;
+-	for (i = 0; i < num_esit; i++) {
+-		base = offset + i * sch_ep->esit;
++	for (i = offset; i < XHCI_MTK_MAX_ESIT; i += sch_ep->esit) {
+ 
+ 		/*
+ 		 * Compared with hs bus, no matter what ep type,
+ 		 * the hub will always delay one uframe to send data
+ 		 */
+-		for (j = 0; j < sch_ep->cs_count; j++) {
+-			tmp = tt->fs_bus_bw[base + j] + sch_ep->bw_cost_per_microframe;
++		for (j = 0; j < nr_lower_uframes; j++) {
++			tmp = tt->fs_bus_bw[i + j + 1] + sch_ep->bw_cost_per_microframe;
+ 			if (tmp > FS_PAYLOAD_MAX)
+ 				return -ESCH_BW_OVERFLOW;
+ 		}

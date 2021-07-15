@@ -1,0 +1,19 @@
+# start of install-to-emmc-middle
+
+export SYSTEMD=1
+export EUDEV=0
+
+# debootstrap randomly just fails for no reason, but system turns out fine
+# debootstrap --arch=$ARCH_DEB $SUITE /mnt https://deb.debian.org/debian/ || true
+debootstrap --components=main,restricted,universe,multiverse --arch=$ARCH_DEB $SUITE /mnt http://ports.ubuntu.com/ubuntu-ports/ || true
+
+# install packages needed to get wifi working and to be ready to compile stuff
+chroot /mnt apt install -y f2fs-tools git build-essential network-manager locales sudo vim libudev-dev firmware-ath9k-htc console-setup
+
+# this is last, because if user walks away during install they go back,
+# configure their system and have it ready immediately
+chroot /mnt dpkg-reconfigure tzdata
+chroot /mnt dpkg-reconfigure locales
+chroot /mnt dpkg-reconfigure console-setup
+
+# end of install-to-emmc-middle

@@ -7,6 +7,11 @@ export EUDEV=0
 # debootstrap --arch=$ARCH_DEB $SUITE /mnt https://deb.debian.org/debian/ || true
 debootstrap --components=main,restricted,universe,multiverse --arch=$ARCH_DEB $SUITE /mnt http://ports.ubuntu.com/ubuntu-ports/ || true
 
+echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-updates main restricted universe multiverse" >> $CADMIUMROOT/tmp/root/etc/apt/sources.list
+echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-security main restricted universe multiverse" >> $CADMIUMROOT/tmp/root/etc/apt/sources.list
+echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-backports main restricted universe multiverse" >> $CADMIUMROOT/tmp/root/etc/apt/sources.list
+echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-proposed main restricted universe multiverse" >> $CADMIUMROOT/tmp/root/etc/apt/sources.list
+
 # install packages needed to get wifi working and to be ready to compile stuff
 chroot /mnt apt install -y f2fs-tools git build-essential network-manager locales sudo vim libudev-dev firmware-ath9k-htc console-setup
 

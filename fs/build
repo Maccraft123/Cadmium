@@ -58,6 +58,10 @@ case "$ROOTFS" in
 		# probably it can be ran on target device with little shim that does that and then execs init
 		[ -n "$foreign" ] && chroot root/ /debootstrap/debootstrap --second-stage
 		# preinstall packages to have wifi
+		chroot root/ $qemu /bin/echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-updates main restricted universe multiverse" >> /etc/apt/sources.list
+		chroot root/ $qemu /bin/echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-security main restricted universe multiverse" >> /etc/apt/sources.list
+		chroot root/ $qemu /bin/echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-backports main restricted universe multiverse" >> /etc/apt/sources.list
+		chroot root/ $qemu /bin/echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-proposed main restricted universe multiverse" >> /etc/apt/sources.list
 		chroot root/ $qemu /bin/apt update
 		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston
 	;;

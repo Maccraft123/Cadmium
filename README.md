@@ -11,7 +11,7 @@ Thanks @LoganMD for the logo
 |-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|
 | Internal Display		| Y		   	| Y		 	| Y				| Y			|
 | External Display		| N			| Y(FW)			| Y				| N			|
-| Display autorotation    	| Y		    	| N			| N				| N			|
+| Display autorotation    	| Y		    	| Y			| N				| N			|
 | Hardware video decoding	| N			| P			| P				| Y(FW)			|
 | Touchscreen	    	  	| Y		    	| Y			| Y				| Y			|
 | Pen Input			| Y			| Y			| 				| Y			|
@@ -19,7 +19,7 @@ Thanks @LoganMD for the logo
 | 3D Acceleration	  	| Y		    	| Y			| Y				| Y(FW)			|
 | GPU reclocking		| Y			| Y			| ?				| Y			|
 | Audio		     		| Y			| Y			| Y				| P(only usb + bt)	|
-| Bluetooth		 	| Y		    	| ?			| N				| Y			|
+| Bluetooth		 	| N		    	| ?			| N				| Y			|
 | Front Camera			| N			| Y			| Y				| Y			|
 | Back Camera		    	| N		    	|		 	| 				|			|
 | USB				| Y		    	| Y			| Y				| Y			|
@@ -27,6 +27,7 @@ Thanks @LoganMD for the logo
 | Suspending and resuming 	| Y		    	| Y			| Y				| Y			|
 | eMMC installation		| Y		    	| Y			| Y				| Y			|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| Y			|
+| Anbox				| P			| N			|				| N			|
 
 ## Official IRC channel is #cadmium on Libera.chat
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV

@@ -11,8 +11,8 @@ source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
 cd $CADMIUMROOT/tmp
 mkdir -p root
-#mkfs.f2fs -f $ROOTPART
-#mount $ROOTPART root
+mkfs.f2fs -f $ROOTPART
+mount $ROOTPART root
 
 # if we are on arm64 machine, don't use qemu to execute arm64 code
 if [ "$(uname -m)" = "$ARCH_UNAME" ]; then

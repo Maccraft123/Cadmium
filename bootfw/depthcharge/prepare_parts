@@ -18,7 +18,7 @@ else
 	DEVICE=$1
 	
 	# resolves issue with mmcblk devices
-	if [[ $DEVICE == mmcblk* ]]; then
+	if [ -z "${DEVICE##*mmcblk*}" ]; then
 	  KERNPART=${DEVICE}p1
 	  KERNPART_B=${DEVICE}p2
 	  ROOTPART=${DEVICE}p3

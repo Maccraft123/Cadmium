@@ -140,18 +140,18 @@ if [ $BASEBOARD = trogdor ]; then
 	dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsc
 
 	# qmic
-	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/git clone https://github.com/andersson/qmic.git /CdFiles/qmic
-	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/make -C /CdFiles/qmic prefix=/usr
-	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/make -C /CdFiles/qmic prefix=/usr install
+	git clone https://github.com/andersson/qmic.git $CADMIUMROOT/tmp/root/CdFiles/qmic
+	CC=aarch64-linux-gnu-gcc make -j$(nproc) -C $CADMIUMROOT/tmp/root/CdFiles/qmic prefix=/usr
+	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/make -C /CdFiles/qmic prefix=/usr install
 
 	# qrtr
-	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/git clone https://github.com/andersson/qrtr.git /CdFiles/qrtr
-	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/make -C /CdFiles/qrtr prefix=/usr
-	chroot $CADMIUMROOT/tmp/root/ $qemu /usr/bin/make -C /CdFiles/qrtr prefix=/usr install
+	git clone https://github.com/andersson/qrtr.git $CADMIUMROOT/tmp/root/CdFiles/qrtr
+	CC=aarch64-linux-gnu-gcc make -j$(nproc) -C $CADMIUMROOT/tmp/root/CdFiles/qrtr prefix=/usr
+	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/make -C /CdFiles/qrtr prefix=/usr install
 
 	# rmtfs
-	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/git clone https://github.com/Maccraft123/rmtfs.git /CdFiles/rmtfs
-	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/make -C /CdFiles/rmtfs
+	git clone https://github.com/Maccraft123/rmtfs.git $CADMIUMROOT/tmp/root/CdFiles/rmtfs
+	CC=aarch64-linux-gnu-gcc make -j$(nproc) -C $CADMIUMROOT/tmp/root/CdFiles/rmtfs
 	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/make -C /CdFiles/rmtfs install
 	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/systemctl enable rmtfs
 fi

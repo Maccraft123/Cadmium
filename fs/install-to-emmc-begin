@@ -6,10 +6,12 @@ set -e
 
 echo "Installing Cadmium"
 
-# we need internet, TODO: make this run on voidlinux
-nmcli device wifi rescan
-sleep 4 # wait for it to show up
-nmtui connect
+# we need internet, TODO: make this run on voidlinux and arch
+#nmcli device wifi rescan
+#sleep 4 # wait for it to show up
+#nmtui connect
+
+read -p "Please use Ethernet, idk how the heck to get internet to work LOL"
 
 # a fancy hack
 MMCDEV=$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')

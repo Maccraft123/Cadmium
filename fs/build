@@ -99,6 +99,12 @@ case "$ROOTFS" in
 		wget https://ci.ubports.com/job/xenial-mainline-edge-rootfs-$ARCH_DEB/lastSuccessfulBuild/artifact/out/ubuntu-touch-xenial-edge-$ARCH_DEB-rootfs.tar.gz
 		tar xfp ubuntu-touch-xenial-edge-$ARCH_DEB-rootfs.tar.gz -C $CADMIUMROOT/tmp/root
 	;;
+	arch)
+		echo "Installing Arch Linux"
+		# ARCH LINUX IS ONLY ON AARCH64!!! that's why it is hardcoded.
+		#wget http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz
+		tar xfp ArchLinuxARM-aarch64-latest.tar.gz -C $CADMIUMROOT/tmp/root
+	;;
 esac
 
 # remove root password, this is install medium so it's ok, not needed in ubports
@@ -157,6 +163,7 @@ mkdir -p $CADMIUMROOT/tmp/root/etc/sway
 cp $CADMIUMROOT/board/$TARGET/sway-config $CADMIUMROOT/tmp/root/root/swayconfig
 
 # copy over ucm files
+mkdir -p $CADMIUMROOT/tmp/root/usr/share/alsa/ucm2/
 mkdir $CADMIUMROOT/tmp/root/ucm
 if ls $CADMIUMROOT/board/$TARGET/ucm; then
 	cp -r $CADMIUMROOT/board/$TARGET/ucm/* $CADMIUMROOT/tmp/root/usr/share/alsa/ucm2/

@@ -1,6 +1,7 @@
 #!/bin/false
 export DEBS="xfce4-terminal gnome gdm3 xwayland"
 export XBPS="; echo TODO"
+export PACM="gnome gnome-terminal xorg-xwayland gdm nautilus"
 
 export WM="gnome"
 export DISPSERVER="wayland"

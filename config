@@ -5,20 +5,20 @@
 # It is sorta using codenames, but "krane" sounds stupid so i won't use it
 # One of: bob, duet, kevin, minnie, speedy, lazor
 if [ "$RELEASE" = "" ]; then
-	TARGET=kevin
+	TARGET=duet
 else
 	TARGET=$RELEASE
 fi
 
 # RootFS type
-# One of: debian, void, void-musl, ubuntu
-ROOTFS=debian
+# One of: debian, void, void-musl, ubuntu, arch
+ROOTFS=arch
 
 # FS type
 # f2fs, ext4
-FILESYSTEM=f2fs
+FILESYSTEM=ext4
 
-# Debian and debian-ish distro suite
+# Debian and debian-ish distro suite (Not for arch)
 # sid, testing, stable
 # impish, hirsute, focal
 SUITE=sid

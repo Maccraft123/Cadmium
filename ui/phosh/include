@@ -1,6 +1,7 @@
 #!/bin/false
 export DEBS="xfce4-terminal phosh phosh-tablet xwayland"
 export XBPS="; echo TODO"
+export PACM="; echo TODO"
 
 export WM="phosh"
 export DISPSERVER="wayland"

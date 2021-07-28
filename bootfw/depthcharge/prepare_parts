@@ -16,9 +16,18 @@ if [ -n "$2" ]; then # if $2 is set, it means that user wants a file
 	ROOTPART=${DEVICE}p3
 else
 	DEVICE=$1
-	KERNPART=${DEVICE}1
-	KERNPART_B=${DEVICE}2
-	ROOTPART=${DEVICE}3
+	
+	# resolves issue with mmcblk devices
+	if [[ $DEVICE == mmcblk* ]]; then
+	  KERNPART=${DEVICE}p1
+	  KERNPART_B=${DEVICE}p2
+	  ROOTPART=${DEVICE}p3
+	else
+	  KERNPART=${DEVICE}1
+	  KERNPART_B=${DEVICE}2
+	  ROOTPART=${DEVICE}3
+	fi
+	
 	dd if=/dev/zero of=$DEVICE bs=1M count=64
 fi
 

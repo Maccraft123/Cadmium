@@ -42,9 +42,9 @@ sync
 
 # resolves issue with mmcblk devices. need to check after creating partitions
 if [ -e "${DEVICE}p1" ]; then
-    KERNPART=${DEVICE}p1
-	  KERNPART_B=${DEVICE}p2
-	  ROOTPART=${DEVICE}p3
+	KERNPART=${DEVICE}p1
+	KERNPART_B=${DEVICE}p2
+	ROOTPART=${DEVICE}p3
 fi
 
 

@@ -8,7 +8,7 @@ CHOSEN=no
 
 until [ "$CHOSEN" != "no" ]; do
 	echo "Which UI do you want installed?"
-	echo -n "Choose one of: phosh, sway, gnome or none for no ui"
+	echo -n "Choose one of: phosh, sway, gnome, kde or none for no ui"
 	read -p '? ' CHOSEN
 done
 
@@ -54,6 +54,10 @@ if [ "$CHOSEN" != "none" ]; then
 		gnome)
 			$CHRT systemctl enable gdm3
 			;;
+		kde)
+			$CHRT systemctl enable sddm
+			;;
+
 	esac
 	echo "Installing common system utilities"
 	$CHRT $INSTALLER firefox pulseaudio pavucontrol htop ssh

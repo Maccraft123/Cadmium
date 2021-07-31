@@ -38,8 +38,8 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 		patch -p1 --forward < $x
 	done
 
-	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
-	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt || true
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch
+	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt
 fi
 
 cd $CADMIUMROOT/tmp/linux-$BASEBOARD
@@ -57,8 +57,5 @@ fi
 
 echo Bulding $KERNEL kernel for $BASEBOARD/$TARGET/$ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
 time make -j$(nproc)
-
-# decompression in depthcharge exists only for arm64 devices
-[ "$ARCH" != arm ] && lz4 -z -f -k arch/$ARCH/boot/Image c_linux.lz4
 
 make tarxz-pkg

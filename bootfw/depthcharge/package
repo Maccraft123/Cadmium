@@ -12,12 +12,12 @@ source $CADMIUMROOT/config
 source $CADMIUMROOT/board/$TARGET/boardinfo
 source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
-[ "$ARCH" != arm ] && lz4 -z -f -k arch/$ARCH/boot/Image c_linux.lz4
-
 # sanity check
 [ "$BOOTFW" != "depthcharge" ] && exit 1
 
 cd $CADMIUMROOT/tmp/linux-$BASEBOARD
+
+[ "$ARCH" != arm ] && lz4 -z -f arch/$ARCH/boot/Image c_linux.lz4
 
 # TODO: generate
 cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel.its kernel.its

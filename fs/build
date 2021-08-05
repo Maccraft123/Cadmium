@@ -61,7 +61,7 @@ case "$ROOTFS" in
 		echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-backports main restricted universe multiverse" >> $CADMIUMROOT/tmp/root/etc/apt/sources.list
 		echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-proposed main restricted universe multiverse" >> $CADMIUMROOT/tmp/root/etc/apt/sources.list
 		chroot root/ $qemu /bin/apt update
-		#chroot root/ $qemu /bin/apt -y dist-upgrade
+		chroot root/ $qemu /bin/apt -y dist-upgrade
 		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston
 	;;
 	debian)

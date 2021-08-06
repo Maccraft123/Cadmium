@@ -32,6 +32,16 @@
 				algo = "sha1";
 			};
 		};
+		fdt@3{
+			description = "mt8183-kukui-jacuzzi-kappa.dtb";
+			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kappa.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
 	};
 	configurations {
 		default = "conf@1";
@@ -42,6 +52,10 @@
 		conf@2{
 			kernel = "kernel@1";
 			fdt = "fdt@2";
+		};
+		conf@3{
+			kernel = "kernel@1";
+			fdt = "fdt@3";
 		};
 	};
 };

@@ -1,0 +1,10 @@
+#!/bin/false
+
+# explanation is in HACKING.md
+# arch missing? go to baseboard/$BASEBOARD/boardinfo
+
+export BASEBOARD=veyron
+export BOARD=jaq
+export TYPE=laptop
+
+export SOC=rk3288

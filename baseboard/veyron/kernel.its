@@ -75,7 +75,7 @@
 		};
 		conf@3{
 			kernel = "kernel@1";
-			fdt = "fdt@3;
+			fdt = "fdt@3";
 		};
 		conf@4{
 			kernel = "kernel@1";

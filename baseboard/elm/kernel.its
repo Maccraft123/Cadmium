@@ -14,7 +14,7 @@
 		};
 		fdt@1{
 			description = "mt8173-elm.dts";
-			data = /incbin/("arch/arm64/boot/dts/rockchip/mt8173-elm.dts");
+			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8173-elm.dts");
 			type = "flat_dt";
 			arch = "arm64";
 			compression = "none";
@@ -24,7 +24,7 @@
 		};
 		fdt@2{
 			description = "mt8173-elm-hana.dts";
-			data = /incbin/("arch/arm64/boot/dts/rockchip/mt8173-elm-hana.dts");
+			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8173-elm-hana.dts");
 			type = "flat_dt";
 			arch = "arm64";
 			compression = "none";
@@ -34,7 +34,7 @@
 		};
 		fdt@3{
 			description = "mt8173-elm-hana-rev7.dts";
-			data = /incbin/("arch/arm64/boot/dts/rockchip/mt8173-elm-hana-rev7.dts");
+			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8173-elm-hana-rev7.dts");
 			type = "flat_dt";
 			arch = "arm64";
 			compression = "none";

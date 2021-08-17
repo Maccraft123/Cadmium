@@ -14,12 +14,4 @@ cp -r /lib /mnt/lib
 mv /mnt/mv-then-del/* /mnt/
 rm -r /mnt/mv-then-del
 
-# start work on PACMAN!!! :D
-chroot /mnt pacman-key --init
-chroot /mnt pacman-key --populate archlinuxarm
-
-# install packages needed to get wifi working and to be ready to compile stuff
-chroot /mnt pacman -Syu --noconfirm f2fs-tools git base-devel networkmanager sudo vim libudev
-# I can't find firmware-ath9k-htc for Arch yet. i'll fix this later
-
 # end of install-to-emmc-middle

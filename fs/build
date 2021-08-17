@@ -104,6 +104,13 @@ case "$ROOTFS" in
 		# ARCH LINUX IS ONLY ON AARCH64!!! that's why it is hardcoded.
 		#wget http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz
 		tar xfp ArchLinuxARM-aarch64-latest.tar.gz -C $CADMIUMROOT/tmp/root
+        # start work on PACMAN!!! :D
+        chroot root/ $qemu pacman-key --init
+        chroot root/ $qemu pacman-key --populate archlinuxarm
+        
+        # install packages needed to get wifi working and to be ready to compile stuff
+        chroot root/ $qemu pacman -Syu --noconfirm f2fs-tools git base-devel networkmanager sudo vim libudev
+        # I can't find firmware-ath9k-htc for Arch yet. i'll fix this later
 	;;
 esac
 

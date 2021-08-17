@@ -103,7 +103,7 @@ case "$ROOTFS" in
 	arch)
 		echo "Installing Arch Linux"
 		# ARCH LINUX IS ONLY ON AARCH64!!! that's why it is hardcoded.
-		wget http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz
+		wget -N http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz
 		bsdtar -xpf ArchLinuxARM-aarch64-latest.tar.gz -C $CADMIUMROOT/tmp/root
 
     	# bind mounts to run pacman-key commands

@@ -5,6 +5,7 @@ CADMIUMROOT=$(dirname $(realpath $0))
 . $CADMIUMROOT/board/$TARGET/boardinfo
 . $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
+set -x
 set -e
 
 sleep 1 # let's give user time if they commit a typo
@@ -52,6 +53,8 @@ fi
 make -C $CADMIUMROOT/tmp/linux-$BASEBOARD INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
 
 # we don't umount it in fs/build
+
+#TODO: for arch install need to kill gpg pids then unmount other mounts to also be able to unmount here
 umount $CADMIUMROOT/tmp/root
 
 # yes, this fails when device is pendrive or sth

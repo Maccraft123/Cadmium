@@ -16,7 +16,7 @@ ROOTFS=arch
 
 # FS type
 # f2fs, ext4
-FILESYSTEM=ext4
+FILESYSTEM=f2fs
 
 # Debian and debian-ish distro suite (Not for arch)
 # sid, testing, stable

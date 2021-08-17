@@ -2,6 +2,7 @@
 CADMIUMROOT=$(dirname $(dirname $(realpath $0)))
 ROOTPART=$1
 
+set -x
 set -e
 set -v
 
@@ -102,15 +103,24 @@ case "$ROOTFS" in
 	arch)
 		echo "Installing Arch Linux"
 		# ARCH LINUX IS ONLY ON AARCH64!!! that's why it is hardcoded.
-		#wget http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz
-		tar xfp ArchLinuxARM-aarch64-latest.tar.gz -C $CADMIUMROOT/tmp/root
-        # start work on PACMAN!!! :D
-        chroot root/ $qemu pacman-key --init
-        chroot root/ $qemu pacman-key --populate archlinuxarm
+		wget http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz
+		bsdtar -xpf ArchLinuxARM-aarch64-latest.tar.gz -C $CADMIUMROOT/tmp/root
+
+    # bind mounts to run pacman-key commands
+		mount -o bind /dev $CADMIUMROOT/tmp/dev
+		mount -t proc none $CADMIUMROOT/tmp/proc
+
+    # start work on PACMAN!!! :D
+		chroot root/ $qemu /usr/bin/bash /usr/bin/pacman-key --init
+    chroot root/ $qemu /usr/bin/bash /usr/bin/pacman-key --populate archlinuxarm
         
-        # install packages needed to get wifi working and to be ready to compile stuff
-        chroot root/ $qemu pacman -Syu --noconfirm f2fs-tools git base-devel networkmanager sudo vim libudev
-        # I can't find firmware-ath9k-htc for Arch yet. i'll fix this later
+    # install packages needed to get wifi working and to be ready to compile stuff
+    chroot root/ $qemu /usr/bin/bash /usr/bin/pacman -Syu --noconfirm f2fs-tools git base-devel networkmanager sudo vim libudev
+    # I can't find firmware-ath9k-htc for Arch yet. i'll fix this later
+
+		# time to unmount the bind mount / etc
+		umount $CADMIUMROOT/tmp/dev
+		umount $CADMIUMROOT/tmp/proc
 	;;
 esac
 

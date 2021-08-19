@@ -34490,3 +34490,1301 @@ make: Entering directory '/mnt/sdb1/build/duet/Cadmium/tmp/linux-kukui'
 make: Leaving directory '/mnt/sdb1/build/duet/Cadmium/tmp/linux-kukui'
 + umount /mnt/sdb1/build/duet/Cadmium/tmp/root
 umount: /mnt/sdb1/build/duet/Cadmium/tmp/root: target is busy.
+./logwriterIII.sh: 14: build-all: not found
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 0.0320626 s, 2.1 GB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+Error: Partition(s) 3 on /dev/sdc have been written, but we have been unable to inform the kernel of the change, probably because it/they are in use.  As a result, the old partition(s) will remain in use.  You should reboot now before making further changes.
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 0.0324589 s, 2.1 GB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+Error: Partition(s) 3 on /dev/sdc have been written, but we have been unable to inform the kernel of the change, probably because it/they are in use.  As a result, the old partition(s) will remain in use.  You should reboot now before making further changes.
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 3.46423 s, 19.4 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
+Downloading kernel for kukui/duet
+curl: (3) URL using bad/illegal format or missing URL
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 3.439 s, 19.5 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
++ '[' -z '' ']'
++ source /mnt/sdb1/build/duet/Cadmium/config
+++ '[' '' = '' ']'
+++ TARGET=duet
+++ ROOTFS=arch
+++ FILESYSTEM=f2fs
+++ SUITE=sid
+++ B_OXIDE=1
+++ KERNEL=kernelorg
+++ IN_RAM=false
++ source /mnt/sdb1/build/duet/Cadmium/board/duet/boardinfo
+++ export BASEBOARD=kukui
+++ BASEBOARD=kukui
+++ export BOARD=krane
+++ BOARD=krane
+++ export TYPE=convertible-tablet
+++ TYPE=convertible-tablet
++ source /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/boardinfo
+++ export ARCH=arm64
+++ ARCH=arm64
+++ export ARCH_UNAME=aarch64
+++ ARCH_UNAME=aarch64
+++ export ARCH_DEB=arm64
+++ ARCH_DEB=arm64
+++ export CROSS_COMPILE=aarch64-linux-gnu-
+++ CROSS_COMPILE=aarch64-linux-gnu-
+++ export EMMC_OFFSET=0
+++ EMMC_OFFSET=0
+++ export SOC=mt8183
+++ SOC=mt8183
+++ export BOOTFW=depthcharge
+++ BOOTFW=depthcharge
++ mkdir -p /mnt/sdb1/build/duet/Cadmium/tmp
++ cd /mnt/sdb1/build/duet/Cadmium/tmp
+++ date +%V%y
+++ cat kern-dl-date-kukui
++ '[' '3321 kernelorg' '!=' '' ']'
++ echo 'Downloading kernel for kukui/duet'
+Downloading kernel for kukui/duet
++ rm -rf linux-kukui
++ '[' kernelorg = libre ']'
+++ curl -sL https://www.kernel.org/
+++ grep 'Download complete tarball'
+++ head -n2
+++ tr '"' ' '
+++ awk '{print $3}'
++ curl -L 'https://git.kernel.org/torvalds/t/linux-5.14-rc6.tar.gz
+https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.13.12.tar.xz' -o Linux-archive
+curl: (3) URL using bad/illegal format or missing URL
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 1.96888 s, 34.1 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
++ '[' -z '' ']'
++ source /mnt/sdb1/build/duet/Cadmium/config
+++ '[' '' = '' ']'
+++ TARGET=duet
+++ ROOTFS=arch
+++ FILESYSTEM=f2fs
+++ SUITE=sid
+++ B_OXIDE=1
+++ KERNEL=kernelorg
+++ IN_RAM=false
++ source /mnt/sdb1/build/duet/Cadmium/board/duet/boardinfo
+++ export BASEBOARD=kukui
+++ BASEBOARD=kukui
+++ export BOARD=krane
+++ BOARD=krane
+++ export TYPE=convertible-tablet
+++ TYPE=convertible-tablet
++ source /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/boardinfo
+++ export ARCH=arm64
+++ ARCH=arm64
+++ export ARCH_UNAME=aarch64
+++ ARCH_UNAME=aarch64
+++ export ARCH_DEB=arm64
+++ ARCH_DEB=arm64
+++ export CROSS_COMPILE=aarch64-linux-gnu-
+++ CROSS_COMPILE=aarch64-linux-gnu-
+++ export EMMC_OFFSET=0
+++ EMMC_OFFSET=0
+++ export SOC=mt8183
+++ SOC=mt8183
+++ export BOOTFW=depthcharge
+++ BOOTFW=depthcharge
++ mkdir -p /mnt/sdb1/build/duet/Cadmium/tmp
++ cd /mnt/sdb1/build/duet/Cadmium/tmp
+++ date +%V%y
+++ cat kern-dl-date-kukui
++ '[' '3321 kernelorg' '!=' '' ']'
++ echo 'Downloading kernel for kukui/duet'
+Downloading kernel for kukui/duet
++ rm -rf linux-kukui
++ '[' kernelorg = libre ']'
+++ curl -sL https://www.kernel.org/
+++ grep 'Download complete tarball'
+++ head -n2
+++ grep 13
+++ tr '"' ' '
+++ awk '{print $3}'
++ curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.13.12.tar.xz -o Linux-archive
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  7  113M    7 8991k    0     0  8823k      0  0:00:13  0:00:01  0:00:12 8815k 15  113M   15 17.5M    0     0  8249k      0  0:00:14  0:00:02  0:00:12 8245k 20  113M   20 23.7M    0     0  7942k      0  0:00:14  0:00:03  0:00:11 7939k 28  113M   28 32.5M    0     0  8120k      0  0:00:14  0:00:04  0:00:10 8118k 37  113M   37 42.8M    0     0  8391k      0  0:00:13  0:00:05  0:00:08 8426k 45  113M   45 51.6M    0     0  8548k      0  0:00:13  0:00:06  0:00:07 8495k 51  113M   51 58.6M    0     0  8363k      0  0:00:13  0:00:07  0:00:06 8412k 57  113M   57 64.8M    0     0  8246k      0  0:00:14  0:00:08  0:00:06 8430k 63  113M   63 71.9M    0     0  8174k      0  0:00:14  0:00:09  0:00:05 8219k 71  113M   71 81.8M    0     0  8182k      0  0:00:14  0:00:10  0:00:04 7964k 78  113M   78 89.2M    0     0  8290k      0  0:00:14  0:00:11  0:00:03 7958k 84  113M   84 96.7M    0     0  8124k      0  0:00:14  0:00:12  0:00:02 7784k 90  113M   90  103M    0     0  8092k      0  0:00:14  0:00:13  0:00:01 7848k 98  113M   98  112M    0     0  8073k      0  0:00:14  0:00:14 --:--:-- 7897k100  113M  100  113M    0     0  8134k      0  0:00:14  0:00:14 --:--:-- 8013k
++ mkdir linux-kukui
++ bsdtar xf Linux-archive --strip-components=1 -C linux-kukui
+++ date +%V%y
++ echo '3321 kernelorg'
++ cd linux-kukui
+++ ls /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/fix-cursor.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/gpu-vsram.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/move-gpu-opp-to-3.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/mutex-gce-events.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/opp-multi-regulator.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/panel-dts-rotation.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/panel-dts-rotation_sku0.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/revert-09b8cc78.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/sound_1.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/sound_2.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/usb.patch
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch
++ patch -p1 --forward
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/governor_passive.c
+Hunk #3 succeeded at 183 (offset 1 line).
+Hunk #4 succeeded at 246 (offset 1 line).
+Hunk #5 succeeded at 447 (offset 1 line).
+patching file include/linux/devfreq.h
+Hunk #1 succeeded at 289 (offset 9 lines).
+Hunk #2 succeeded at 318 (offset 9 lines).
+Hunk #3 succeeded at 335 (offset 9 lines).
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch
++ patch -p1 --forward
+patching file Documentation/devicetree/bindings/devfreq/mt8183-cci.yaml
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch
++ patch -p1 --forward
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/Makefile
+patching file drivers/devfreq/mt8183-cci-devfreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch
++ patch -p1 --forward
+patching file drivers/devfreq/mt8183-cci-devfreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch
++ patch -p1 --forward
+patching file arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+Hunk #1 succeeded at 399 (offset 4 lines).
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 succeeded at 42 (offset 1 line).
+Hunk #2 succeeded at 330 (offset 1 line).
+Hunk #3 succeeded at 345 (offset 1 line).
+Hunk #4 succeeded at 360 (offset 1 line).
+Hunk #5 succeeded at 375 (offset 1 line).
+Hunk #6 succeeded at 390 (offset 1 line).
+Hunk #7 succeeded at 405 (offset 1 line).
+Hunk #8 succeeded at 420 (offset 1 line).
+Hunk #9 succeeded at 435 (offset 1 line).
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch
++ patch -p1 --forward
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 FAILED at 1581.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183.dtsi.rej
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+Hunk #1 FAILED at 295.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi.rej
+patching file drivers/gpu/drm/mediatek/mtk_dsi.c
+patching file drivers/gpu/drm/panfrost/panfrost_devfreq.c
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 1.93518 s, 34.7 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
++ '[' -z '' ']'
++ source /mnt/sdb1/build/duet/Cadmium/config
+++ '[' '' = '' ']'
+++ TARGET=duet
+++ ROOTFS=arch
+++ FILESYSTEM=f2fs
+++ SUITE=sid
+++ B_OXIDE=1
+++ KERNEL=kernelorg
+++ IN_RAM=false
++ source /mnt/sdb1/build/duet/Cadmium/board/duet/boardinfo
+++ export BASEBOARD=kukui
+++ BASEBOARD=kukui
+++ export BOARD=krane
+++ BOARD=krane
+++ export TYPE=convertible-tablet
+++ TYPE=convertible-tablet
++ source /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/boardinfo
+++ export ARCH=arm64
+++ ARCH=arm64
+++ export ARCH_UNAME=aarch64
+++ ARCH_UNAME=aarch64
+++ export ARCH_DEB=arm64
+++ ARCH_DEB=arm64
+++ export CROSS_COMPILE=aarch64-linux-gnu-
+++ CROSS_COMPILE=aarch64-linux-gnu-
+++ export EMMC_OFFSET=0
+++ EMMC_OFFSET=0
+++ export SOC=mt8183
+++ SOC=mt8183
+++ export BOOTFW=depthcharge
+++ BOOTFW=depthcharge
++ mkdir -p /mnt/sdb1/build/duet/Cadmium/tmp
++ cd /mnt/sdb1/build/duet/Cadmium/tmp
+++ date +%V%y
+++ cat kern-dl-date-kukui
++ '[' '3321 kernelorg' '!=' '' ']'
++ echo 'Downloading kernel for kukui/duet'
+Downloading kernel for kukui/duet
++ rm -rf linux-kukui
++ '[' kernelorg = libre ']'
++ curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.13.11.tar.xz -o Linux-archive
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  3  113M    3 4161k    0     0  2148k      0  0:00:54  0:00:01  0:00:53 2147k  9  113M    9 10.6M    0     0  3883k      0  0:00:30  0:00:02  0:00:28 3881k 17  113M   17 19.6M    0     0  5056k      0  0:00:23  0:00:03  0:00:20 5054k 23  113M   23 26.6M    0     0  5555k      0  0:00:20  0:00:04  0:00:16 5554k 31  113M   31 36.2M    0     0  6399k      0  0:00:18  0:00:05  0:00:13 8165k 38  113M   38 43.7M    0     0  6585k      0  0:00:17  0:00:06  0:00:11 8350k 44  113M   44 50.6M    0     0  6606k      0  0:00:17  0:00:07  0:00:10 8115k 51  113M   51 58.8M    0     0  6672k      0  0:00:17  0:00:09  0:00:08 7950k 59  113M   59 67.5M    0     0  6991k      0  0:00:16  0:00:09  0:00:07 8411k 69  113M   69 78.6M    0     0  7455k      0  0:00:15  0:00:10  0:00:05 8682k 75  113M   75 85.7M    0     0  7342k      0  0:00:15  0:00:11  0:00:04 8340k 82  113M   82 94.2M    0     0  7523k      0  0:00:15  0:00:12  0:00:03 8972k 89  113M   89  101M    0     0  7539k      0  0:00:15  0:00:13  0:00:02 9162k 98  113M   98  112M    0     0  7648k      0  0:00:15  0:00:15 --:--:-- 8919k100  113M  100  113M    0     0  7735k      0  0:00:15  0:00:15 --:--:-- 8443k
++ mkdir linux-kukui
++ bsdtar xf Linux-archive --strip-components=1 -C linux-kukui
+++ date +%V%y
++ echo '3321 kernelorg'
++ cd linux-kukui
+++ ls /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/fix-cursor.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/gpu-vsram.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/move-gpu-opp-to-3.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/mutex-gce-events.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/opp-multi-regulator.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/panel-dts-rotation.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/panel-dts-rotation_sku0.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/revert-09b8cc78.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/sound_1.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/sound_2.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/usb.patch
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch
++ patch -p1 --forward
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/governor_passive.c
+Hunk #3 succeeded at 183 (offset 1 line).
+Hunk #4 succeeded at 246 (offset 1 line).
+Hunk #5 succeeded at 447 (offset 1 line).
+patching file include/linux/devfreq.h
+Hunk #1 succeeded at 289 (offset 9 lines).
+Hunk #2 succeeded at 318 (offset 9 lines).
+Hunk #3 succeeded at 335 (offset 9 lines).
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch
++ patch -p1 --forward
+patching file Documentation/devicetree/bindings/devfreq/mt8183-cci.yaml
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch
++ patch -p1 --forward
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/Makefile
+patching file drivers/devfreq/mt8183-cci-devfreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch
++ patch -p1 --forward
+patching file drivers/devfreq/mt8183-cci-devfreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch
++ patch -p1 --forward
+patching file arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+Hunk #1 succeeded at 399 (offset 4 lines).
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 succeeded at 42 (offset 1 line).
+Hunk #2 succeeded at 330 (offset 1 line).
+Hunk #3 succeeded at 345 (offset 1 line).
+Hunk #4 succeeded at 360 (offset 1 line).
+Hunk #5 succeeded at 375 (offset 1 line).
+Hunk #6 succeeded at 390 (offset 1 line).
+Hunk #7 succeeded at 405 (offset 1 line).
+Hunk #8 succeeded at 420 (offset 1 line).
+Hunk #9 succeeded at 435 (offset 1 line).
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch
++ patch -p1 --forward
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 FAILED at 1581.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183.dtsi.rej
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+Hunk #1 FAILED at 295.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi.rej
+patching file drivers/gpu/drm/mediatek/mtk_dsi.c
+patching file drivers/gpu/drm/panfrost/panfrost_devfreq.c
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 1.47566 s, 45.5 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
++ '[' -z '' ']'
++ source /mnt/sdb1/build/duet/Cadmium/config
+++ '[' '' = '' ']'
+++ TARGET=duet
+++ ROOTFS=arch
+++ FILESYSTEM=f2fs
+++ SUITE=sid
+++ B_OXIDE=1
+++ KERNEL=kernelorg
+++ IN_RAM=false
++ source /mnt/sdb1/build/duet/Cadmium/board/duet/boardinfo
+++ export BASEBOARD=kukui
+++ BASEBOARD=kukui
+++ export BOARD=krane
+++ BOARD=krane
+++ export TYPE=convertible-tablet
+++ TYPE=convertible-tablet
++ source /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/boardinfo
+++ export ARCH=arm64
+++ ARCH=arm64
+++ export ARCH_UNAME=aarch64
+++ ARCH_UNAME=aarch64
+++ export ARCH_DEB=arm64
+++ ARCH_DEB=arm64
+++ export CROSS_COMPILE=aarch64-linux-gnu-
+++ CROSS_COMPILE=aarch64-linux-gnu-
+++ export EMMC_OFFSET=0
+++ EMMC_OFFSET=0
+++ export SOC=mt8183
+++ SOC=mt8183
+++ export BOOTFW=depthcharge
+++ BOOTFW=depthcharge
++ mkdir -p /mnt/sdb1/build/duet/Cadmium/tmp
++ cd /mnt/sdb1/build/duet/Cadmium/tmp
+++ date +%V%y
+++ cat kern-dl-date-kukui
++ '[' '3321 kernelorg' '!=' '' ']'
++ echo 'Downloading kernel for kukui/duet'
+Downloading kernel for kukui/duet
++ rm -rf linux-kukui
++ '[' kernelorg = libre ']'
++ curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.13.10.tar.xz -o Linux-archive
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0  1  113M    1 1783k    0     0   545k      0  0:03:33  0:00:03  0:03:30  545k  6  113M    6 7879k    0     0  1880k      0  0:01:01  0:00:04  0:00:57 1879k 13  113M   13 15.8M    0     0  3136k      0  0:00:37  0:00:05  0:00:32 3302k 20  113M   20 23.3M    0     0  3859k      0  0:00:30  0:00:06  0:00:24 4847k 27  113M   27 31.1M    0     0  4416k      0  0:00:26  0:00:07  0:00:19 6432k 34  113M   34 38.8M    0     0  4825k      0  0:00:24  0:00:08  0:00:16 7636k 39  113M   39 45.4M    0     0  5063k      0  0:00:23  0:00:09  0:00:14 7731k 46  113M   46 52.9M    0     0  5323k      0  0:00:21  0:00:10  0:00:11 7593k 51  113M   51 58.4M    0     0  5352k      0  0:00:21  0:00:11  0:00:10 7201k 57  113M   57 65.8M    0     0  5529k      0  0:00:21  0:00:12  0:00:09 7145k 64  113M   64 73.9M    0     0  5713k      0  0:00:20  0:00:13  0:00:07 7175k 70  113M   70 80.2M    0     0  5734k      0  0:00:20  0:00:14  0:00:06 6935k 76  113M   76 87.3M    0     0  5853k      0  0:00:19  0:00:15  0:00:04 6915k 82  113M   82 93.3M    0     0  5907k      0  0:00:19  0:00:16  0:00:03 7148k 87  113M   87 99.4M    0     0  5921k      0  0:00:19  0:00:17  0:00:02 6876k 93  113M   93  105M    0     0  5964k      0  0:00:19  0:00:18  0:00:01 6638k100  113M  100  113M    0     0  6102k      0  0:00:19  0:00:19 --:--:-- 7208k
++ mkdir linux-kukui
++ bsdtar xf Linux-archive --strip-components=1 -C linux-kukui
+++ date +%V%y
++ echo '3321 kernelorg'
++ cd linux-kukui
+++ ls /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/fix-cursor.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/gpu-vsram.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/move-gpu-opp-to-3.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/mutex-gce-events.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/opp-multi-regulator.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/panel-dts-rotation.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/panel-dts-rotation_sku0.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/revert-09b8cc78.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/sound_1.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/sound_2.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/usb.patch
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch
++ patch -p1 --forward
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/governor_passive.c
+Hunk #3 succeeded at 183 (offset 1 line).
+Hunk #4 succeeded at 246 (offset 1 line).
+Hunk #5 succeeded at 447 (offset 1 line).
+patching file include/linux/devfreq.h
+Hunk #1 succeeded at 289 (offset 9 lines).
+Hunk #2 succeeded at 318 (offset 9 lines).
+Hunk #3 succeeded at 335 (offset 9 lines).
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch
++ patch -p1 --forward
+patching file Documentation/devicetree/bindings/devfreq/mt8183-cci.yaml
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch
++ patch -p1 --forward
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/Makefile
+patching file drivers/devfreq/mt8183-cci-devfreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch
++ patch -p1 --forward
+patching file drivers/devfreq/mt8183-cci-devfreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch
++ patch -p1 --forward
+patching file arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+Hunk #1 succeeded at 399 (offset 4 lines).
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 succeeded at 42 (offset 1 line).
+Hunk #2 succeeded at 330 (offset 1 line).
+Hunk #3 succeeded at 345 (offset 1 line).
+Hunk #4 succeeded at 360 (offset 1 line).
+Hunk #5 succeeded at 375 (offset 1 line).
+Hunk #6 succeeded at 390 (offset 1 line).
+Hunk #7 succeeded at 405 (offset 1 line).
+Hunk #8 succeeded at 420 (offset 1 line).
+Hunk #9 succeeded at 435 (offset 1 line).
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch
++ patch -p1 --forward
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 FAILED at 1581.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183.dtsi.rej
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+Hunk #1 FAILED at 295.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi.rej
+patching file drivers/gpu/drm/mediatek/mtk_dsi.c
+patching file drivers/gpu/drm/panfrost/panfrost_devfreq.c
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 2.21725 s, 30.3 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ true
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
++ '[' -z '' ']'
++ source /mnt/sdb1/build/duet/Cadmium/config
+++ '[' '' = '' ']'
+++ TARGET=duet
+++ ROOTFS=arch
+++ FILESYSTEM=f2fs
+++ SUITE=sid
+++ B_OXIDE=1
+++ KERNEL=kernelorg
+++ IN_RAM=false
++ source /mnt/sdb1/build/duet/Cadmium/board/duet/boardinfo
+++ export BASEBOARD=kukui
+++ BASEBOARD=kukui
+++ export BOARD=krane
+++ BOARD=krane
+++ export TYPE=convertible-tablet
+++ TYPE=convertible-tablet
++ source /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/boardinfo
+++ export ARCH=arm64
+++ ARCH=arm64
+++ export ARCH_UNAME=aarch64
+++ ARCH_UNAME=aarch64
+++ export ARCH_DEB=arm64
+++ ARCH_DEB=arm64
+++ export CROSS_COMPILE=aarch64-linux-gnu-
+++ CROSS_COMPILE=aarch64-linux-gnu-
+++ export EMMC_OFFSET=0
+++ EMMC_OFFSET=0
+++ export SOC=mt8183
+++ SOC=mt8183
+++ export BOOTFW=depthcharge
+++ BOOTFW=depthcharge
++ mkdir -p /mnt/sdb1/build/duet/Cadmium/tmp
++ cd /mnt/sdb1/build/duet/Cadmium/tmp
+++ date +%V%y
+++ cat kern-dl-date-kukui
++ '[' '3321 kernelorg' '!=' '3321 kernelorg' ']'
++ cd /mnt/sdb1/build/duet/Cadmium/tmp/linux-kukui
++ '[' -f .config ']'
++ cp /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/kernel-config .config
++ '[' kernelorg = libre ']'
+++ pwd
+++ nproc
++ echo Bulding kernelorg kernel for kukui/duet/arm64 in /mnt/sdb1/build/duet/Cadmium/tmp/linux-kukui with 8 threads using aarch64-linux-gnu-
+Bulding kernelorg kernel for kukui/duet/arm64 in /mnt/sdb1/build/duet/Cadmium/tmp/linux-kukui with 8 threads using aarch64-linux-gnu-
+++ nproc
++ make -j8
+  SYNC    include/config/auto.conf.cmd
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/confdata.o
+  HOSTCC  scripts/kconfig/expr.o
+  LEX     scripts/kconfig/lexer.lex.c
+  YACC    scripts/kconfig/parser.tab.[ch]
+  HOSTCC  scripts/kconfig/menu.o
+  HOSTCC  scripts/kconfig/preprocess.o
+  HOSTCC  scripts/kconfig/symbol.o
+  HOSTCC  scripts/kconfig/util.o
+  HOSTCC  scripts/kconfig/lexer.lex.o
+  HOSTCC  scripts/kconfig/parser.tab.o
+  HOSTLD  scripts/kconfig/conf
+.config:4206:warning: symbol value 'm' invalid for ASHMEM
+.config:5016:warning: symbol value 'm' invalid for ANDROID_BINDER_IPC
+*
+* Restart config...
+*
+*
+* Memory Management options
+*
+Sparse Memory virtual memmap (SPARSEMEM_VMEMMAP) [Y/?] y
+Allow for memory hot-add (MEMORY_HOTPLUG) [N/y/?] n
+Allow for memory compaction (COMPACTION) [Y/n/?] y
+Free page reporting (PAGE_REPORTING) [Y/n/?] y
+Page migration (MIGRATION) [Y/?] y
+Enable KSM for page merging (KSM) [Y/n/?] y
+Low address space to protect from user allocation (DEFAULT_MMAP_MIN_ADDR) [4096] 4096
+Enable recovery from hardware memory errors (MEMORY_FAILURE) [N/y/?] n
+Transparent Hugepage Support (TRANSPARENT_HUGEPAGE) [N/y/?] n
+Enable cleancache driver to cache clean pages if tmem is present (CLEANCACHE) [N/y/?] n
+Enable frontswap to cache swap pages if tmem is present (FRONTSWAP) [N/y/?] n
+Contiguous Memory Allocator (CMA) [Y/n/?] y
+  CMA debug messages (DEVELOPMENT) (CMA_DEBUG) [N/y/?] n
+  CMA debugfs interface (CMA_DEBUGFS) [N/y/?] n
+  CMA information through sysfs interface (CMA_SYSFS) [N/y/?] n
+  Maximum count of the CMA areas (CMA_AREAS) [7] 7
+Common API for compressed memory storage (ZPOOL) [N/m/y/?] n
+Low (Up to 2x) density storage for compressed pages (ZBUD) [N/m/y/?] (NEW) + set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 1.9234 s, 34.9 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
++ '[' -z '' ']'
++ source /mnt/sdb1/build/duet/Cadmium/config
+++ '[' '' = '' ']'
+++ TARGET=duet
+++ ROOTFS=arch
+++ FILESYSTEM=f2fs
+++ SUITE=sid
+++ B_OXIDE=1
+++ KERNEL=kernelorg
+++ IN_RAM=false
++ source /mnt/sdb1/build/duet/Cadmium/board/duet/boardinfo
+++ export BASEBOARD=kukui
+++ BASEBOARD=kukui
+++ export BOARD=krane
+++ BOARD=krane
+++ export TYPE=convertible-tablet
+++ TYPE=convertible-tablet
++ source /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/boardinfo
+++ export ARCH=arm64
+++ ARCH=arm64
+++ export ARCH_UNAME=aarch64
+++ ARCH_UNAME=aarch64
+++ export ARCH_DEB=arm64
+++ ARCH_DEB=arm64
+++ export CROSS_COMPILE=aarch64-linux-gnu-
+++ CROSS_COMPILE=aarch64-linux-gnu-
+++ export EMMC_OFFSET=0
+++ EMMC_OFFSET=0
+++ export SOC=mt8183
+++ SOC=mt8183
+++ export BOOTFW=depthcharge
+++ BOOTFW=depthcharge
++ mkdir -p /mnt/sdb1/build/duet/Cadmium/tmp
++ cd /mnt/sdb1/build/duet/Cadmium/tmp
+++ date +%V%y
+++ cat kern-dl-date-kukui
++ '[' '3321 kernelorg' '!=' '' ']'
++ echo 'Downloading kernel for kukui/duet'
+Downloading kernel for kukui/duet
++ rm -rf linux-kukui
++ '[' kernelorg = libre ']'
++ curl -L https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.13.6.tar.xz -o Linux-archive
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0  1  113M    1 2007k    0     0   737k      0  0:02:38  0:00:02  0:02:36  736k  8  113M    8 9559k    0     0  2571k      0  0:00:45  0:00:03  0:00:42 2571k 15  113M   15 17.7M    0     0  3717k      0  0:00:31  0:00:04  0:00:27 3716k 20  113M   20 23.4M    0     0  4203k      0  0:00:27  0:00:05  0:00:22 5363k 28  113M   28 32.3M    0     0  4845k      0  0:00:24  0:00:06  0:00:18 7205k 34  113M   34 39.3M    0     0  5216k      0  0:00:22  0:00:07  0:00:15 7660k 40  113M   40 45.8M    0     0  5257k      0  0:00:22  0:00:08  0:00:14 7173k 46  113M   46 52.8M    0     0  5526k      0  0:00:21  0:00:09  0:00:12 7333k 54  113M   54 61.7M    0     0  5788k      0  0:00:20  0:00:10  0:00:10 7535k 60  113M   60 68.7M    0     0  5934k      0  0:00:19  0:00:11  0:00:08 7419k 67  113M   67 76.6M    0     0  6116k      0  0:00:19  0:00:12  0:00:07 7474k 75  113M   75 85.4M    0     0  6298k      0  0:00:18  0:00:13  0:00:05 8172k 81  113M   81 92.6M    0     0  6376k      0  0:00:18  0:00:14  0:00:04 8012k 85  113M   85 97.8M    0     0  6341k      0  0:00:18  0:00:15  0:00:03 7575k 91  113M   91  104M    0     0  6402k      0  0:00:18  0:00:16  0:00:02 7542k100  113M  100  113M    0     0  6596k      0  0:00:17  0:00:17 --:--:-- 7872k
++ mkdir linux-kukui
++ bsdtar xf Linux-archive --strip-components=1 -C linux-kukui
+++ date +%V%y
++ echo '3321 kernelorg'
++ cd linux-kukui
+++ ls /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/fix-cursor.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/gpu-vsram.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/move-gpu-opp-to-3.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/mutex-gce-events.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/opp-multi-regulator.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/panel-dts-rotation.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/panel-dts-rotation_sku0.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/revert-09b8cc78.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/sound_1.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/sound_2.patch /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/usb.patch
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch
++ patch -p1 --forward
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/governor_passive.c
+Hunk #3 succeeded at 183 (offset 1 line).
+Hunk #4 succeeded at 246 (offset 1 line).
+Hunk #5 succeeded at 447 (offset 1 line).
+patching file include/linux/devfreq.h
+Hunk #1 succeeded at 289 (offset 9 lines).
+Hunk #2 succeeded at 318 (offset 9 lines).
+Hunk #3 succeeded at 335 (offset 9 lines).
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch
++ patch -p1 --forward
+patching file Documentation/devicetree/bindings/devfreq/mt8183-cci.yaml
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch
++ patch -p1 --forward
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/Makefile
+patching file drivers/devfreq/mt8183-cci-devfreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch
++ patch -p1 --forward
+patching file drivers/cpufreq/mediatek-cpufreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch
++ patch -p1 --forward
+patching file drivers/devfreq/mt8183-cci-devfreq.c
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch
++ patch -p1 --forward
+patching file arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+Hunk #1 succeeded at 399 (offset 4 lines).
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 succeeded at 42 (offset 1 line).
+Hunk #2 succeeded at 330 (offset 1 line).
+Hunk #3 succeeded at 345 (offset 1 line).
+Hunk #4 succeeded at 360 (offset 1 line).
+Hunk #5 succeeded at 375 (offset 1 line).
+Hunk #6 succeeded at 390 (offset 1 line).
+Hunk #7 succeeded at 405 (offset 1 line).
+Hunk #8 succeeded at 420 (offset 1 line).
+Hunk #9 succeeded at 435 (offset 1 line).
++ for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch)
++ echo 'Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch'
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch
++ patch -p1 --forward
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 FAILED at 1581.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183.dtsi.rej
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+Hunk #1 FAILED at 295.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi.rej
+patching file drivers/gpu/drm/mediatek/mtk_dsi.c
+patching file drivers/gpu/drm/panfrost/panfrost_devfreq.c
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 1.99212 s, 33.7 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
+./build-all: line 38: /mnt/sdb1/build/duet/Cadmium/kernel/build: Permission denied
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 1.93656 s, 34.7 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
+./build-all: line 38: /mnt/sdb1/build/duet/Cadmium/kernel/build: Permission denied
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 1.93264 s, 34.7 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
+Downloading kernel for kukui/duet
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  1  113M    1 2031k    0     0  5820k      0  0:00:20 --:--:--  0:00:20 5820k  8  113M    8  9.9M    0     0  7221k      0  0:00:16  0:00:01  0:00:15 7221k 16  113M   16 18.9M    0     0  8515k      0  0:00:13  0:00:02  0:00:11 8515k 23  113M   23 27.0M    0     0  8435k      0  0:00:13  0:00:03  0:00:10 8432k 30  113M   30 35.0M    0     0  8320k      0  0:00:14  0:00:04  0:00:10 8318k 38  113M   38 43.7M    0     0  8402k      0  0:00:13  0:00:05  0:00:08 8581k 44  113M   44 51.0M    0     0  8217k      0  0:00:14  0:00:06  0:00:08 8499k 51  113M   51 59.0M    0     0  8171k      0  0:00:14  0:00:07  0:00:07 8018k 57  113M   57 65.6M    0     0  8106k      0  0:00:14  0:00:08  0:00:06 7891k 65  113M   65 74.4M    0     0  8162k      0  0:00:14  0:00:09  0:00:05 8027k 73  113M   73 83.5M    0     0  8157k      0  0:00:14  0:00:10  0:00:04 7907k 79  113M   79 90.5M    0     0  8211k      0  0:00:14  0:00:11  0:00:03 8202k 85  113M   85 96.9M    0     0  8076k      0  0:00:14  0:00:12  0:00:02 7929k 93  113M   93  106M    0     0  8151k      0  0:00:14  0:00:13  0:00:01 8226k100  113M  100  113M    0     0  8202k      0  0:00:14  0:00:14 --:--:-- 8279k
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/governor_passive.c
+Hunk #3 succeeded at 183 (offset 1 line).
+Hunk #4 succeeded at 246 (offset 1 line).
+Hunk #5 succeeded at 447 (offset 1 line).
+patching file include/linux/devfreq.h
+Hunk #1 succeeded at 289 (offset 9 lines).
+Hunk #2 succeeded at 318 (offset 9 lines).
+Hunk #3 succeeded at 335 (offset 9 lines).
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch
+patching file drivers/cpufreq/mediatek-cpufreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch
+patching file Documentation/devicetree/bindings/devfreq/mt8183-cci.yaml
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/Makefile
+patching file drivers/devfreq/mt8183-cci-devfreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch
+patching file drivers/cpufreq/mediatek-cpufreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch
+patching file drivers/cpufreq/mediatek-cpufreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch
+patching file drivers/devfreq/mt8183-cci-devfreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch
+patching file arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+Hunk #1 succeeded at 399 (offset 4 lines).
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 succeeded at 42 (offset 1 line).
+Hunk #2 succeeded at 330 (offset 1 line).
+Hunk #3 succeeded at 345 (offset 1 line).
+Hunk #4 succeeded at 360 (offset 1 line).
+Hunk #5 succeeded at 375 (offset 1 line).
+Hunk #6 succeeded at 390 (offset 1 line).
+Hunk #7 succeeded at 405 (offset 1 line).
+Hunk #8 succeeded at 420 (offset 1 line).
+Hunk #9 succeeded at 435 (offset 1 line).
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 FAILED at 1581.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183.dtsi.rej
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+Hunk #1 FAILED at 295.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi.rej
+patching file drivers/gpu/drm/mediatek/mtk_dsi.c
+patching file drivers/gpu/drm/panfrost/panfrost_devfreq.c
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 1.92952 s, 34.8 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
+Downloading kernel for kukui/duet
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  1  113M    1 1784k    0     0  4759k      0  0:00:24 --:--:--  0:00:24 4746k  8  113M    8 10.0M    0     0  7068k      0  0:00:16  0:00:01  0:00:15 7063k 14  113M   14 16.8M    0     0  7339k      0  0:00:15  0:00:02  0:00:13 7339k 24  113M   24 27.3M    0     0  7887k      0  0:00:14  0:00:03  0:00:11 7887k 31  113M   31 35.6M    0     0  8053k      0  0:00:14  0:00:04  0:00:10 8051k 37  113M   37 42.6M    0     0  8044k      0  0:00:14  0:00:05  0:00:09 8289k 44  113M   44 50.8M    0     0  8057k      0  0:00:14  0:00:06  0:00:08 8345k 52  113M   52 59.8M    0     0  8347k      0  0:00:13  0:00:07  0:00:06 8819k 59  113M   59 67.9M    0     0  8184k      0  0:00:14  0:00:08  0:00:06 8396k 65  113M   65 74.9M    0     0  8140k      0  0:00:14  0:00:09  0:00:05 8222k 72  113M   72 82.2M    0     0  8042k      0  0:00:14  0:00:10  0:00:04 8041k 79  113M   79 90.7M    0     0  8080k      0  0:00:14  0:00:11  0:00:03 8112k 85  113M   85 97.4M    0     0  8047k      0  0:00:14  0:00:12  0:00:02 7613k 91  113M   91  103M    0     0  7958k      0  0:00:14  0:00:13  0:00:01 7561k 99  113M   99  112M    0     0  8046k      0  0:00:14  0:00:14 --:--:-- 7863k100  113M  100  113M    0     0  7965k      0  0:00:14  0:00:14 --:--:-- 7772k
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/governor_passive.c
+Hunk #3 succeeded at 183 (offset 1 line).
+Hunk #4 succeeded at 246 (offset 1 line).
+Hunk #5 succeeded at 447 (offset 1 line).
+patching file include/linux/devfreq.h
+Hunk #1 succeeded at 289 (offset 9 lines).
+Hunk #2 succeeded at 318 (offset 9 lines).
+Hunk #3 succeeded at 335 (offset 9 lines).
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch
+patching file drivers/cpufreq/mediatek-cpufreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch
+patching file Documentation/devicetree/bindings/devfreq/mt8183-cci.yaml
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/Makefile
+patching file drivers/devfreq/mt8183-cci-devfreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch
+patching file drivers/cpufreq/mediatek-cpufreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch
+patching file drivers/cpufreq/mediatek-cpufreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch
+patching file drivers/devfreq/mt8183-cci-devfreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch
+patching file arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+Hunk #1 succeeded at 399 (offset 4 lines).
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 succeeded at 42 (offset 1 line).
+Hunk #2 succeeded at 330 (offset 1 line).
+Hunk #3 succeeded at 345 (offset 1 line).
+Hunk #4 succeeded at 360 (offset 1 line).
+Hunk #5 succeeded at 375 (offset 1 line).
+Hunk #6 succeeded at 390 (offset 1 line).
+Hunk #7 succeeded at 405 (offset 1 line).
+Hunk #8 succeeded at 420 (offset 1 line).
+Hunk #9 succeeded at 435 (offset 1 line).
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 FAILED at 1581.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183.dtsi.rej
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+Hunk #1 FAILED at 295.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi.rej
+patching file drivers/gpu/drm/mediatek/mtk_dsi.c
+patching file drivers/gpu/drm/panfrost/panfrost_devfreq.c
++ set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 1.96667 s, 34.1 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
+Bulding kernelorg kernel for kukui/duet/arm64 in /mnt/sdb1/build/duet/Cadmium/tmp/linux-kukui with 8 threads using aarch64-linux-gnu-
+  SYNC    include/config/auto.conf.cmd
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/confdata.o
+  HOSTCC  scripts/kconfig/expr.o
+  LEX     scripts/kconfig/lexer.lex.c
+  YACC    scripts/kconfig/parser.tab.[ch]
+  HOSTCC  scripts/kconfig/menu.o
+  HOSTCC  scripts/kconfig/preprocess.o
+  HOSTCC  scripts/kconfig/symbol.o
+  HOSTCC  scripts/kconfig/util.o
+  HOSTCC  scripts/kconfig/lexer.lex.o
+  HOSTCC  scripts/kconfig/parser.tab.o
+  HOSTLD  scripts/kconfig/conf
+.config:4206:warning: symbol value 'm' invalid for ASHMEM
+.config:5016:warning: symbol value 'm' invalid for ANDROID_BINDER_IPC
+*
+* Restart config...
+*
+*
+* Memory Management options
+*
+Sparse Memory virtual memmap (SPARSEMEM_VMEMMAP) [Y/?] y
+Allow for memory hot-add (MEMORY_HOTPLUG) [N/y/?] n
+Allow for memory compaction (COMPACTION) [Y/n/?] y
+Free page reporting (PAGE_REPORTING) [Y/n/?] y
+Page migration (MIGRATION) [Y/?] y
+Enable KSM for page merging (KSM) [Y/n/?] y
+Low address space to protect from user allocation (DEFAULT_MMAP_MIN_ADDR) [4096] 4096
+Enable recovery from hardware memory errors (MEMORY_FAILURE) [N/y/?] n
+Transparent Hugepage Support (TRANSPARENT_HUGEPAGE) [N/y/?] n
+Enable cleancache driver to cache clean pages if tmem is present (CLEANCACHE) [N/y/?] n
+Enable frontswap to cache swap pages if tmem is present (FRONTSWAP) [N/y/?] n
+Contiguous Memory Allocator (CMA) [Y/n/?] y
+  CMA debug messages (DEVELOPMENT) (CMA_DEBUG) [N/y/?] n
+  CMA debugfs interface (CMA_DEBUGFS) [N/y/?] n
+  CMA information through sysfs interface (CMA_SYSFS) [N/y/?] n
+  Maximum count of the CMA areas (CMA_AREAS) [7] 7
+Common API for compressed memory storage (ZPOOL) [N/m/y/?] n
+Low (Up to 2x) density storage for compressed pages (ZBUD) [N/m/y/?] (NEW) + set -e
++ sleep 1
++ '[' -z /dev/sdc ']'
++ '[' false = true -a -z '' ']'
++ '[' -n '' ']'
++ umount /mnt/sdb1/build/duet/Cadmium/tmp
++ true
++ '[' false = true ']'
++ source /mnt/sdb1/build/duet/Cadmium/bootfw/depthcharge/prepare_parts
+++ '[' -n '' ']'
+++ DEVICE=/dev/sdc
+++ KERNPART=/dev/sdc1
+++ KERNPART_B=/dev/sdc2
+++ ROOTPART=/dev/sdc3
+++ dd if=/dev/zero of=/dev/sdc bs=1M count=64
+64+0 records in
+64+0 records out
+67108864 bytes (67 MB, 64 MiB) copied, 1.92628 s, 34.8 MB/s
+++ sync
+++ parted --script /dev/sdc mklabel gpt
+++ cgpt create /dev/sdc
+++ cgpt add -i 1 -t kernel -b 8192 -s 65536 -l SDKernelA -S 1 -T 2 -P 10 /dev/sdc
+++ cgpt add -i 2 -t kernel -b 73728 -s 65536 -l SDKernelB -S 0 -T 2 -P 5 /dev/sdc
+++++ cgpt show /dev/sdc
+++++ grep 'Sec GPT table'
+++++ awk '{print $1}'
++++ expr 125042655 - 139264
+++ cgpt add -i 3 -t data -b 139264 -s 124903391 -l Root /dev/sdc
+++ sync
+++ partx -a /dev/sdc
+++ sync
++ /mnt/sdb1/build/duet/Cadmium/kernel/build
+Downloading kernel for kukui/duet
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0  0  180M    0  8217    0     0   3118      0 16:54:12  0:00:02 16:54:10  3117  4  180M    4 9031k    0     0  2549k      0  0:01:12  0:00:03  0:01:09 2549k  8  180M    8 15.6M    0     0  3520k      0  0:00:52  0:00:04  0:00:48 3519k 15  180M   15 27.5M    0     0  4927k      0  0:00:37  0:00:05  0:00:32 6273k 19  180M   19 35.1M    0     0  5329k      0  0:00:34  0:00:06  0:00:28 7960k 24  180M   24 43.4M    0     0  5903k      0  0:00:31  0:00:07  0:00:24 9073k 27  180M   27 50.1M    0     0  5932k      0  0:00:31  0:00:08  0:00:23 8275k 32  180M   32 58.9M    0     0  6209k      0  0:00:29  0:00:09  0:00:20 8566k 36  180M   36 66.7M    0     0  6341k      0  0:00:29  0:00:10  0:00:19 7949k 40  180M   40 73.7M    0     0  6544k      0  0:00:28  0:00:11  0:00:17 8255k 45  180M   45 81.5M    0     0  6651k      0  0:00:27  0:00:12  0:00:15 7776k 50  180M   50 90.4M    0     0  6750k      0  0:00:27  0:00:13  0:00:14 8149k 54  180M   54 98.2M    0     0  6847k      0  0:00:27  0:00:14  0:00:13 8091k 57  180M   57  104M    0     0  6875k      0  0:00:26  0:00:15  0:00:11 8064k 62  180M   62  112M    0     0  6990k      0  0:00:26  0:00:16  0:00:10 8019k 66  180M   66  120M    0     0  7033k      0  0:00:26  0:00:17  0:00:09 7995k 70  180M   70  128M    0     0  7017k      0  0:00:26  0:00:18  0:00:08 7756k 73  180M   73  133M    0     0  6976k      0  0:00:26  0:00:19  0:00:07 7361k 79  180M   79  143M    0     0  7170k      0  0:00:25  0:00:20  0:00:05 8102k 83  180M   83  150M    0     0  7142k      0  0:00:25  0:00:21  0:00:04 7647k 88  180M   88  160M    0     0  7204k      0  0:00:25  0:00:22  0:00:03 7781k 92  180M   92  167M    0     0  7278k      0  0:00:25  0:00:23  0:00:02 8278k 97  180M   97  175M    0     0  7326k      0  0:00:25  0:00:24  0:00:01 8707k100  180M  100  180M    0     0  7347k      0  0:00:25  0:00:25 --:--:-- 8125k
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-1.patch
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/governor_passive.c
+Hunk #3 succeeded at 183 (offset 1 line).
+Hunk #4 succeeded at 246 (offset 1 line).
+Hunk #5 succeeded at 447 (offset 1 line).
+patching file include/linux/devfreq.h
+Hunk #1 succeeded at 289 (offset 9 lines).
+Hunk #2 succeeded at 318 (offset 9 lines).
+Hunk #3 succeeded at 335 (offset 9 lines).
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-2.patch
+patching file drivers/cpufreq/mediatek-cpufreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-3.patch
+patching file Documentation/devicetree/bindings/devfreq/mt8183-cci.yaml
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-4.patch
+patching file drivers/devfreq/Kconfig
+patching file drivers/devfreq/Makefile
+patching file drivers/devfreq/mt8183-cci-devfreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-5.patch
+patching file drivers/cpufreq/mediatek-cpufreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-6.patch
+patching file drivers/cpufreq/mediatek-cpufreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-7.patch
+patching file drivers/devfreq/mt8183-cci-devfreq.c
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/cci-8.patch
+patching file arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+Hunk #1 succeeded at 399 (offset 4 lines).
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 succeeded at 42 (offset 1 line).
+Hunk #2 succeeded at 330 (offset 1 line).
+Hunk #3 succeeded at 345 (offset 1 line).
+Hunk #4 succeeded at 360 (offset 1 line).
+Hunk #5 succeeded at 375 (offset 1 line).
+Hunk #6 succeeded at 390 (offset 1 line).
+Hunk #7 succeeded at 405 (offset 1 line).
+Hunk #8 succeeded at 420 (offset 1 line).
+Hunk #9 succeeded at 435 (offset 1 line).
+Applying /mnt/sdb1/build/duet/Cadmium/baseboard/kukui/patches/drm.patch
+patching file arch/arm64/boot/dts/mediatek/mt8183.dtsi
+Hunk #1 FAILED at 1581.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183.dtsi.rej
+patching file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+Hunk #1 FAILED at 295.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi.rej
+patching file drivers/gpu/drm/mediatek/mtk_dsi.c
+patching file drivers/gpu/drm/panfrost/panfrost_devfreq.c

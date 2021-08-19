@@ -21,7 +21,8 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 	if [ $KERNEL = libre ]; then
 		curl -L "https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/$(curl https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/ | egrep -o 'linux-libre-....-gnu.tar.xz' | head -n1)" -o Linux-archive
 	else
-		curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+		#TODO: setting n2 now for 5.13 . We should probably provide a way to be specific
+    curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n2 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
 	fi
 	mkdir linux-$BASEBOARD
 	bsdtar xf Linux-archive --strip-components=1 -C linux-$BASEBOARD

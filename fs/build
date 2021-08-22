@@ -114,16 +114,8 @@ case "$ROOTFS" in
 		chroot root/ $qemu /usr/bin/bash /usr/bin/pacman-key --init
     	chroot root/ $qemu /usr/bin/bash /usr/bin/pacman-key --populate archlinuxarm
         
-		
-		
 		# install packages needed to get wifi working and to be ready to compile stuff
-    	chroot root/ $qemu /usr/bin/pacman -Syu --noconfirm f2fs-tools git base-devel networkmanager sudo vim
-    	
-		# I can't find firmware-ath9k-htc for Arch yet. i'll fix this later
-
-		# time to unmount the bind mount / etc
-		# umount $CADMIUMROOT/tmp/root/dev
-		# umount $CADMIUMROOT/tmp/root/proc
+		chroot root/ $qemu /usr/bin/pacman -Syu --noconfirm f2fs-tools git base-devel networkmanager sudo vim cgpt
 	;;
 esac
 

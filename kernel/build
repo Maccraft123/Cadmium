@@ -17,11 +17,13 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 	echo "Downloading kernel for $BASEBOARD/$TARGET"
 	rm -rf linux-$BASEBOARD
 
-
-	if [ $KERNEL = libre ]; then
+	# Using Collabora kernel for ARCH with GNOME 40 
+    if [ $ROOTFS = arch ]; then
+		curl -L "https://gitlab.collabora.com/eballetbo/linux/-/archive/topic/chromeos/chromeos-5.14/linux-topic-chromeos-chromeos-5.14.tar.gz" -o Linux-archive
+	elif [ $KERNEL = libre ]; then
 		curl -L "https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/$(curl https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/ | egrep -o 'linux-libre-....-gnu.tar.xz' | head -n1)" -o Linux-archive
-	else
-		curl -L "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.13.6.tar.gz" -o Linux-archive
+    else
+		curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
 	fi
 	mkdir linux-$BASEBOARD
 	bsdtar xf Linux-archive --strip-components=1 -C linux-$BASEBOARD
@@ -29,24 +31,33 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 
 	cd linux-$BASEBOARD
 
-	for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch | grep -v IGNORE); do
-		echo "Applying $x"
-		patch -p1 --forward < $x
-	done
-	for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch | grep -v IGNORE); do
-		echo "Applying $x"
-		patch -p1 --forward < $x
-	done
+	# Collabora kernel has it's own patches applied to source tree
+	if  [ $ROOTFS = arch ]; then
+		echo "ARCH using Collabora Kernel"
+	else	
+	  for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch | grep -v IGNORE); do
+	  	echo "Applying $x"
+	  	patch -p1 --forward < $x
+	  done
+	  for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch | grep -v IGNORE); do
+	  	echo "Applying $x"
+	  	patch -p1 --forward < $x
+	  done
 
-	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
-	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt || true
+	  patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch || true
+	  patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt || true
+	fi
 fi
 
 cd $CADMIUMROOT/tmp/linux-$BASEBOARD
 
 # TODO:
 # make cadmium defconfig from: common-defconfig, soc-defconfig and board-defconfig
-[ -f .config ] || cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel-config .config
+if  [ $ROOTFS = arch ]; then
+    [ -f .config ] || cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel-config.arch .config
+else  
+	[ -f .config ] || cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel-config .config
+fi
 
 if [ $KERNEL = libre ]; then
 	# it looks better this way

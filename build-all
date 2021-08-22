@@ -55,6 +55,14 @@ make -C $CADMIUMROOT/tmp/linux-$BASEBOARD INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root
 # we don't umount it in fs/build
 
 #TODO: for arch install need to kill gpg pids then unmount other mounts to also be able to unmount here
+if [ $ROOTFS = arch ]; then
+  echo "CADMIUMROOT=$CADMIUMROOT"
+  lsof $CADMIUMROOT/tmp/root | grep gpg | awk '{ print $2}' | xargs kill -9
+  sleep 1
+  umount $CADMIUMROOT/tmp/root/dev
+  umount $CADMIUMROOT/tmp/root/proc
+fi
+
 umount $CADMIUMROOT/tmp/root
 
 # yes, this fails when device is pendrive or sth

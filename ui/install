@@ -56,7 +56,13 @@ if [ "$CHOSEN" != "none" ]; then
 			$CHRT systemctl enable phosh
 			;;
 		gnome)
-			$CHRT systemctl enable gdm3
+			if [ $ROOTFS = "arch" ]; then
+			  $CHRT systemctl enable gdm.service
+			  $CHRT systemctl start gdm.service
+			else
+			  $CHRT systemctl enable gdm3
+			fi
+
 			;;
 		kde)
 			$CHRT systemctl enable sddm

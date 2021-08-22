@@ -112,7 +112,7 @@ case "$ROOTFS" in
 
     	# start work on PACMAN!!! :D
 		chroot root/ $qemu /usr/bin/bash /usr/bin/pacman-key --init
-    	chroot root/ $qemu /usr/bin/bash /usr/bin/pacman-key --populate archlinuxarm
+		chroot root/ $qemu /usr/bin/bash /usr/bin/pacman-key --populate archlinuxarm
         
 		# install packages needed to get wifi working and to be ready to compile stuff
 		chroot root/ $qemu /usr/bin/pacman -Syu --noconfirm f2fs-tools git base-devel networkmanager sudo vim cgpt

@@ -2,7 +2,7 @@
 
 Thanks @LoganMD for the logo
 
-# Cadmium, Linux for ARM chromebooks that don't get attention elsewhere
+# Cadmium, The state-of-the-art Linux distro for ARM Chromebooks
 ### It also doesn't suck!
 
 ## Hardware support:

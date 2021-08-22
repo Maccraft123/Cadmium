@@ -127,30 +127,16 @@ mkdir $CADMIUMROOT/tmp/root/CdFiles
 cp -r $CADMIUMROOT/fs/CdFiles/* $CADMIUMROOT/tmp/root/CdFiles/
 
 # install qcom binaries for lazor
-if [ $BASEBOARD = trogdor ]; then
-	# TODO: units with lte modem probably wont work
-	mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/rmtfs
-	dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs1
-	dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs2
-	dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsg
-	dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsc
+# TODO: trogdor units with lte modem probably wont work
+mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/rmtfs
+dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs1
+dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs2
+dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsg
+dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsc
 
-	# qmic
-	git clone https://github.com/andersson/qmic.git $CADMIUMROOT/tmp/root/CdFiles/qmic
-	CC=aarch64-linux-gnu-gcc make -j$(nproc) -C $CADMIUMROOT/tmp/root/CdFiles/qmic prefix=/usr
-	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/make -C /CdFiles/qmic prefix=/usr install
-
-	# qrtr
-	git clone https://github.com/andersson/qrtr.git $CADMIUMROOT/tmp/root/CdFiles/qrtr
-	CC=aarch64-linux-gnu-gcc make -j$(nproc) -C $CADMIUMROOT/tmp/root/CdFiles/qrtr prefix=/usr
-	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/make -C /CdFiles/qrtr prefix=/usr install
-
-	# rmtfs
-	git clone https://github.com/Maccraft123/rmtfs.git $CADMIUMROOT/tmp/root/CdFiles/rmtfs
-	CC=aarch64-linux-gnu-gcc make -j$(nproc) -C $CADMIUMROOT/tmp/root/CdFiles/rmtfs
-	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/make -C /CdFiles/rmtfs install
-	chroot $CADMIUMROOT/tmp/root $qemu /usr/bin/systemctl enable rmtfs
-fi
+git clone https://github.com/andersson/qmic.git $CADMIUMROOT/tmp/root/CdFiles/qmic
+git clone https://github.com/andersson/qrtr.git $CADMIUMROOT/tmp/root/CdFiles/qrtr
+git clone https://github.com/Maccraft123/rmtfs.git $CADMIUMROOT/tmp/root/CdFiles/rmtfs
 
 # install sway config to user dir
 mkdir -p $CADMIUMROOT/tmp/root/etc/sway

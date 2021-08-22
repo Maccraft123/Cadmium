@@ -7,7 +7,7 @@ Thanks @LoganMD for the logo
 
 ## Hardware support:
 ### Note: (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
-| Hardware support matrix      	| Duet		 	| Kevin and Bob	 	| Asus C100PA and C201PA	| Acer Spin 513		|
+| Hardware support matrix      	| Duet and HP 11a		 	| Kevin and Bob	 	| Asus C100PA and C201PA	| Acer Spin 513		|
 |-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|
 | Internal Display		| Y		   	| Y		 	| Y				| Y			|
 | External Display		| N			| Y(FW)			| Y				| N			|

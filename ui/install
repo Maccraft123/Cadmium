@@ -1,6 +1,8 @@
 #!/bin/false
 # this is meant to run on a liveusb
 set -v
+set -x
+set -e
 
 . ~/info
 
@@ -27,7 +29,7 @@ if [ "$CHOSEN" != "none" ]; then
 			export PKGS="$DEBS"
 			;;
 		arch)
-			export INSTALLER='pacman -Sy --noconfirm'
+			export INSTALLER='pacman -Syu --noconfirm'
 			export PKGS="$PACM"
 			;;
 		void*)

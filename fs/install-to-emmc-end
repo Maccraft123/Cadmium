@@ -1,14 +1,25 @@
 # start of install-to-emmc-end
+set -x
+set -e
 
-mount proc /mnt/proc -t proc # just in case something((gdm)) wants it
+# Already mounted proc for aarch in middle for pacman initialization
+if [ $ROOTFS != "arch" ]; then
+	mount proc /mnt/proc -t proc # just in case something((gdm)) wants it
+fi
 
 echo "Enter root password:"
 until chroot /mnt passwd; do
 	echo "Enter root password:"
 done
 
-read -p "Enter username, no spaces or big letters: "
-chroot /mnt useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
+# Arch uses visudo. Need to see if we can automate the installation. No sudo group, maybe wheel.
+if [ $ROOTFS = "arch" ]; then
+  read -p "Enter username, no spaces or big letters: "
+  useradd -G video,audio,render -s /bin/bash -m $REPLY
+else
+  read -p "Enter username, no spaces or big letters: "
+  useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
+fi
 
 echo "Enter user password:"
 until chroot /mnt passwd $REPLY; do
@@ -58,12 +69,12 @@ export INST_EMMC=1
 # install ui, yes this uses source. deal with it.
 source ~/ui/install
 
-# copy over ucm files
-cp -r /ucm/* /mnt/usr/share/alsa/ucm2/
-
-
 umount /mnt/proc
 umount /mnt
+
+# copy over ucm files
+#TODO: change for arch
+cp -r /ucm/* /mnt/usr/share/alsa/ucm2/
 
 echo "Done! :D"
 echo "$EXTRAPRINT"

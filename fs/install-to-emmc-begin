@@ -6,6 +6,17 @@ set -e
 
 echo "Installing Cadmium"
 
+if [ "$BASEBOARD" = "trogdor" ]; then
+	make -j$(nproc) -C /CdFiles/qmic install
+	echo qmic >> /CdFiles/installed_progs
+	make -j$(nproc) -C /CdFiles/qrtr install
+	echo qrtr >> /CdFiles/installed_progs
+	make -j$(nproc) -C /CdFiles/rmtfs install
+	echo rmtfs >> /CdFiles/installed_progs
+
+	systemctl start rmtfs # TODO: make this work on voidlinux
+fi
+
 # we need internet, TODO: make this run on voidlinux
 nmcli device wifi rescan
 sleep 4 # wait for it to show up

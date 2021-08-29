@@ -7,11 +7,11 @@ set -e
 echo "Installing Cadmium"
 
 if [ "$BASEBOARD" = "trogdor" ]; then
-	make -j$(nproc) -C /CdFiles/qmic install
+	make -j$(nproc) -C /CdFiles/qmic install prefix=/usr
 	echo qmic >> /CdFiles/installed_progs
-	make -j$(nproc) -C /CdFiles/qrtr install
+	make -j$(nproc) -C /CdFiles/qrtr install prefix=/usr
 	echo qrtr >> /CdFiles/installed_progs
-	make -j$(nproc) -C /CdFiles/rmtfs install
+	make -j$(nproc) -C /CdFiles/rmtfs install prefix=/usr
 	echo rmtfs >> /CdFiles/installed_progs
 
 	systemctl start rmtfs # TODO: make this work on voidlinux

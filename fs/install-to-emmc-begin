@@ -87,11 +87,11 @@ partx -a ${MMCDEV} 2>/dev/null || true
 sleep 1
 
 echo "Installing to $ROOTPART"
-# f2fs time boiii
-if [ "$TARGET" = "kevin" -o "$TARGET" = "lazor" ]; then
+# Models which don't support discard on f2fs
+if [ "$TARGET" = "kevin" -o "$TARGET" = "lazor" -o "$TARGET" = "speedy" ]; then
 	case "$FILESYSTEM" in
 		f2fs)
-			mkfs.f2fs -f $ROOTPART -t 0 # kevin and lazor don't support discard on f2fs?
+			mkfs.f2fs -f $ROOTPART -t 0
 		;;
 		ext4)
 			mkfs.ext4 -F $ROOTPART

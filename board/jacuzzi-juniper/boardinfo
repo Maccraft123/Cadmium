@@ -1,0 +1,8 @@
+#!/bin/false
+
+# explanation is in HACKING.md
+# arch missing? go to baseboard/$BASEBOARD/boardinfo
+
+export BASEBOARD=kukui
+export BOARD=jacuzzi-juniper
+export TYPE=convertible-laptop

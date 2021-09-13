@@ -3,7 +3,8 @@
 
 # Target device
 # It is sorta using codenames, but "krane" sounds stupid so i won't use it
-# One of: bob, duet, kevin, minnie, speedy, lazor
+# One of: bob, duet, kevin, minnie, speedy, lazor, jacuzzi-juniper
+ 
 if [ "$RELEASE" = "" ]; then
 	TARGET=jacuzzi-juniper
 else

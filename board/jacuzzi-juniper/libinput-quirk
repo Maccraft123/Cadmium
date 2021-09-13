@@ -1,0 +1,4 @@
+[Google Chromebook Duet]
+MatchUdevType=touchpad
+ModelChromebook=1
+AttrPressureRange=20:10

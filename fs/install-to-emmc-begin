@@ -86,12 +86,14 @@ partx -a ${MMCDEV} 2>/dev/null || true
 
 sleep 1
 
+f2fsoptions="-O extra_attr,compression,inode_checksum,sb_checksum"
+
 echo "Installing to $ROOTPART"
 # Seems like only kukui supports discard on f2fs
 if [ "$BASEBOARD" = "kukui" ]; then
 	case "$FILESYSTEM" in
 		f2fs)
-			mkfs.f2fs -f $ROOTPART
+			mkfs.f2fs -f $ROOTPART $f2fsoptions
 		;;
 		ext4)
 			mkfs.ext4 -F $ROOTPART
@@ -100,7 +102,7 @@ if [ "$BASEBOARD" = "kukui" ]; then
 else
 	case "$FILESYSTEM" in
 		f2fs)
-			mkfs.f2fs -f $ROOTPART -t 0
+			mkfs.f2fs -f $ROOTPART -t 0 $f2fsoptions
 		;;
 		ext4)
 			mkfs.ext4 -F $ROOTPART

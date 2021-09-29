@@ -1,0 +1,12 @@
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kappa.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kappa.dts
+index b3f46c16e5d7..e5bd9191e426 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kappa.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kappa.dts
+@@ -5,6 +5,7 @@
+ 
+ /dts-v1/;
+ #include "mt8183-kukui-jacuzzi.dtsi"
++#include "mt8183-kukui-audio-ts3a227e-max98357a.dtsi"
+ 
+ / {
+ 	model = "Google kappa board";

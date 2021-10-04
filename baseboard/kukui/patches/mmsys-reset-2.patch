@@ -1,0 +1,62 @@
+From ce33c87f16f339e6d939ec209ff6bb5ce5e91b5e Mon Sep 17 00:00:00 2001
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Date: Wed, 25 Aug 2021 12:23:03 +0200
+Subject: [PATCH] FROMLIST: arm64: dts: mt8183: Add the mmsys reset bit to
+ reset the dsi0
+
+Reset the DSI hardware is needed to prevent different settings between
+the bootloader and the kernel.
+
+While here, also remove the undocumented and also not used
+'mediatek,syscon-dsi' property.
+
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Change-Id: I933f1532d7a1b2910843a9644c86a7d94a4b44e1
+---
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi  | 3 ++-
+ include/dt-bindings/reset/mt8183-resets.h | 3 +++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index 9639ca17638ed..9c4158a1057c0 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -1251,6 +1251,7 @@ mmsys: syscon@14000000 {
+ 			compatible = "mediatek,mt8183-mmsys", "syscon";
+ 			reg = <0 0x14000000 0 0x1000>;
+ 			#clock-cells = <1>;
++			#reset-cells = <1>;
+ 			mboxes = <&gce 0 CMDQ_THR_PRIO_HIGHEST>,
+ 				 <&gce 1 CMDQ_THR_PRIO_HIGHEST>;
+ 			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0 0x1000>;
+@@ -1365,11 +1366,11 @@ dsi0: dsi@14014000 {
+ 			reg = <0 0x14014000 0 0x1000>;
+ 			interrupts = <GIC_SPI 236 IRQ_TYPE_LEVEL_LOW>;
+ 			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+-			mediatek,syscon-dsi = <&mmsys 0x140>;
+ 			clocks = <&mmsys CLK_MM_DSI0_MM>,
+ 				 <&mmsys CLK_MM_DSI0_IF>,
+ 				 <&mipi_tx0>;
+ 			clock-names = "engine", "digital", "hs";
++			resets = <&mmsys MT8183_MMSYS_SW0_RST_B_DISP_DSI0>;
+ 			phys = <&mipi_tx0>;
+ 			phy-names = "dphy";
+ 		};
+diff --git a/include/dt-bindings/reset/mt8183-resets.h b/include/dt-bindings/reset/mt8183-resets.h
+index a1bbd41e0d128..48c5d2de0a383 100644
+--- a/include/dt-bindings/reset/mt8183-resets.h
++++ b/include/dt-bindings/reset/mt8183-resets.h
+@@ -80,6 +80,9 @@
+ 
+ #define MT8183_INFRACFG_SW_RST_NUM				128
+ 
++/* MMSYS resets */
++#define MT8183_MMSYS_SW0_RST_B_DISP_DSI0			25
++
+ #define MT8183_TOPRGU_MM_SW_RST					1
+ #define MT8183_TOPRGU_MFG_SW_RST				2
+ #define MT8183_TOPRGU_VENC_SW_RST				3
+-- 
+GitLab
+

@@ -37,9 +37,10 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 		echo "Applying $x"
 		patch -p1 --forward < $x
 	done
-
-	patch -p1 --forward < $CADMIUMROOT/kernel/patches/android-enable-building-ashmem-and-binder-as-modules.patch
-	patch -p1 --forward < $CADMIUMROOT/kernel/patches/export-symbols-needed-by-android-drivers.patch.alt
+	for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do
+		echo "Applying $x"
+		patch -p1 --forward < $x
+	done
 fi
 
 cd $CADMIUMROOT/tmp/linux-$BASEBOARD

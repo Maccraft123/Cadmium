@@ -224,7 +224,7 @@ index b094132bd20b..9cc57b083839 100644
 +	unsigned int cpu;
 +	int ret;
 +
-+	get_online_cpus();
++	cpus_read_lock();
 +
 +	data->nb.notifier_call = cpufreq_passive_notifier_call;
 +	ret = cpufreq_register_notifier(&data->nb,
@@ -284,7 +284,7 @@ index b094132bd20b..9cc57b083839 100644
 +	}
 +
 +out:
-+	put_online_cpus();
++	cpus_read_unlock();
 +	if (ret)
 +		return ret;
 +

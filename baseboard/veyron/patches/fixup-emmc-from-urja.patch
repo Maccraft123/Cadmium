@@ -1,0 +1,62 @@
+From 28416ebb63a0fba56074d038d0ef7c41efcc4c78 Mon Sep 17 00:00:00 2001
+From: Urja Rannikko <urjaman@gmail.com>
+Date: Tue, 28 Sep 2021 20:23:13 +0300
+Subject: [PATCH] Revert "clk: divider: Implement and wire up .determine_rate
+ by default"
+
+This reverts commit 69a00fb3d6970681c15a23595ec54233ce10295c.
+That broke eMMC detection (error -110) on veyron speedy.
+Why is still an open question but for now i'm doing this revert
+in my tree to be able to test the rest of 5.15 rc's.
+---
+ drivers/clk/clk-divider.c | 23 -----------------------
+ 1 file changed, 23 deletions(-)
+
+diff --git a/drivers/clk/clk-divider.c b/drivers/clk/clk-divider.c
+index f6b2bf558486..87ba4966b0e8 100644
+--- a/drivers/clk/clk-divider.c
++++ b/drivers/clk/clk-divider.c
+@@ -446,27 +446,6 @@ static long clk_divider_round_rate(struct clk_hw *hw, unsigned long rate,
+ 				  divider->width, divider->flags);
+ }
+ 
+-static int clk_divider_determine_rate(struct clk_hw *hw,
+-				      struct clk_rate_request *req)
+-{
+-	struct clk_divider *divider = to_clk_divider(hw);
+-
+-	/* if read only, just return current value */
+-	if (divider->flags & CLK_DIVIDER_READ_ONLY) {
+-		u32 val;
+-
+-		val = clk_div_readl(divider) >> divider->shift;
+-		val &= clk_div_mask(divider->width);
+-
+-		return divider_ro_determine_rate(hw, req, divider->table,
+-						 divider->width,
+-						 divider->flags, val);
+-	}
+-
+-	return divider_determine_rate(hw, req, divider->table, divider->width,
+-				      divider->flags);
+-}
+-
+ int divider_get_val(unsigned long rate, unsigned long parent_rate,
+ 		    const struct clk_div_table *table, u8 width,
+ 		    unsigned long flags)
+@@ -522,7 +501,6 @@ static int clk_divider_set_rate(struct clk_hw *hw, unsigned long rate,
+ const struct clk_ops clk_divider_ops = {
+ 	.recalc_rate = clk_divider_recalc_rate,
+ 	.round_rate = clk_divider_round_rate,
+-	.determine_rate = clk_divider_determine_rate,
+ 	.set_rate = clk_divider_set_rate,
+ };
+ EXPORT_SYMBOL_GPL(clk_divider_ops);
+@@ -530,7 +508,6 @@ EXPORT_SYMBOL_GPL(clk_divider_ops);
+ const struct clk_ops clk_divider_ro_ops = {
+ 	.recalc_rate = clk_divider_recalc_rate,
+ 	.round_rate = clk_divider_round_rate,
+-	.determine_rate = clk_divider_determine_rate,
+ };
+ EXPORT_SYMBOL_GPL(clk_divider_ro_ops);
+ 

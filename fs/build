@@ -138,10 +138,6 @@ git clone https://github.com/andersson/qmic.git $CADMIUMROOT/tmp/root/CdFiles/qm
 git clone https://github.com/andersson/qrtr.git $CADMIUMROOT/tmp/root/CdFiles/qrtr
 git clone https://github.com/Maccraft123/rmtfs.git $CADMIUMROOT/tmp/root/CdFiles/rmtfs
 
-# install sway config to user dir
-mkdir -p $CADMIUMROOT/tmp/root/etc/sway
-cp $CADMIUMROOT/board/$TARGET/sway-config $CADMIUMROOT/tmp/root/root/swayconfig
-
 # copy over ucm files
 cp -r $CADMIUMROOT/fs/ucm $CADMIUMROOT/tmp/root/ucm
 

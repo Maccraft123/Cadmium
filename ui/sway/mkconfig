@@ -1,0 +1,25 @@
+#!/bin/sh
+
+BAT=NOTFOUND
+LANG=C
+
+for x in /sys/class/power_supply/*; do
+	echo "Trying path: $x"
+	if [ "$(cat $x/device/name)" = 'sbs-battery' -o "$(cat $x/device/name)" = 'bq27500' ]; then
+		echo "Found battery at $x"
+		BAT=$x
+	fi
+done
+
+if [ "$BAT" = "NOTFOUND" ]; then
+	. /CdFiles/info
+	echo "Debug info: K: $KERNEL R: $ROOTFS B: $BASEBOARD T: $BOARD"
+	echo "Uh oh, automatic battery detection failed"
+	echo "Make a photo of this screen and include it in issue on Cadmium Github page"
+fi
+
+STATUS_COMMAND='while echo B: $(cat '$BAT'/capacity)\%, $(date --date="@$(cat '$BAT'/time_to_empty_avg)" +"%H:%m") \| T: $(date +'%d-%m-%Y  %k:%M:%S'); do sleep 1; done'
+sed -i'' "s/^\s*status_command.*\$/status_command $STATUS_COMMAND/g" /mnt/etc/sway/config
+
+cat ~/ui/sway/cadmium.in | sed "s/DISP_INT/$WLR_DISP/g;s/DISP_ROT/$DISP_ROTATION/g"
+

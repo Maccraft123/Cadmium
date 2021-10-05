@@ -6,3 +6,6 @@
 export BASEBOARD=gru
 export BOARD=kevin
 export TYPE=convertible-laptop
+
+export WLR_DISP=eDP-1
+export DISP_ROTATION=0

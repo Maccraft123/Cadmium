@@ -35,16 +35,8 @@ if [ "$CHOSEN" != "none" ]; then
 	$CHRT $INSTALLER $PKGS
 	case $CHOSEN in
 		sway)
-			if [ $INST_EMMC = 1 ]; then
-                                echo "Copying sway config"
-                                mkdir -p /mnt/etc/sway
-                                cp ~/swayconfig /mnt/etc/sway/config
-                                echo 'tty | grep tty1 && exec sway' >> /mnt/home/$USERNAME/.bashrc
-                                # TODO: $RUN_COMMAND setting in ui information
-                        else
-                                mv ~/swayconfig /etc/sway/config
-                                echo 'tty | grep tty1 && exec sway' >> /home/$USERNAME/.bashrc
-                        fi
+			~/ui/sway/mkconfig
+                        echo 'tty | grep tty1 && exec sway' >> /mnt/home/$USERNAME/.bashrc
 			;;
 		phosh)
 			echo "Phosh NEEDS password that is only digits"

@@ -1,0 +1,12 @@
+#!/bin/false
+
+# explanation is in HACKING.md
+export ARCH=arm64
+export ARCH_UNAME=aarch64
+export ARCH_DEB=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
+
+export EMMC_OFFSET=0
+export SOC=mt8173
+
+export BOOTFW=depthcharge

@@ -1,0 +1,8 @@
+#!/bin/false
+
+# explanation is in HACKING.md
+# arch missing? go to baseboard/$BASEBOARD/boardinfo
+
+export BASEBOARD=elm
+export BOARD=elm
+export TYPE=laptop

@@ -75,7 +75,6 @@
 
 	};
 	configurations {
-		default = "conf@1";
 		conf@1{
 			kernel = "kernel@1";
 			fdt = "fdt@1";

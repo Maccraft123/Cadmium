@@ -116,8 +116,7 @@ mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 # copy over firmware if not libre
 if [ $KERNEL != libre ]; then
 	mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
-	cp -r $CADMIUMROOT/baseboard/$BASEBOARD/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
-	[ -d $CADMIUMROOT/board/$TARGET/firmware/ ] && cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
+	cp -r $CADMIUMROOT/fs/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
 fi
 
 # make cadmium dir for future scripts lolol

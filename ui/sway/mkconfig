@@ -20,7 +20,7 @@ fi
 
 cat ~/ui/sway/cadmium.in | sed "s/DISP_INT/$WLR_DISP/g;s/DISP_ROT/$DISP_ROTATION/g"
 
-ed -i'' 's/^\s*status_command.*$/status_command/g' /etc/sway/config
+sed -i'' 's/^\s*status_command.*$/status_command/g' /etc/sway/config
 sed -i'' 's/^status_command/status_command while echo B: $(cat PLACEHOLDER_BAT\/capacity)\\%, $(date --date="@$(cat PLACEHOLDER_BAT\/time_to_empty_avg)" +"%H:%m") \\| T: $(date +"%d-%m-%Y  %k:%M:%S\"); do sleep 1; done/g' /etc/sway/config
 sed -i'' "s#PLACEHOLDER_BAT#$BAT#g" /etc/sway/config
 sed -i'' "s#Mod4#Mod1#g" # swap from super(search) key to alt1

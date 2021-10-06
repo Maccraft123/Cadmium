@@ -41,7 +41,7 @@ $CADMIUMROOT/fs/build $ROOTPART
 
 
 $CADMIUMROOT/bootfw/$BOOTFW/package $DEVICE $ROOTPART
-dd if=$CADMIUMROOT/tmp/linux-$BASEBOARD/vmlinux.kpart of=$KERNPART
+dd if=$CADMIUMROOT/tmp/linux-$ARCH/vmlinux.kpart of=$KERNPART
 
 # can't be done in fs/build
 if [ $B_OXIDE = 1 ]; then
@@ -49,7 +49,7 @@ if [ $B_OXIDE = 1 ]; then
 fi
 
 # install modules
-make -C $CADMIUMROOT/tmp/linux-$BASEBOARD INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
+make -C $CADMIUMROOT/tmp/linux-$ARCH INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
 
 # we don't umount it in fs/build
 umount $CADMIUMROOT/tmp/root

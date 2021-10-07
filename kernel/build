@@ -33,7 +33,7 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$ARCH 2>/dev/null)" ]; the
 		patch -p1 --forward < $x
 	done
 
-	echo "$(date +'%V%y') $KERNEL" > kern-dl-date-$ARCH
+	echo "$(date +'%V%y') $KERNEL" > $CADMIUMROOT/tmp/kern-dl-date-$ARCH
 fi
 
 cd $CADMIUMROOT/tmp/linux-$ARCH

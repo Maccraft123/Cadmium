@@ -13,7 +13,7 @@ cd $CADMIUMROOT/tmp
 
 
 # check if kernel has been downloaded this week, if not download/update it
-if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$ARCH 2>/dev/null)" ]; then
+if [ "$(date +'%V%y') $KERNEL" != "$(cat linux-$ARCH/kern-dl-date-$ARCH 2>/dev/null)" ]; then
 	echo "Downloading kernel for $ARCH"
 	rm -rf linux-$ARCH
 

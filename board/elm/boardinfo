@@ -5,4 +5,4 @@
 
 export BASEBOARD=elm
 export BOARD=elm
-export TYPE=convertible-convertible-laptop
+export TYPE=convertible-laptop

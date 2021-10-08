@@ -4,15 +4,11 @@
 # Target device
 # It is sorta using codenames, but "krane" sounds stupid so i won't use it
 # One of: bob, duet, kevin, minnie, speedy, lazor
-if [ "$RELEASE" = "" ]; then
-	TARGET=duet
-else
-	TARGET=$RELEASE
-fi
+TARGET=elm
 
 # RootFS type
 # One of: debian, void, void-musl, ubuntu
-ROOTFS=debian
+ROOTFS=ubuntu
 
 # FS type
 # f2fs, ext4
@@ -21,7 +17,7 @@ FILESYSTEM=f2fs
 # Debian and debian-ish distro suite
 # sid, testing, stable
 # impish, hirsute, focal
-SUITE=sid
+SUITE=stable
 
 # Build Cadmium with Oxide support(dualboot)
 # 0: off 1: on

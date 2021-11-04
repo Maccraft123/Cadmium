@@ -7,6 +7,6 @@ export ARCH_DEB=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
 
 export EMMC_OFFSET=0
-export SOC=mt8173c
+export SOC=mt8173
 
 export BOOTFW=depthcharge

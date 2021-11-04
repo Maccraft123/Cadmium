@@ -1,0 +1,33 @@
+#!/bin/sh
+
+BAT=NOTFOUND
+LANG=C
+
+for x in /sys/class/power_supply/*; do
+	echo "Trying path: $x"
+	if [ "$(cat $x/device/name)" = 'sbs-battery' -o "$(cat $x/device/name)" = 'bq27500' ]; then
+		echo "Found battery at $x"
+		BAT=$x
+	fi
+done
+
+if [ "$BAT" = "NOTFOUND" ]; then
+	. /CdFiles/info
+	echo "Debug info: K: $KERNEL R: $ROOTFS B: $BASEBOARD T: $BOARD"
+	echo "Uh oh, automatic battery detection failed"
+	echo "Make a photo of this screen and include it in issue on Cadmium Github page"
+fi
+
+cat ~/ui/sway/cadmium.in | sed "s/DISP_INT/$WLR_DISP/g;s/DISP_ROT/$DISP_ROTATION/g"
+
+sed -i'' 's/^\s*status_command.*$/status_command/g' /mnt/etc/sway/config
+sed -i'' 's/^status_command/status_command while echo B: $(cat PLACEHOLDER_BAT\/capacity)\\%, $(date --date="@$(cat PLACEHOLDER_BAT\/time_to_empty_avg)" +"%H:%m") \\| T: $(date +"%d-%m-%Y  %k:%M:%S\"); do sleep 1; done/g' /mnt/etc/sway/config
+sed -i'' "s#PLACEHOLDER_BAT#$BAT#g" /mnt/etc/sway/config
+while true; do
+    read -p "The default sway modkey is the search button, would you like to change it to alt1 (left alt key)? Please type yes or no: " yn
+    case $yn in
+        [Yy]* ) sed -i'' "s#Mod4#Mod1#g" /mnt/etc/sway/config;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done

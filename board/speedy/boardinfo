@@ -7,4 +7,5 @@ export BASEBOARD=veyron
 export BOARD=speedy
 export TYPE=laptop
 
-export SOC=rk3288
+export WLR_DISP=eDP-1
+export DISP_ROTATION=0

@@ -6,3 +6,6 @@
 export BASEBOARD=trogdor
 export BOARD=lazor
 export TYPE=convertible-laptop
+
+export WLR_DISP=eDP-1
+export DISP_ROTATION=0

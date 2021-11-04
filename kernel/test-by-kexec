@@ -10,7 +10,7 @@ source $CADMIUMROOT/board/$TARGET/boardinfo
 source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
 # set up alias areweontarget so "if areweontarget; then X" works fine
-if cat /sys/firmware/devicetree/base/compatible | egrep -si "$BASEBOARD|$BOARD" then
+if cat /sys/firmware/devicetree/base/compatible | egrep -si "$BASEBOARD|$BOARD"; then
 
 	alias areweontarget=true
 else

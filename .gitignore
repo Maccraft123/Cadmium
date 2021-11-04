@@ -1,8 +1,7 @@
 tmp/*
-config
+/config
 vmlinux.kpart
 vmlinux.kpart.mmc
 kernel-*.*
 *.img
 *.img.xz
-config

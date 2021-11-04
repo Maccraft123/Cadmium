@@ -13,9 +13,9 @@ cd $CADMIUMROOT/tmp
 
 
 # check if kernel has been downloaded this week, if not download/update it
-if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]; then
-	echo "Downloading kernel for $BASEBOARD/$TARGET"
-	rm -rf linux-$BASEBOARD
+if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$ARCH 2>/dev/null)" ]; then
+	echo "Downloading kernel for $ARCH"
+	rm -rf linux-$ARCH
 
 
 	if [ $KERNEL = libre ]; then
@@ -23,31 +23,24 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$BASEBOARD 2>/dev/null)" ]
 	else
 		curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
 	fi
-	mkdir linux-$BASEBOARD
-	bsdtar xf Linux-archive --strip-components=1 -C linux-$BASEBOARD
-	echo "$(date +'%V%y') $KERNEL" > kern-dl-date-$BASEBOARD
+	mkdir linux-$ARCH
+	bsdtar xf Linux-archive --strip-components=1 -C linux-$ARCH
 
-	cd linux-$BASEBOARD
+	cd linux-$ARCH
 
-	for x in $(ls $CADMIUMROOT/baseboard/$BASEBOARD/patches/*.patch); do
-		echo "Applying $x"
-		patch -p1 --forward < $x
-	done
-	for x in $(ls $CADMIUMROOT/board/$TARGET/patches/*.patch); do
-		echo "Applying $x"
-		patch -p1 --forward < $x
-	done
 	for x in $(ls $CADMIUMROOT/kernel/patches/*.patch); do
 		echo "Applying $x"
 		patch -p1 --forward < $x
 	done
+
+	echo "$(date +'%V%y') $KERNEL" > $CADMIUMROOT/tmp/kern-dl-date-$ARCH
 fi
 
-cd $CADMIUMROOT/tmp/linux-$BASEBOARD
+cd $CADMIUMROOT/tmp/linux-$ARCH
 
 # TODO:
 # make cadmium defconfig from: common-defconfig, soc-defconfig and board-defconfig
-[ -f .config ] || cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel-config .config
+[ -f .config ] || cp $CADMIUMROOT/kernel/config .config
 
 if [ $KERNEL = libre ]; then
 	# it looks better this way
@@ -56,7 +49,7 @@ fi
 
 #make nconfig # if you want to customize config just uncomment this
 
-echo Bulding $KERNEL kernel for $BASEBOARD/$TARGET/$ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
+echo Bulding $KERNEL kernel for $ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
 time make -j$(nproc)
 
 make tarxz-pkg

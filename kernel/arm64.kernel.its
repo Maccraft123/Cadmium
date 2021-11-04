@@ -13,6 +13,46 @@
 			entry = <0>;
 		};
 		fdt@1{
+			description = "rk3399-gru-kevin.dtb";
+			data = /incbin/("arch/arm64/boot/dts/rockchip/rk3399-gru-kevin.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
+		fdt@2{
+			description = "rk3399-gru-bob.dtb";
+			data = /incbin/("arch/arm64/boot/dts/rockchip/rk3399-gru-bob.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
+		fdt@3{
+			description = "mt8183-kukui-krane-sku176.dtb";
+			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
+		fdt@4{
+			description = "mt8183-kukui-krane-sku0.dtb";
+			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
+		fdt@5{
 			description = "sc7180-trogdor-lazor-r1.dtb";
 			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dtb");
 			type = "flat_dt";
@@ -22,7 +62,7 @@
 				algo = "sha1";
 			};
 		};
-		fdt@2{
+		fdt@6{
 			description = "sc7180-trogdor-lazor-r1-kb.dtb";
 			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-kb.dtb");
 			type = "flat_dt";
@@ -32,7 +72,7 @@
 				algo = "sha1";
 			};
 		};
-		fdt@3{
+		fdt@7{
 			description = "sc7180-trogdor-lazor-r1-lte.dtb";
 			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dtb");
 			type = "flat_dt";
@@ -42,7 +82,7 @@
 				algo = "sha1";
 			};
 		};
-		fdt@4{
+		fdt@8{
 			description = "sc7180-trogdor-lazor-r3.dtb";
 			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dtb");
 			type = "flat_dt";
@@ -52,7 +92,7 @@
 				algo = "sha1";
 			};
 		};
-		fdt@5{
+		fdt@9{
 			description = "sc7180-trogdor-lazor-r3-kb.dtb";
 			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-kb.dtb");
 			type = "flat_dt";
@@ -62,7 +102,7 @@
 				algo = "sha1";
 			};
 		};
-		fdt@6{
+		fdt@10{
 			description = "sc7180-trogdor-lazor-r3-lte.dtb";
 			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dtb");
 			type = "flat_dt";
@@ -75,7 +115,6 @@
 
 	};
 	configurations {
-		default = "conf@1";
 		conf@1{
 			kernel = "kernel@1";
 			fdt = "fdt@1";
@@ -100,6 +139,21 @@
 			kernel = "kernel@1";    
 			fdt = "fdt@6";
 		};
-
+		conf@7{
+			kernel = "kernel@1";
+			fdt = "fdt@7";
+		};
+		conf@8{
+			kernel = "kernel@1";
+			fdt = "fdt@8";
+		};
+		conf@9{
+			kernel = "kernel@1";
+			fdt = "fdt@9";
+		};
+		conf@10{
+			kernel = "kernel@1";
+			fdt = "fdt@10";
+		};
 	};
 };

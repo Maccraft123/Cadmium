@@ -15,12 +15,12 @@ source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 # sanity check
 [ "$BOOTFW" != "depthcharge" ] && exit 1
 
-cd $CADMIUMROOT/tmp/linux-$BASEBOARD
+cd $CADMIUMROOT/tmp/linux-$ARCH
 
 [ "$ARCH" != arm ] && lz4 -z -f arch/$ARCH/boot/Image c_linux.lz4
 
 # TODO: generate
-cp $CADMIUMROOT/baseboard/$BASEBOARD/kernel.its kernel.its
+cp $CADMIUMROOT/kernel/$ARCH.kernel.its kernel.its
 cp $CADMIUMROOT/kernel/cmdline cmdline
 cp $CADMIUMROOT/kernel/cmdline.p2 cmdline.p2
 

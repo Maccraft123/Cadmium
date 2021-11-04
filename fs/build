@@ -116,8 +116,7 @@ mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 # copy over firmware if not libre
 if [ $KERNEL != libre ]; then
 	mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
-	cp -r $CADMIUMROOT/baseboard/$BASEBOARD/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
-	[ -d $CADMIUMROOT/board/$TARGET/firmware/ ] && cp -r $CADMIUMROOT/board/$TARGET/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
+	cp -r $CADMIUMROOT/fs/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
 fi
 
 # make cadmium dir for future scripts lolol
@@ -137,10 +136,6 @@ dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_
 git clone https://github.com/andersson/qmic.git $CADMIUMROOT/tmp/root/CdFiles/qmic
 git clone https://github.com/andersson/qrtr.git $CADMIUMROOT/tmp/root/CdFiles/qrtr
 git clone https://github.com/Maccraft123/rmtfs.git $CADMIUMROOT/tmp/root/CdFiles/rmtfs
-
-# install sway config to user dir
-mkdir -p $CADMIUMROOT/tmp/root/etc/sway
-cp $CADMIUMROOT/board/$TARGET/sway-config $CADMIUMROOT/tmp/root/root/swayconfig
 
 # copy over ucm files
 cp -r $CADMIUMROOT/fs/ucm $CADMIUMROOT/tmp/root/ucm

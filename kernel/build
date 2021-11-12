@@ -38,9 +38,7 @@ fi
 
 cd $CADMIUMROOT/tmp/linux-$ARCH
 
-# TODO:
-# make cadmium defconfig from: common-defconfig, soc-defconfig and board-defconfig
-[ -f .config ] || cp $CADMIUMROOT/kernel/config .config
+[ -f .config ] || cp $CADMIUMROOT/kernel/config.$ARCH.config
 
 if [ $KERNEL = libre ]; then
 	# it looks better this way
@@ -52,4 +50,5 @@ fi
 echo Bulding $KERNEL kernel for $ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
 time make -j$(nproc)
 
-make tarxz-pkg
+# FIXME: broken on loongson2f
+#make tarxz-pkg

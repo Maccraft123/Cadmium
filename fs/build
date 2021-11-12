@@ -23,23 +23,33 @@ esac
 
 mount $ROOTPART root
 
+# depthcharge uses special partition table
+if [ $BOOTFW != depthcharge ]; then
+	mkfs.ext2 $BOOTPART
+
+	mkdir -p root/boot
+	mount $BOOTPART root/boot
+fi
+
 # if we are on arm64 machine, don't use qemu to execute arm64 code
 if [ "$(uname -m)" = "$ARCH_UNAME" ]; then
 	echo "Running on $ARCH machine"
-	foreign=''
 else
 	case "$ARCH_UNAME" in
 		armv7l)
 			if [ "$(uname -m)" = "aarch64" ]; then
 				echo "Running on arm64 machine capable of executing armv7l programs"
-				foreign=''
 			fi
 		;;
 		aarch64)
 			cp "$(which qemu-aarch64-static)" root/
 			qemu="/qemu-aarch64-static"
-			foreign='--foreign'
 			echo "Running on not-aarch64 machine"
+		;;
+		mips64el)
+			cp "$(which qemu-mips64el-static)" root/
+			qemu="/qemu-mips64el-static"
+			echo "Running on not-Little-Endian-MIPS64 machine"
 		;;
 		*)
 			exit 1
@@ -67,10 +77,11 @@ case "$ROOTFS" in
 	debian)
 		echo "Installing Debian"
 		# debootstrap randomly exits with 1, so there's that || true
-		debootstrap --arch=$ARCH_DEB $SUITE $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ || true
+		debootstrap --arch=$ARCH_DEB $SUITE $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ #|| true
 		# preinstall packages to have wifi
 		chroot root/ $qemu /bin/apt update
-		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston
+		chroot root/ $qemu /bin/apt install -y vim network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston
+		[ $BOOTFW = depthcharge ] && chroot root/ $qemu /bin/apt install vboot-utils
 	;;
 	# let's explain this: when void is set, $V is set to -v, so it does 'grep -v musl', printing link without musl
 	# when $V is not set, grep is 'grep musl', printing only link with musl

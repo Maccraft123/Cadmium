@@ -41,11 +41,20 @@ $CADMIUMROOT/fs/build $ROOTPART
 
 
 $CADMIUMROOT/bootfw/$BOOTFW/package $DEVICE $ROOTPART
-dd if=$CADMIUMROOT/tmp/linux-$ARCH/vmlinux.kpart of=$KERNPART
+# TODO: move to bootfw/$BOOTFW/install
+if [ $BOOTFW = depthcharge ]; then
+	
+	dd if=$CADMIUMROOT/tmp/linux-$ARCH/vmlinux.kpart of=$KERNPART
 
-# can't be done in fs/build
-if [ $B_OXIDE = 1 ]; then
-	cp $CADMIUMROOT/tmp/oxide.kpart $CADMIUMROOT/tmp/root/
+	# can't be done in fs/build
+	if [ $B_OXIDE = 1 ]; then
+		cp $CADMIUMROOT/tmp/oxide.kpart $CADMIUMROOT/tmp/root/
+	fi
+else if [ $BOOTFW = pmon ]; then
+	mkfs.ext4 ${DEVICE}1
+	mount ${DEVICE}1 $CADMIUMROOT/tmp/root/boot
+	# TODO
+	umount $CADMIUMROOT/tmp/root/boot
 fi
 
 # install modules

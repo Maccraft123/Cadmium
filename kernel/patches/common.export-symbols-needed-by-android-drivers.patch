@@ -20,23 +20,23 @@ Export the currently un-exported symbols they depend on.
  security/security.c | 4 ++++
  7 files changed, 10 insertions(+)
 
-Index: b/fs/file.c
-===================================================================
+diff --git a/fs/file.c b/fs/file.c
+index 8627dacfc424..0c25ee3bee35 100644
 --- a/fs/file.c
 +++ b/fs/file.c
-@@ -676,6 +680,7 @@ out_unlock:
- 	*res = NULL;
- 	return -ENOENT;
+@@ -669,6 +669,7 @@ static inline void __range_cloexec(struct files_struct *cur_fds,
+ 		bitmap_set(fdt->close_on_exec, fd, max_fd - fd + 1);
+ 	spin_unlock(&cur_fds->file_lock);
  }
 +EXPORT_SYMBOL(close_fd_get_file);
  
- void do_close_on_exec(struct files_struct *files)
- {
-Index: b/kernel/fork.c
-===================================================================
+ static inline void __range_close(struct files_struct *cur_fds, unsigned int fd,
+ 				 unsigned int max_fd)
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 3244cc56b697..eaaa75d95c87 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -1131,6 +1131,7 @@ void mmput_async(struct mm_struct *mm)
+@@ -1151,6 +1151,7 @@ void mmput_async(struct mm_struct *mm)
  		schedule_work(&mm->async_put_work);
  	}
  }
@@ -44,11 +44,11 @@ Index: b/kernel/fork.c
  #endif
  
  /**
-Index: b/kernel/sched/core.c
-===================================================================
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3c9b0fda64ac..e3623c0e5a84 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -4667,6 +4667,7 @@ int can_nice(const struct task_struct *p
+@@ -6912,6 +6912,7 @@ int can_nice(const struct task_struct *p, const int nice)
  	return (nice_rlim <= task_rlimit(p, RLIMIT_NICE) ||
  		capable(CAP_SYS_NICE));
  }
@@ -56,35 +56,35 @@ Index: b/kernel/sched/core.c
  
  #ifdef __ARCH_WANT_SYS_NICE
  
-Index: b/kernel/task_work.c
-===================================================================
+diff --git a/kernel/task_work.c b/kernel/task_work.c
+index 1698fbe6f0e1..90000404af2b 100644
 --- a/kernel/task_work.c
 +++ b/kernel/task_work.c
-@@ -52,6 +52,7 @@ task_work_add(struct task_struct *task,
+@@ -60,6 +60,7 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
  
  	return 0;
  }
 +EXPORT_SYMBOL(task_work_add);
  
  /**
-  * task_work_cancel - cancel a pending work added by task_work_add()
-Index: b/mm/memory.c
-===================================================================
+  * task_work_cancel_match - cancel a pending work added by task_work_add()
+diff --git a/mm/memory.c b/mm/memory.c
+index 8f1de811a1dc..ff059773b659 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -1367,6 +1367,7 @@ void zap_page_range(struct vm_area_struc
- 	mmu_notifier_invalidate_range_end(&range);
- 	tlb_finish_mmu(&tlb, start, range.end);
+@@ -1425,6 +1425,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 
+ 	return addr;
  }
 +EXPORT_SYMBOL_GPL(zap_page_range);
  
- /**
-  * zap_page_range_single - remove user pages in a given range
-Index: b/mm/shmem.c
-===================================================================
+ static inline unsigned long zap_pmd_range(struct mmu_gather *tlb,
+ 				struct vm_area_struct *vma, pud_t *pud,
+diff --git a/mm/shmem.c b/mm/shmem.c
+index dc038ce78700..5799e565d5df 100644
 --- a/mm/shmem.c
 +++ b/mm/shmem.c
-@@ -4158,6 +4158,7 @@ int shmem_zero_setup(struct vm_area_stru
+@@ -4140,6 +4140,7 @@ int shmem_zero_setup(struct vm_area_struct *vma)
  
  	return 0;
  }
@@ -92,32 +92,32 @@ Index: b/mm/shmem.c
  
  /**
   * shmem_read_mapping_page_gfp - read into page cache, using specified page allocation flags.
-Index: b/security/security.c
-===================================================================
+diff --git a/security/security.c b/security/security.c
+index c88167a414b4..565deeaacc01 100644
 --- a/security/security.c
 +++ b/security/security.c
-@@ -725,24 +725,28 @@ int security_binder_set_context_mgr(stru
+@@ -751,24 +751,28 @@ int security_binder_set_context_mgr(const struct cred *mgr)
  {
  	return call_int_hook(binder_set_context_mgr, 0, mgr);
  }
 +EXPORT_SYMBOL_GPL(security_binder_set_context_mgr);
  
- int security_binder_transaction(struct task_struct *from,
- 				struct task_struct *to)
+ int security_binder_transaction(const struct cred *from,
+ 				const struct cred *to)
  {
  	return call_int_hook(binder_transaction, 0, from, to);
  }
 +EXPORT_SYMBOL_GPL(security_binder_transaction);
  
- int security_binder_transfer_binder(struct task_struct *from,
- 				    struct task_struct *to)
+ int security_binder_transfer_binder(const struct cred *from,
+ 				    const struct cred *to)
  {
  	return call_int_hook(binder_transfer_binder, 0, from, to);
  }
 +EXPORT_SYMBOL_GPL(security_binder_transfer_binder);
  
- int security_binder_transfer_file(struct task_struct *from,
- 				  struct task_struct *to, struct file *file)
+ int security_binder_transfer_file(const struct cred *from,
+ 				  const struct cred *to, struct file *file)
  {
  	return call_int_hook(binder_transfer_file, 0, from, to, file);
  }
@@ -125,3 +125,6 @@ Index: b/security/security.c
  
  int security_ptrace_access_check(struct task_struct *child, unsigned int mode)
  {
+-- 
+2.32.0
+

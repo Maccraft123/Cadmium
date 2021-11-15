@@ -50,14 +50,15 @@ if [ $BOOTFW = depthcharge ]; then
 	if [ $B_OXIDE = 1 ]; then
 		cp $CADMIUMROOT/tmp/oxide.kpart $CADMIUMROOT/tmp/root/
 	fi
-else
-	if [ $BOOTFW = pmon ]; then
-		mkfs.ext4 ${DEVICE}1
-		mount ${DEVICE}1 $CADMIUMROOT/tmp/root/boot
-		# TODO
-		umount $CADMIUMROOT/tmp/root/boot
-	fi
 fi
+
+if [ $BOOTFW = pmon ]; then
+	mkfs.ext4 ${DEVICE}1
+	mount ${DEVICE}1 $CADMIUMROOT/tmp/root/boot
+	# TODO
+	umount $CADMIUMROOT/tmp/root/boot
+fi
+
 
 # install modules
 make -C $CADMIUMROOT/tmp/linux-$ARCH INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install

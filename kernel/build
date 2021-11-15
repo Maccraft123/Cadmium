@@ -38,7 +38,7 @@ fi
 
 cd $CADMIUMROOT/tmp/linux-$ARCH
 
-[ -f .config ] || cp $CADMIUMROOT/kernel/config.$ARCH.config
+[ -f .config ] || cp $CADMIUMROOT/kernel/config.$ARCH .config
 
 if [ $KERNEL = libre ]; then
 	# it looks better this way

@@ -81,7 +81,7 @@ case "$ROOTFS" in
 		# preinstall packages to have wifi
 		chroot root/ $qemu /bin/apt update
 		chroot root/ $qemu /bin/apt install -y vim network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston
-		[ $BOOTFW = depthcharge ] && chroot root/ $qemu /bin/apt install vboot-utils
+		[ $BOOTFW = depthcharge ] && chroot root/ $qemu /bin/apt install -y vboot-utils
 	;;
 	# let's explain this: when void is set, $V is set to -v, so it does 'grep -v musl', printing link without musl
 	# when $V is not set, grep is 'grep musl', printing only link with musl

@@ -34,13 +34,18 @@ fi
 source $CADMIUMROOT/bootfw/$BOOTFW/prepare_parts
 
 # build, package and write kernel
-$CADMIUMROOT/kernel/build
+if [ $PREBUILT = 1 ]; then
+	$CADMIUMROOT/kernel/untar
+else
+	$CADMIUMROOT/kernel/build
+fi
 
 # write filesystem
 $CADMIUMROOT/fs/build $ROOTPART
+[ $INSTALLMODE = 1 ] && $CADMIUMROOT/fs/postbuild
 
+[ $PREBUILT = 0 ] && $CADMIUMROOT/bootfw/$BOOTFW/package $DEVICE $ROOTPART
 
-$CADMIUMROOT/bootfw/$BOOTFW/package $DEVICE $ROOTPART
 # TODO: move to bootfw/$BOOTFW/install
 if [ $BOOTFW = depthcharge ]; then
 	
@@ -59,9 +64,12 @@ if [ $BOOTFW = pmon ]; then
 	umount $CADMIUMROOT/tmp/root/boot
 fi
 
-
 # install modules
-make -C $CADMIUMROOT/tmp/linux-$ARCH INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
+if [ $PREBUILT = 1 ]; then
+	cp -r $CADMIUMROOT/tmp/linux-$ARCH/lib/modules/* $CADMIUMROOT/tmp/root/lib/modules/
+else
+	make -C $CADMIUMROOT/tmp/linux-$ARCH INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
+fi
 
 # we don't umount it in fs/build
 umount $CADMIUMROOT/tmp/root

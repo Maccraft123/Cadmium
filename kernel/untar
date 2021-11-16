@@ -1,0 +1,13 @@
+#!/bin/bash
+CADMIUMROOT=$(dirname $(dirname $(realpath $0)))
+
+set -e
+
+[ -z "$TARGET" ] && source $CADMIUMROOT/config
+
+source $CADMIUMROOT/board/$TARGET/boardinfo
+source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
+
+[ -d $CADMIUMROOT/tmp/linux-$ARCH ] && rm -rf $CADMIUMROOT/tmp/linux-$ARCH
+mkdir -p $CADMIUMROOT/tmp/linux-$ARCH
+tar xJf $CADMIUMROOT/tmp/linux-$ARCH.tar.xz -C $CADMIUMROOT/tmp/linux-$ARCH

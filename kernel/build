@@ -49,6 +49,3 @@ fi
 
 echo Bulding $KERNEL kernel for $ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
 time make -j$(nproc)
-
-# FIXME: broken on loongson2f
-#make tarxz-pkg

@@ -112,7 +112,26 @@
 				algo = "sha1";
 			};
 		};
-
+		fdt@11{
+			description = "sc7180-trogdor-homestar-r2.dtb";
+			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r2.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
+		fdt@12{
+			description = "sc7180-trogdor-homestar-r3.dtb";
+			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r3.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
 	};
 	configurations {
 		conf@1{
@@ -154,6 +173,14 @@
 		conf@10{
 			kernel = "kernel@1";
 			fdt = "fdt@10";
+		};
+		conf@11{
+			kernel = "kernel@1";
+			fdt = "fdt@11";
+		};
+		conf@12{
+			kernel = "kernel@1";
+			fdt = "fdt@12";
 		};
 	};
 };

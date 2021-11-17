@@ -44,6 +44,7 @@ chroot $CADMIUMROOT/tmp/root/ make -C /CdFiles/rmtfs clean
 chroot $CADMIUMROOT/tmp/root/ make -C /CdFiles/qmic prefix=/usr install
 chroot $CADMIUMROOT/tmp/root/ make -C /CdFiles/qrtr prefix=/usr install
 chroot $CADMIUMROOT/tmp/root/ make -C /CdFiles/rmtfs prefix=/usr install
+chroot $CADMIUMROOT/tmp/root/ systemctl enable qrtr-ns
 chroot $CADMIUMROOT/tmp/root/ systemctl enable rmtfs
 
 export CHRT="chroot $CADMIUMROOT/tmp/root"

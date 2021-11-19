@@ -5,7 +5,7 @@
 # It is sorta using codenames, but "krane" sounds stupid so i won't use it
 # One of: bob, duet, kevin, minnie, speedy, lazor, 8101b
 if [ "$RELEASE" = "" ]; then
-	TARGET=duet
+	TARGET=8101b
 else
 	TARGET=$RELEASE
 fi
@@ -21,23 +21,15 @@ FILESYSTEM=ext4
 # Debian and debian-ish distro suite
 # sid, testing, stable
 # impish, hirsute, focal
-SUITE=sid
+SUITE=stable
 
 # Build Cadmium with Oxide support(dualboot)
 # 0: off 1: on
 B_OXIDE=1
 
-# Use prebuilt kernel? WIP
-# 0: off 1: on
-PREBUILT=0
-
 # Which kernel should be built. disables firmware
 # kernelorg: from kernel.org libre: from linux-libre.fsfla.org
 KERNEL=kernelorg
-
-# Pretend we're installing cadmium to emmc?
-# 0: off 1: on
-INSTALLMODE=0
 
 # Build Cadmium inside tmpfs?
 IN_RAM=false

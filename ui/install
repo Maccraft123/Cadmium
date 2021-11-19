@@ -13,7 +13,7 @@ until [ "$CHOSEN" != "no" ]; do
 done
 
 if [ "$CHOSEN" != "none" ]; then
-	source $CADMIUMROOT/ui/$CHOSEN/include
+	source ~/ui/$CHOSEN/include
 	# xorg doesn't run on mt8183, TODO: why?
 	if [ "$BASEBOARD" = "kukui" -a "$DISPSERVER" = "xorg" ]; then
 		echo "Xorg isn't supported on $BASEBOARD/$TARGET"
@@ -35,8 +35,8 @@ if [ "$CHOSEN" != "none" ]; then
 	$CHRT $INSTALLER $PKGS
 	case $CHOSEN in
 		sway)
-			$CADMIUMROOT/ui/sway/mkconfig
-                        echo 'tty | grep tty1 && exec sway' >> $CADMIUMROOT/tmp/root/home/$USERNAME/.bashrc
+			~/ui/sway/mkconfig
+                        echo 'tty | grep tty1 && exec sway' >> /mnt/home/$USERNAME/.bashrc
 			;;
 		phosh)
 			echo "Phosh NEEDS password that is only digits"
@@ -54,8 +54,8 @@ if [ "$CHOSEN" != "none" ]; then
 	echo "Installing common system utilities"
 	$CHRT $INSTALLER firefox pulseaudio pavucontrol htop ssh
 
-	echo 'MOZ_ENABLE_WAYLAND=1' > $CADMIUMROOT/tmp/root/etc/environment
-	echo 'MOZ_USE_XINPUT2=1' >> $CADMIUMROOT/tmp/root/etc/environment
+	echo 'MOZ_ENABLE_WAYLAND=1' > /mnt/etc/environment
+	echo 'MOZ_USE_XINPUT2=1' >> /mnt/etc/environment
 fi
 
 echo "Done installing UI!"

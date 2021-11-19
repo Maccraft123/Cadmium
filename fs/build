@@ -120,8 +120,7 @@ mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
 [ -f $CADMIUMROOT/board/$TARGET/libinput-quirk ] && cp $CADMIUMROOT/board/$TARGET/libinput-quirk root/etc/libinput/local-overrides.quirks
 
 # copy iio sensor proxy accel file
-[ -f $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb ] && cp $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb root/usr/lib/udev/ # TODO: eudev
-chroot root/ systemd-hwdb update # TODO: void
+[ -f $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb ] && cp $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb root/
 
 # copy over firmware if not libre
 if [ $KERNEL != libre ]; then
@@ -135,6 +134,18 @@ mkdir $CADMIUMROOT/tmp/root/CdFiles
 # copy over Important Stuff (tm)
 cp -r $CADMIUMROOT/fs/CdFiles/* $CADMIUMROOT/tmp/root/CdFiles/
 
+# install qcom binaries for lazor
+# TODO: trogdor units with lte modem probably wont work
+mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/rmtfs
+dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs1
+dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs2
+dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsg
+dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsc
+
+git clone https://github.com/andersson/qmic.git $CADMIUMROOT/tmp/root/CdFiles/qmic
+git clone https://github.com/andersson/qrtr.git $CADMIUMROOT/tmp/root/CdFiles/qrtr
+git clone https://github.com/Maccraft123/rmtfs.git $CADMIUMROOT/tmp/root/CdFiles/rmtfs
+
 # copy over ucm files
 cp -r $CADMIUMROOT/fs/ucm $CADMIUMROOT/tmp/root/ucm
 
@@ -142,15 +153,11 @@ cp -r $CADMIUMROOT/fs/ucm $CADMIUMROOT/tmp/root/ucm
 if [ ! "$ROOTFS" = "ubports" ]; then
 	# -begin sets up partition and fs, -middle installs distro, -end sets up distro
 	[ "$ROOTFS" = "void-musl" ] && export ROOTFS=void # those 2 are the same in cadmium
-	#cat $CADMIUMROOT/fs/install-to-emmc-begin $CADMIUMROOT/fs/$ROOTFS/install-to-emmc-middle $CADMIUMROOT/fs/install-to-emmc-end > root/root/install-to-emmc
-	#chmod a+x root/root/install-to-emmc
+	cat $CADMIUMROOT/fs/install-to-emmc-begin $CADMIUMROOT/fs/$ROOTFS/install-to-emmc-middle $CADMIUMROOT/fs/install-to-emmc-end > root/root/install-to-emmc
+	chmod a+x root/root/install-to-emmc
 
-	#cp $CADMIUMROOT/fs/install-to-here $CADMIUMROOT/tmp/root/root/install-to-here
-	#chmod a+x $CADMIUMROOT/tmp/root/root/install-to-here
-	mkdir root/root/cd_installer
-	cp -r $CADMIUMROOT/board $CADMIUMROOT/baseboard $CADMIUMROOT/bootfw $CADMIUMROOT/fs $CADMIUMROOT/kernel $CADMIUMROOT/ui $CADMIUMROOT/build-all root/root/cd_installer/
-	cat $CADMIUMROOT/config > root/root/cd_installer/config
-	echo "export INSTALLMODE=1" > root/root/cd_installer/config
+	cp $CADMIUMROOT/fs/install-to-here $CADMIUMROOT/tmp/root/root/install-to-here
+	chmod a+x $CADMIUMROOT/tmp/root/root/install-to-here
 fi
 
 # copy config, boardinfo and baseboard info over

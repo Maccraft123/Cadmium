@@ -50,15 +50,13 @@ vbutil_kernel --pack vmlinux.kpart.p2 \
 
 cp vmlinux.kpart.p2 $CADMIUMROOT/tmp/
 
-if [ $B_OXIDE = 1 ]; then
-	cp $CADMIUMROOT/kernel/cmdline.oxide ./
-	vbutil_kernel --pack oxide.kpart \
-		--version 1 \
-		--vmlinuz vmlinux.uimg \
-		--arch arm \
-		--keyblock /usr/share/vboot/devkeys/kernel.keyblock \
-		--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
-		--config cmdline.oxide \
-		--bootloader bootloader.bin
-	cp oxide.kpart $CADMIUMROOT/tmp/
-fi
+cp $CADMIUMROOT/kernel/cmdline.oxide ./
+vbutil_kernel --pack oxide.kpart \
+	--version 1 \
+	--vmlinuz vmlinux.uimg \
+	--arch arm \
+	--keyblock /usr/share/vboot/devkeys/kernel.keyblock \
+	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
+	--config cmdline.oxide \
+	--bootloader bootloader.bin
+cp oxide.kpart $CADMIUMROOT/tmp/

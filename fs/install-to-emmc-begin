@@ -48,10 +48,6 @@ if [ $OXIDE = 0 ]; then
 	cgpt add -i $(expr 1 + $PARTOFFSET) -t kernel   -b $(expr 8192 + $EMMC_OFFSET)          -s 65536 -l MMCKernelA -S 1 -T 2 -P 10  ${MMCDEV}
 	cgpt add -i $(expr 2 + $PARTOFFSET) -t kernel   -b $(expr 73728 + $EMMC_OFFSET)         -s 65536 -l MMCKernelB -S 0 -T 2 -P 5   ${MMCDEV}
 else
-	if [ $B_OXIDE = 0 ]; then
-		echo "Cadmium was NOT build with support for dualbooting"
-		exit 1
-	fi
 	# fsck partition to make resize2fs happy. need to fsck 2 times
 	e2fsck -f /dev/disk/by-partlabel/STATE -y || true
 	e2fsck -f /dev/disk/by-partlabel/STATE -y || true

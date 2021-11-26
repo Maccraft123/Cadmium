@@ -110,6 +110,23 @@ case "$ROOTFS" in
 		wget https://ci.ubports.com/job/xenial-mainline-edge-rootfs-$ARCH_DEB/lastSuccessfulBuild/artifact/out/ubuntu-touch-xenial-edge-$ARCH_DEB-rootfs.tar.gz
 		tar xfp ubuntu-touch-xenial-edge-$ARCH_DEB-rootfs.tar.gz -C $CADMIUMROOT/tmp/root
 	;;
+	fedora)
+		echo "Installing Fedora Linux"
+		# TODO: stop hardcoding this image
+		ROOTFS_TAR="https://download.fedoraproject.org/pub/fedora-secondary/releases/35/Spins/aarch64/images/Fedora-Minimal-35-1.2.aarch64.raw.xz"
+		if [ ! -f "$ROOTFS_TAR" ]; then
+		wget $ROOTFS_TAR -O $CADMIUMROOT/tmp/fedora-$ARCH_UNAME.raw.xz
+
+		fi
+		xz -v -k -d $CADMIUMROOT/tmp/fedora-$ARCH_UNAME.raw.xz
+		ROOTFS_LOOP=$(losetup -f -P fedora-$ARCH_UNAME.raw --show) # setup loop device
+		mkdir $CADMIUMROOT/tmp/fedoraimg
+		mount ${ROOTFS_LOOP}p3 $CADMIUMROOT/tmp/fedoraimg # mount fedora rootfs (third partition of raw image)
+		cp -r $CADMIUMROOT/tmp/fedoraimg/* $CADMIUMROOT/tmp/root
+
+		# cp /etc/resolv.conf root/resolv.conf
+		# chroot root/ $qemu /bin/dnf install parted f2fs-tools -y
+		# cp fedora-$ARCH_UNAME.raw.xz root/fedora.raw.xz
 esac
 
 # remove root password, this is install medium so it's ok, not needed in ubports

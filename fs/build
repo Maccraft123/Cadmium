@@ -113,9 +113,9 @@ case "$ROOTFS" in
 	fedora)
 		echo "Installing Fedora Linux"
 		# TODO: stop hardcoding this image
-		FEDORA_XZ="https://download.fedoraproject.org/pub/fedora-secondary/releases/35/Spins/aarch64/images/Fedora-Minimal-35-1.2.aarch64.raw.xz"
-		if [ ! -f "$CADMIUMROOT/tmp/fedora-$ARCH_UNAME.raw.xz" ]; then
-		wget $FEDORA_XZ -O $CADMIUMROOT/tmp/fedora-$ARCH_UNAME.raw.xz
+		ROOTFS_TAR="https://download.fedoraproject.org/pub/fedora-secondary/releases/35/Spins/aarch64/images/Fedora-Minimal-35-1.2.aarch64.raw.xz"
+		if [ ! -f "$ROOTFS_TAR" ]; then
+		wget $ROOTFS_TAR -O $CADMIUMROOT/tmp/fedora-$ARCH_UNAME.raw.xz
 
 		fi
 		xz -v -k -d $CADMIUMROOT/tmp/fedora-$ARCH_UNAME.raw.xz

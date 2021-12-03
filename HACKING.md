@@ -30,6 +30,7 @@
 - ```ARCH``` uses kernel's naming, ```arm```, ```arm64``` etc.
 - ```ARCH_UNAME``` is what appears in uname -m, ```armv7l```, ```aarch64``` etc.
 - ```ARCH_DEB``` is whatever debian calls the architecture of device, ```armhf```, ```arm64```
+- ```ARCH_FED``` is what fedora calls the architecture of device, ```armhfp```, ```aarch64```
 - YES ALL THIS ARCH STUFF IS A GIANT MESS
 - ```CROSS_COMPILE``` is self-explanatory
 - ```SOC``` - self explanatory

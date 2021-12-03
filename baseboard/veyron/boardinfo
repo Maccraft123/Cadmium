@@ -4,6 +4,7 @@
 export ARCH=arm
 export ARCH_UNAME=armv7l
 export ARCH_DEB=armhf
+export ARCH_FED=armhfp
 export CROSS_COMPILE=arm-linux-gnueabihf-
 
 export EMMC_OFFSET=16384

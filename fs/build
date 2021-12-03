@@ -85,25 +85,25 @@ case "$ROOTFS" in
 	;;
 	fedora)
 		echo "Installing Fedora Linux"
-		case "$ARCH_UNAME" in # TODO: option to choose Fedora release in config
-			arm) # FIXME: wrong processor
+		case "$ARCH_FED" in # TODO: option to choose Fedora release in config
+			armhfp)
 				IMAGE_URL="https://download.fedoraproject.org/pub/fedora/linux/releases/35/Spins/armhfp/images/Fedora-Minimal-35-1.2.armhfp.raw.xz"
 			;;
 			aarch64)
 				IMAGE_URL="https://download.fedoraproject.org/pub/fedora-secondary/releases/35/Spins/aarch64/images/Fedora-Minimal-35-1.2.aarch64.raw.xz"
 			;;
 		esac
-		if [ ! -f "Fedora-$ARCH_UNAME.ext4" ]; then
+		if [ ! -f "Fedora-$ARCH_FED.ext4" ]; then
 			# rootfs is 3rd partiton of raw image
-			wget $IMAGE_URL -O fedora-$ARCH_UNAME.raw.xz
-			xz -vdk fedora-$ARCH_UNAME.raw.xz
+			wget $IMAGE_URL -O fedora-$ARCH_FED.raw.xz
+			xz -vdk fedora-$ARCH_FED.raw.xz
 			IMAGE_LOOP=$(losetup -f -P fedora*.raw --show)
-			dd if=${IMAGE_LOOP}p3 of=Fedora-$ARCH_UNAME.ext4 status=progress
+			dd if=${IMAGE_LOOP}p3 of=Fedora-$ARCH_FED.ext4 status=progress
 			losetup -d $IMAGE_LOOP
 		fi
 		# TODO: write rootfs image to rootpart instead of copying over files
 		mkdir -p fedorarootfsimg
-		mount Fedora-$ARCH_UNAME.ext4 fedorarootfsimg/
+		mount Fedora-$ARCH_FED.ext4 fedorarootfsimg/
 		cp -a fedorarootfsimg/* $CADMIUMROOT/tmp/root
 		for x in {1..3}; do sed -i '$d' root/etc/fstab; sleep 1; done # remove / , /boot, /boot/efi from fstab
 		umount fedorarootfsimg/

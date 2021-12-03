@@ -83,6 +83,32 @@ case "$ROOTFS" in
 		chroot root/ $qemu /bin/apt install -y vim network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston
 		[ $BOOTFW = depthcharge ] && chroot root/ $qemu /bin/apt install -y vboot-utils
 	;;
+	fedora)
+		echo "Installing Fedora Linux"
+		case "$ARCH_UNAME" in # TODO: option to choose Fedora release in config
+			arm) # FIXME: wrong processor
+				IMAGE_URL="https://download.fedoraproject.org/pub/fedora/linux/releases/35/Spins/armhfp/images/Fedora-Minimal-35-1.2.armhfp.raw.xz"
+			;;
+			aarch64)
+				IMAGE_URL="https://download.fedoraproject.org/pub/fedora-secondary/releases/35/Spins/aarch64/images/Fedora-Minimal-35-1.2.aarch64.raw.xz"
+			;;
+		esac
+		if [ ! -f "Fedora-$ARCH_UNAME.ext4" ]; then
+			# rootfs is 3rd partiton of raw image
+			wget $IMAGE_URL -O fedora-$ARCH_UNAME.raw.xz
+			xz -vdk fedora-$ARCH_UNAME.raw.xz
+			IMAGE_LOOP=$(losetup -f -P fedora*.raw --show)
+			dd if=${IMAGE_LOOP}p3 of=Fedora-$ARCH_UNAME.ext4 status=progress
+			losetup -d $IMAGE_LOOP
+		fi
+		# TODO: write rootfs image to rootpart instead of copying over files
+		mkdir -p fedorarootfsimg
+		mount Fedora-$ARCH_UNAME.ext4 fedorarootfsimg/
+		cp -a fedorarootfsimg/* $CADMIUMROOT/tmp/root
+		umount fedorarootfsimg
+		# FIXME: boots to emergency shell
+		# TODO: add rootpart uuid to the rootfs fstab, remove boot and efi
+	;;
 	# let's explain this: when void is set, $V is set to -v, so it does 'grep -v musl', printing link without musl
 	# when $V is not set, grep is 'grep musl', printing only link with musl
 	void)

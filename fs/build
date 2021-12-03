@@ -105,9 +105,8 @@ case "$ROOTFS" in
 		mkdir -p fedorarootfsimg
 		mount Fedora-$ARCH_UNAME.ext4 fedorarootfsimg/
 		cp -a fedorarootfsimg/* $CADMIUMROOT/tmp/root
-		umount fedorarootfsimg
-		# FIXME: boots to emergency shell
-		# TODO: add rootpart uuid to the rootfs fstab, remove boot and efi
+		for x in {1..3}; do sed -i '$d' root/etc/fstab; sleep 1; done # remove / , /boot, /boot/efi from fstab
+		umount fedorarootfsimg/
 	;;
 	# let's explain this: when void is set, $V is set to -v, so it does 'grep -v musl', printing link without musl
 	# when $V is not set, grep is 'grep musl', printing only link with musl

@@ -11,21 +11,21 @@ Thanks @LoganMD for the logo
 |-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------	|-----------------------|
 | Internal Display		| Y		   	| Y		 	| Y				| Y			| Y			|
 | External Display		| N			| Y(FW)			| Y				| N			| ?			|
-| Display autorotation    	| Y		    	| Y			| N				| N			| ?			|
+| Display autorotation    	| Y		    	| Y			| N				| N			| Y			|
 | Hardware video decoding	| N			| P			| P				| Y(FW)			| ?			|
-| Touchscreen	    	  	| Y		    	| Y			| Y				| Y			| ?			|
+| Touchscreen	    	  	| Y		    	| Y			| Y				| Y			| Y			|
 | Pen Input			| Y			| Y			| 				| Y			| ?			|
 | WiFi		     	 	| Y(FW)			| Y(FW)	   		| Y(FW)				| Y(FW)			| Y(FW)			|
 | 3D Acceleration	  	| Y		    	| Y			| Y				| Y(FW)			| ?			|
 | GPU reclocking		| Y			| Y			| ?				| Y			| ?			|
-| Audio		     		| Y			| Y			| Y				| P(only usb + bt)	| ?			|
-| Bluetooth		 	| N		    	| ?			| N				| Y			| ?			|
+| Audio		     		| Y			| Y			| Y				| P(only usb + bt)	| Y			|
+| Bluetooth		 	| N		    	| ?			| N				| Y			| Y			|
 | Front Camera			| N			| Y			| Y				| Y			| ?			|
 | Back Camera		    	| N		    	|		 	| 				|			| ?			|
-| USB				| Y		    	| Y			| Y				| Y			| ?			|
+| USB				| Y		    	| Y			| Y				| Y			| Y			|
 | USB Gadget			| ?		    	| ?			| N				| 			| ?			|
 | Suspending and resuming 	| Y		    	| Y			| Y				| Y			| ?			|
-| eMMC installation		| Y		    	| Y			| Y				| Y			| ?			|
+| eMMC installation		| Y		    	| Y			| Y				| Y			| Y			|
 | KVM Virtualtization		| Y(read wiki)		| Y(read wiki)		| N				| Y			| ?			|
 | Anbox				| P			| N			|				| N			| ?			|
 

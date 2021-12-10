@@ -92,19 +92,30 @@ case "$ROOTFS" in
 			aarch64)
 				IMAGE_URL="https://download.fedoraproject.org/pub/fedora-secondary/releases/35/Spins/aarch64/images/Fedora-Minimal-35-1.2.aarch64.raw.xz"
 			;;
+			0)
+				echo "Fedora is not supported for $SOC devices"
+				return 1
 		esac
-		if [ ! -f "fedora-$ARCH_FED.raw" ]; then
+		if [ ! -f "fedora-$ARCH_FED.rootfs" ]; then
 			wget $IMAGE_URL -O fedora-$ARCH_FED.raw.xz
 			xz -vd fedora-$ARCH_FED.raw.xz
+			IMAGE_LOOP=$(losetup -f -P fedora-$ARCH_FED.raw --show)
+			dd if=${IMAGE_LOOP}p3 of=fedora-$ARCH_FED.rootfs
+			losetup -d $IMAGE_LOOP
 		fi
 		# rootfs is 3rd partiton of raw image
-		IMAGE_LOOP=$(losetup -f -P fedora-$ARCH_FED.raw --show)
 		mkdir -p fedorarootfsimg
-		mount ${IMAGE_LOOP}p3 fedorarootfsimg/
-		cp -a fedorarootfsimg/* $CADMIUMROOT/tmp/root
+		mount fedora-$ARCH_FED.rootfs fedorarootfsimg/
+		rsync -aHAX fedorarootfsimg/* $CADMIUMROOT/tmp/root
 		for x in {1..3}; do sed -i '$d' root/etc/fstab; sleep 1; done # remove / , /boot, /boot/efi from fstab
+		cp fedora-$ARCH_FED.rootfs root/fedora-$ARCH_FED.rootfs
+		# disable inital-setup and unlock root account
+		unlink root/etc/systemd/system/graphical.target.wants/initial-setup.service
+		unlink root/etc/systemd/system/multi-user.target.wants/initial-setup.service
+		chroot root/ $qemu /bin/passwd -f -u root
+		# FIXME: installing NetworkManager-tui breaks wifi?? use nmcli in the meantime
+		dnf install -y --installroot=$CADMIUMROOT/tmp/root/ --forcearch=aarch64 --releasever=35 vboot-utils parted f2fs-tools make git rsync
 		umount fedorarootfsimg/
-		losetup -d $IMAGE_LOOP
 	;;
 	# let's explain this: when void is set, $V is set to -v, so it does 'grep -v musl', printing link without musl
 	# when $V is not set, grep is 'grep musl', printing only link with musl
@@ -136,7 +147,7 @@ case "$ROOTFS" in
 esac
 
 # remove root password, this is install medium so it's ok, not needed in ubports
-[ ! "$ROOTFS" = "ubports" ] && chroot root/ $qemu /bin/passwd -d root
+[ ! "$ROOTFS" = "ubports" ] && chroot root/ $qemu /bin/passwd -f -d root
 
 # workaround bad touchpad experience on certain boards
 mkdir -p $CADMIUMROOT/tmp/root/etc/libinput

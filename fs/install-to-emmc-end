@@ -2,20 +2,32 @@
 
 mount proc /mnt/proc -t proc # just in case something((gdm)) wants it
 
-echo "Enter root password:"
-until chroot /mnt passwd; do
+if [ ! "$SKIP_CD_USER_SETUP" = "1" ]; then
+
+
 	echo "Enter root password:"
-done
+	until chroot /mnt passwd; do
+		echo "Enter root password:"
+	done
 
-read -p "Enter username, no spaces or big letters: "
-chroot /mnt useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
+	read -p "Enter username, no spaces or big letters: "
+	chroot /mnt useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
 
-echo "Enter user password:"
-until chroot /mnt passwd $REPLY; do
 	echo "Enter user password:"
-done
+	until chroot /mnt passwd $REPLY; do
+		echo "Enter user password:"
+	done
 
-export USERNAME=$REPLY
+	export USERNAME=$REPLY
+
+fi
+
+mkdir -p /mnt/lib/firmware/
+cp -r /lib/firmware/* /mnt/lib/firmware/
+
+# copy modules over
+mkdir -p /mnt/lib/modules/$(uname -r)/
+cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/
 
 # default libinput config for touchpad is bad
 # let's override it
@@ -42,12 +54,12 @@ fi
 
 cp -r /CdFiles /mnt/CdFiles
 if [ $BASEBOARD = trogdor ]; then
-	chroot /mnt make -C /CdFiles/qmic clean
-	chroot /mnt make -C /CdFiles/qrtr clean
-	chroot /mnt make -C /CdFiles/rmtfs clean
-	chroot /mnt make -C /CdFiles/qmic prefix=/usr install
-	chroot /mnt make -C /CdFiles/qrtr prefix=/usr install
-	chroot /mnt make -C /CdFiles/rmtfs prefix=/usr install
+	make -C /mnt/CdFiles/qmic clean
+	make -C /mnt/CdFiles/qrtr clean
+	make -C /mnt/CdFiles/rmtfs clean
+	make -C /CdFiles/qmic prefix=/mnt/usr install
+	make -C /CdFiles/qrtr prefix=/mnt/usr install
+	make -C /CdFiles/rmtfs prefix=/mnt/usr install
 	chroot /mnt systemctl enable rmtfs
 fi
 
@@ -62,6 +74,7 @@ export INST_EMMC=1
 source ~/ui/install
 
 # copy over ucm files
+mkdir -p /mnt/usr/share/alsa/ucm2/
 cp -r /ucm/* /mnt/usr/share/alsa/ucm2/
 
 

@@ -122,4 +122,9 @@ else
 	dd if=/oxide.kpart of=$KERNPART >/dev/null 2>&1
 fi
 
+if [ "$RELEASE" = "homestar" ]; then
+	# Sound hack for Homestar specifically
+	sed -i '/load-module module-device-restore/i load-module module-alsa-sink device=plughw:sc7180rt5682max,1 \' /mnt/etc/pulse/default.pa
+fi
+
 # end of install-to-emmc-begin

@@ -2,7 +2,7 @@
 export CADMIUMROOT=$(pwd)
 set -e
 
-for RELEASE in lazor duet duet kevin bob minnie speedy; do
+for RELEASE in lazor krane kevin bob minnie speedy; do
 	export RELEASE
 	./build-all cadmium-$RELEASE.img 2G || true
 	gzip cadmium-$RELEASE.img

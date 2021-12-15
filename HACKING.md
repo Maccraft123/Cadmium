@@ -1,5 +1,5 @@
 # Explamantions of common env vars:
-- ```$TARGET``` is target device, duet, kevin or other
+- ```$TARGET``` is target device, krane, kevin or other
 - ```$ROOTFS``` represents target linux rootfs, Cadmium is made to be independent of rootfs
 - ```$CADMIUMROOT``` is root directory of Cadmium containing board/, kernel/, fs/, tmp/ etc. directories
 
@@ -9,7 +9,7 @@
 - ```install-to-emmc-begin```, which sets up partitioning, firmware and kernel
 - ```install-to-emmc-middle```, which installs rootfs. this should be as small as possible
 - ```install-to-emmc-end```, which sets up rootfs in order to make it easier to use(user accounts and cadmium-specific configs)
-- ```kernel/build``` has duet-specific kernel source :(
+- ```kernel/build``` has krane-specific kernel source :(
 
 # What directory has what:
 - ```board/$TARGET/``` is for stuff specific to one device, usually: config files, dts configuration, kernel patches and firmware

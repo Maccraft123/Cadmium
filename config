@@ -2,10 +2,9 @@
 # TODO: fancy menu?
 
 # Target device
-# It is sorta using codenames, but "krane" sounds stupid so i won't use it
-# One of: bob, duet, kevin, minnie, speedy, lazor, 8101b
+# One of: bob, krane, kevin, minnie, speedy, lazor, 8101b
 if [ "$RELEASE" = "" ]; then
-	TARGET=duet
+	TARGET=krane
 else
 	TARGET=$RELEASE
 fi

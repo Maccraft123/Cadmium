@@ -48,7 +48,7 @@ Once you have this out, continue with instructions:
 - To update kernel on eMMC memory run: ```./install-kernel``` from pendrive
 
 ### OR
-- Enable developer mode(instructions are in the wiki for duet)
+- Enable developer mode(instructions are in the wiki for krane)
 - Download and uncompress ```cadmium-<device>.tar.gz``` to your pendrive
 - Boot from USB
 - Run ```./install-to-emmc```

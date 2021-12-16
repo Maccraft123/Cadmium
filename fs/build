@@ -1,55 +1,33 @@
 #!/bin/bash
 CADMIUMROOT=$(dirname $(dirname $(realpath $0)))
-ROOTPART=$1
+DESTDIR=$1
 
 set -e
-set -v
+set -x
 
-source $CADMIUMROOT/config
-source $CADMIUMROOT/board/$TARGET/boardinfo
-source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
+. $CADMIUMROOT/config
+. $CADMIUMROOT/board/$TARGET/boardinfo
+. $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
-cd $CADMIUMROOT/tmp
-mkdir -p root
-
-case "$FILESYSTEM" in
-	f2fs)
-		mkfs.f2fs -f $ROOTPART
-	;;
-	ext4)
-		mkfs.ext4 -F $ROOTPART
-	;;
-esac
-
-mount $ROOTPART root
-
-# depthcharge uses special partition table
-if [ $BOOTFW != depthcharge ]; then
-	mkfs.ext2 $BOOTPART
-
-	mkdir -p root/boot
-	mount $BOOTPART root/boot
-fi
-
-# if we are on arm64 machine, don't use qemu to execute arm64 code
 if [ "$(uname -m)" = "$ARCH_UNAME" ]; then
-	echo "Running on $ARCH machine"
+	echo "Running natively, not using qemu"
 else
+	# TODO: there's gotta be a better way to do that, also 64bit-ONLY machines
 	case "$ARCH_UNAME" in
 		armv7l)
 			if [ "$(uname -m)" = "aarch64" ]; then
-				echo "Running on arm64 machine capable of executing armv7l programs"
+				echo "Running natively, not using qemu"
 			fi
 		;;
 		aarch64)
-			cp "$(which qemu-aarch64-static)" root/
+			cp "$(which qemu-aarch64-static)" $DESTDIR/qemu-aarch64-static
 			qemu="/qemu-aarch64-static"
-			echo "Running on not-aarch64 machine"
+			echo "Emulating with qemu"
 		;;
 		mips64el)
-			cp "$(which qemu-mips64el-static)" root/
+			cp "$(which qemu-mips64el-static)" $DESTDIR/qemu-mips64el-static
 			qemu="/qemu-mips64el-static"
-			echo "Running on not-Little-Endian-MIPS64 machine"
+			echo "Emulating with qemu"
 		;;
 		*)
 			exit 1
@@ -57,118 +35,27 @@ else
 	esac
 fi
 
-cd $CADMIUMROOT/tmp
+$CADMIUMROOT/fs/$ROOTFS/build $DESTDIR
 
-# rootfs-specific setup
-case "$ROOTFS" in
-	ubuntu)
-		echo "Installing Ubuntu"
-		# debootstrap randomly exits with 1, so there's that || true
-		debootstrap --components=main,restricted,universe,multiverse --arch=$ARCH_DEB $SUITE $CADMIUMROOT/tmp/root/ http://ports.ubuntu.com/ubuntu-ports/ || true
-		# preinstall packages to have wifi
-		echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-updates main restricted universe multiverse" >> $CADMIUMROOT/tmp/root/etc/apt/sources.list
-		echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-security main restricted universe multiverse" >> $CADMIUMROOT/tmp/root/etc/apt/sources.list
-		echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-backports main restricted universe multiverse" >> $CADMIUMROOT/tmp/root/etc/apt/sources.list
-		#echo "deb http://ports.ubuntu.com/ubuntu-ports/ $SUITE-proposed main restricted universe multiverse" >> $CADMIUMROOT/tmp/root/etc/apt/sources.list
-		chroot root/ $qemu /bin/apt update
-		chroot root/ $qemu /bin/apt -y dist-upgrade
-		chroot root/ $qemu /bin/apt install -y vim vboot-utils network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston
-	;;
-	debian)
-		echo "Installing Debian"
-		# debootstrap randomly exits with 1, so there's that || true
-		debootstrap --arch=$ARCH_DEB $SUITE $CADMIUMROOT/tmp/root/ https://deb.debian.org/debian/ #|| true
-		# preinstall packages to have wifi
-		chroot root/ $qemu /bin/apt update
-		chroot root/ $qemu /bin/apt install -y vim network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston
-		[ $BOOTFW = depthcharge ] && chroot root/ $qemu /bin/apt install -y vboot-utils
-	;;
-	# let's explain this: when void is set, $V is set to -v, so it does 'grep -v musl', printing link without musl
-	# when $V is not set, grep is 'grep musl', printing only link with musl
-	void)
-		V='-v'
-	;& # fall-through
-	void-musl)
-		echo "Installing Void Linux"
-		ROOTFS_TAR="$(curl -s -L https://voidlinux.org/download/ | grep $ARCH_UNAME | tr '"' ' ' | awk '{print $3}' | grep $V musl)"
-		if [ ! -f "$ROOTFS_TAR" ]; then
-			rm void-${ARCH_UNAME}${V}.tar.xz || true
-			wget $ROOTFS_TAR -O void-$ARCH_UNAME$V.tar.xz # musl: void-aarch64, non-musl: void-aarch64-v
-
-		fi
-		tar xfp void-${ARCH_UNAME}${V}.tar.xz -C $CADMIUMROOT/tmp/root
-		cp /etc/resolv.conf root/etc/resolv.conf
-		chroot root/ $qemu /bin/xbps-install -Syu xbps
-		chroot root/ $qemu /bin/xbps-install -yu
-		chroot root/ $qemu /bin/xbps-install -y base-system
-		chroot root/ $qemu /bin/xbps-remove -y base-voidstrap
-		chroot root/ $qemu /bin/xbps-install -y vim NetworkManager parted f2fs-tools eudev-libudev-devel base-devel git
-		cp void-${ARCH_UNAME}${V}.tar.xz root/void.tar.xz
-	;;
-	ubports)
-		echo "Installing UBports"
-		wget https://ci.ubports.com/job/xenial-mainline-edge-rootfs-$ARCH_DEB/lastSuccessfulBuild/artifact/out/ubuntu-touch-xenial-edge-$ARCH_DEB-rootfs.tar.gz
-		tar xfp ubuntu-touch-xenial-edge-$ARCH_DEB-rootfs.tar.gz -C $CADMIUMROOT/tmp/root
-	;;
-esac
-
-# remove root password, this is install medium so it's ok, not needed in ubports
-[ ! "$ROOTFS" = "ubports" ] && chroot root/ $qemu /bin/passwd -d root
-
-# workaround bad touchpad experience on certain boards
-mkdir -p $CADMIUMROOT/tmp/root/etc/libinput
-[ -f $CADMIUMROOT/board/$TARGET/libinput-quirk ] && cp $CADMIUMROOT/board/$TARGET/libinput-quirk root/etc/libinput/local-overrides.quirks
-
-# copy iio sensor proxy accel file
-[ -f $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb ] && cp $CADMIUMROOT/board/$TARGET/accel-matrix.hwdb root/
-
-# copy over firmware if not libre
 if [ $KERNEL != libre ]; then
-	mkdir -p $CADMIUMROOT/tmp/root/lib/firmware
-	cp -r $CADMIUMROOT/fs/firmware/* $CADMIUMROOT/tmp/root/lib/firmware/
+	mkdir -p $DESTDIR/lib/firmware
+	cp -r $CADMIUMROOT/fs/firmware/* $DESTDIR/lib/firmware/
 fi
 
-# make cadmium dir for future scripts lolol
-mkdir $CADMIUMROOT/tmp/root/CdFiles
-
-# copy over Important Stuff (tm)
-cp -r $CADMIUMROOT/fs/CdFiles/* $CADMIUMROOT/tmp/root/CdFiles/
+cp -r $CADMIUMROOT/fs/CdFiles $DESTDIR/root/CdFiles
 
 # install qcom binaries for lazor
 # TODO: trogdor units with lte modem probably wont work
-mkdir -p $CADMIUMROOT/tmp/root/lib/firmware/rmtfs
-dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs1
-dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fs2
-dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsg
-dd if=/dev/zero bs=1M count=2 of=$CADMIUMROOT/tmp/root/lib/firmware/rmtfs/modem_fsc
+mkdir -p $DESTDIR/lib/firmware/rmtfs
+for name in fs1 fs2 fsg fsc; do
+	dd if=/dev/zero bs=1M count=2 of=$DESTDIR/lib/firmware/rmtfs/modem_$name
+done
 
-git clone https://github.com/andersson/qmic.git $CADMIUMROOT/tmp/root/CdFiles/qmic
-git clone https://github.com/andersson/qrtr.git $CADMIUMROOT/tmp/root/CdFiles/qrtr
-git clone https://github.com/Maccraft123/rmtfs.git $CADMIUMROOT/tmp/root/CdFiles/rmtfs
+git clone https://github.com/andersson/qmic.git $DESTDIR/CdFiles/qmic
+git clone https://github.com/andersson/qrtr.git $DESTDIR/CdFiles/qrtr
+git clone https://github.com/Maccraft123/rmtfs.git $DESTDIR/CdFiles/rmtfs
 
-# copy over ucm files
-cp -r $CADMIUMROOT/fs/ucm $CADMIUMROOT/tmp/root/ucm
+cp -r $CADMIUMROOT/fs/ucm $DESTDIR/ucm
 
-# copy installation scripts if not ubports, double root is not a typo
-if [ ! "$ROOTFS" = "ubports" ]; then
-	# -begin sets up partition and fs, -middle installs distro, -end sets up distro
-	[ "$ROOTFS" = "void-musl" ] && export ROOTFS=void # those 2 are the same in cadmium
-	cat $CADMIUMROOT/fs/install-to-emmc-begin $CADMIUMROOT/fs/$ROOTFS/install-to-emmc-middle $CADMIUMROOT/fs/install-to-emmc-end > root/root/install-to-emmc
-	chmod a+x root/root/install-to-emmc
-
-	cp $CADMIUMROOT/fs/install-to-here $CADMIUMROOT/tmp/root/root/install-to-here
-	chmod a+x $CADMIUMROOT/tmp/root/root/install-to-here
-fi
-
-# copy config, boardinfo and baseboard info over
-cat $CADMIUMROOT/config $CADMIUMROOT/board/$TARGET/boardinfo $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo > root/root/info
-
-# copy over ui installer settings
-cp -r $CADMIUMROOT/ui root/root/ui
-chmod a+x root/root/ui/install
-
-# !!!!!!
-# NOTE:
-# oxide kpart is copied in build-all
-
-#umount root # done in /build-all
+cp $CADMIUMROOT/fs/install-to-here $CADMIUMROOT/tmp/root/root/install-to-here
+chmod a+x $DESTDIR/root/install-to-here

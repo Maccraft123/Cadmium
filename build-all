@@ -36,9 +36,21 @@ source $CADMIUMROOT/bootfw/$BOOTFW/prepare_parts
 # build, package and write kernel
 $CADMIUMROOT/kernel/build
 
-# write filesystem
-$CADMIUMROOT/fs/build $ROOTPART
+# TODO: move to bootfw/prepare_parts
+case "$FILESYSTEM" in
+	f2fs)
+		mkfs.f2fs -f $ROOTPART
+	;;
+	ext4)
+		mkfs.ext4 -F $ROOTPART
+	;;
+esac
 
+mkdir -p $CADMIUMROOT/tmp/root
+mount $ROOTPART $CADMIUMROOT/tmp/root
+
+# write filesystem
+$CADMIUMROOT/fs/build $CADMIUMROOT/tmp/root
 
 $CADMIUMROOT/bootfw/$BOOTFW/package $DEVICE $ROOTPART
 # TODO: move to bootfw/$BOOTFW/install

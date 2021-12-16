@@ -4,7 +4,7 @@
 # Target device
 # One of: bob, krane, kevin, minnie, speedy, lazor, 8101b
 if [ "$RELEASE" = "" ]; then
-	TARGET=krane
+	TARGET=minnie
 else
 	TARGET=$RELEASE
 fi

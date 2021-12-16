@@ -59,6 +59,7 @@ Once you have this out, continue with instructions:
 - Recent Linux distribution
 - Binfmt when Debian rootfs is used
 - ```debootstrap``` when Debian rootfs is used
+- ```dnf``` when Fedora rootfs is used (add repos and GPG keys with ```fedora-repos``` and ```fedora-gpg-keys``` RPMs)
 - ```qemu-user-static``` when build machine can't run binaries for target machine
 - ```vboot-utils u-boot-tools``` (vbutil_kernel, cgpt and mkimage) to pack kernel into format understandable by depthcharge
 - ```gcc-aarch64-linux-gnu``` for compiling to ARM64 or ```gcc-arm-linux-gnueabihf``` for compiling to ARMv7

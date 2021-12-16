@@ -10,7 +10,7 @@ else
 fi
 
 # RootFS type
-# One of: debian, void, void-musl, ubuntu
+# One of: debian, fedora, void, void-musl, ubuntu
 ROOTFS=debian
 
 # FS type

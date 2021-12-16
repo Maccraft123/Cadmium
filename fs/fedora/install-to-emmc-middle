@@ -1,0 +1,16 @@
+# start of install-to-emmc-middle
+
+export SYSTEMD=1
+export EUDEV=0
+export SKIP_CD_USER_SETUP=1
+
+mkdir -p fedorarootfsimg
+mount /fedora-$ARCH_FED.rootfs fedorarootfsimg/
+
+rsync -aHAX fedorarootfsimg/* /mnt/
+for x in {1..3}; do sed -i '$d' /mnt/etc/fstab; sleep 1; done # remove / , /boot, /boot/efi from fstab
+
+umount fedorarootfsimg
+rm -rf fedorarootfsimg
+
+# end of install-to-emmc-middle

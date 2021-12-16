@@ -18,9 +18,12 @@ if [ "$BASEBOARD" = "trogdor" ]; then
 fi
 
 # we need internet, TODO: make this run on voidlinux
+# FIXME: installing NetworkManager-tui breaks wifi on the Fedora installer
 nmcli device wifi rescan
-sleep 4 # wait for it to show up
-nmtui connect
+nmcli device wifi list
+read -p "Enter SSID: "; SSID=$REPLY
+read -p "Enter password: "; WIFI_PASS=$REPLY
+nmcli device wifi connect $SSID password $WIFI_PASS
 
 # a fancy hack
 MMCDEV=$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')
@@ -105,13 +108,6 @@ else
 fi
 
 mount $ROOTPART /mnt
-
-mkdir -p /mnt/lib/firmware/
-cp -r /lib/firmware/* /mnt/lib/firmware/
-
-# copy modules over
-mkdir -p /mnt/lib/modules/$(uname -r)/
-cp -r /lib/modules/$(uname -r)/* /mnt/lib/modules/$(uname -r)/
 
 # copy kernel from usb pendrive/hdd to internal emmc
 dd if=/dev/zero of=$KERNPART >/dev/null 2>&1 || true

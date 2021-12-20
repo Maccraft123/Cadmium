@@ -42,8 +42,8 @@ if [ $KERNEL != libre ]; then
 	cp -r $CADMIUMROOT/fs/firmware/* $DESTDIR/lib/firmware/
 fi
 
-cp -r $CADMIUMROOT/fs/CdFiles $DESTDIR/CdFiles
-cp -r $CADMIUMROOT/fs/ucm $DESTDIR/CdFiles/ucm
+mkdir $DESTDIR/CdFiles
+cp -r $CADMIUMROOT/fs $DESTDIR/CdFiles/fs
 cp -r $CADMIUMROOT/board $DESTDIR/CdFiles/board
 cp -r $CADMIUMROOT/baseboard $DESTDIR/CdFiles/baseboard
 

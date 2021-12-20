@@ -132,6 +132,46 @@
 				algo = "sha1";
 			};
 		};
+		fdt@13{
+			description = "sc7180-trogdor-coachz-r1.dtb";
+			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
+		fdt@14{
+			description = "sc7180-trogdor-coachz-r1-lte.dtb";
+			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
+		fdt@15{
+			description = "sc7180-trogdor-coachz-r3.dtb";
+			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
+		fdt@16{
+			description = "sc7180-trogdor-coachz-r3-lte.dtb";
+			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r3-lte.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
 	};
 	configurations {
 		conf@1{
@@ -181,6 +221,22 @@
 		conf@12{
 			kernel = "kernel@1";
 			fdt = "fdt@12";
+		};
+		conf@13{
+			kernel = "kernel@1";
+			fdt = "fdt@13";
+		};
+		conf@14{
+			kernel = "kernel@1";
+			fdt = "fdt@14";
+		};
+		conf@15{
+			kernel = "kernel@1";
+			fdt = "fdt@15";
+		};
+		conf@16{
+			kernel = "kernel@1";
+			fdt = "fdt@16";
 		};
 	};
 };

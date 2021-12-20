@@ -2,7 +2,7 @@
 # TODO: fancy menu?
 
 # Target device
-# One of: bob, krane, kevin, minnie, speedy, lazor, 8101b
+# One of: bob, coachz, krane, kevin, minnie, speedy, lazor, 8101b
 if [ "$RELEASE" = "" ]; then
 	TARGET=minnie
 else

@@ -1,6 +1,12 @@
 #!/bin/false
 # this is just dummy config file
 
+# basic info
+FS_FANCYNAME="Debian"
+FS_HAS_OOBE="true"
+FS_INST_PKG="apt install -y"
+FS_UPDATE="apt update && apt upgrade"
+
 # bootloader packages
 FS_PKGS_CD_BOOTFW_UBOOT="u-boot-tools"
 FS_PKGS_CD_BOOTFW_DEPTHCHARGE="$FS_PKGS_CD_BOOTFW_UBOOT vboot-utils"

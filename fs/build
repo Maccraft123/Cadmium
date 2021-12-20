@@ -42,7 +42,10 @@ if [ $KERNEL != libre ]; then
 	cp -r $CADMIUMROOT/fs/firmware/* $DESTDIR/lib/firmware/
 fi
 
-cp -r $CADMIUMROOT/fs/CdFiles $DESTDIR/root/CdFiles
+cp -r $CADMIUMROOT/fs/CdFiles $DESTDIR/CdFiles
+cp -r $CADMIUMROOT/fs/ucm $DESTDIR/CdFiles/ucm
+cp -r $CADMIUMROOT/board $DESTDIR/CdFiles/board
+cp -r $CADMIUMROOT/baseboard $DESTDIR/CdFiles/baseboard
 
 # install qcom binaries for lazor
 # TODO: trogdor units with lte modem probably wont work
@@ -55,7 +58,5 @@ git clone https://github.com/andersson/qmic.git $DESTDIR/CdFiles/qmic
 git clone https://github.com/andersson/qrtr.git $DESTDIR/CdFiles/qrtr
 git clone https://github.com/Maccraft123/rmtfs.git $DESTDIR/CdFiles/rmtfs
 
-cp -r $CADMIUMROOT/fs/ucm $DESTDIR/ucm
-
-cp $CADMIUMROOT/fs/install-to-here $CADMIUMROOT/tmp/root/root/install-to-here
-chmod a+x $DESTDIR/root/install-to-here
+# get rid of any root password
+chroot $DESTDIR passwd -d root

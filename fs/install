@@ -1,5 +1,6 @@
 #!/bin/bash
-
+set -x
+set -e
 dmesg --console-off # make kernel shut up
 
 echo "Welcome to Cadmium installer"
@@ -21,19 +22,24 @@ case $opt in
 	4) exit 0 ;;
 esac
 
-#CADMIUMROOT="/CdFiles"
-CADMIUMROOT=~/cadmium
+CADMIUMROOT="/CdFiles"
 
 # try finding current device in cadmium tree
-#COMPATIBLE="$(cat /sys/firmware/devicetree/base/compatible)"
-COMPATIBLE="google,lazorqcom,sc7180"
+
+TARGET=none
+COMPATIBLE="$(cat /sys/firmware/devicetree/base/compatible)"
 for x in $(find $CADMIUMROOT/board/* -type d -printf '%f\n'); do
-	try=$(echo $COMPATIBLE | grep $x)
+	try=$(echo $COMPATIBLE | grep $x) || true
 	if [ -n "$try" ]; then
 		echo "Found device from compatible string: $x"
 		TARGET="$x"
 	fi
 done
+
+if [ $TARGET = none ]; then
+	echo "Failed to autodetect device, bailing out"
+	exit 1
+fi
 
 . $CADMIUMROOT/board/$TARGET/boardinfo
 . $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
@@ -56,7 +62,9 @@ sleep 4 # wait for wifi networks
 nmtui connect
 
 # try finding emmc
-MMCDEV="$(ls /dev/mmcblk* | grep -F boot0 | seed 's/boot0//')"
+MMCDEV="$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')"
+
+. $CADMIUMROOT/config
 
 DESTDIR=/
 if [ $INSTMED != this ]; then
@@ -66,12 +74,11 @@ if [ $INSTMED != this ]; then
 			;;
 		emmc)
 			dd if=/dev/zero of=$MMCDEV bs=512k count=128 seek=$EMMC_OFFSET
-			parted --script $MMCDEV mklabel gpt >/dev/null 2>&1
+			parted --script $MMCDEV mklabel gpt >/dev/null 2>&1 || true # ???
 			cgpt create $MMCDEV
-			PARTOFFSET=0
-			cgpt add -i 3 -t data   -b $(expr 139264 + $EMMC_OFFSET)        -s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l Root ${MMCDEV}
-			cgpt add -i $(expr 1 + $PARTOFFSET) -t kernel   -b $(expr 8192 + $EMMC_OFFSET)          -s 65536 -l MMCKernelA -S 1 -T 2 -P 10  ${MMCDEV}
-			cgpt add -i $(expr 2 + $PARTOFFSET) -t kernel   -b $(expr 73728 + $EMMC_OFFSET)         -s 65536 -l MMCKernelB -S 0 -T 2 -P 5   ${MMCDEV}
+			cgpt add -i 1 -t kernel   -b $(expr 8192 + $EMMC_OFFSET)          -s 65536 -l MMCKernelA -S 1 -T 2 -P 10  ${MMCDEV}
+			cgpt add -i 2 -t kernel   -b $(expr 73728 + $EMMC_OFFSET)         -s 65536 -l MMCKernelB -S 0 -T 2 -P 5   ${MMCDEV}	
+			cgpt add -i 3 -t data     -b $(expr 139264 + $EMMC_OFFSET)        -s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l Root ${MMCDEV}
 			# i sure do love confusing one-liners
 
 			ROOTPART=/dev/disk/by-partlabel/Root
@@ -96,7 +103,7 @@ if [ $INSTMED != this ]; then
 	mount $ROOTPART /mnt
 	DESTDIR=/mnt
 
-	$CADMIUMROOT/fs/$ROOTFS/build $DESTDIR
+	$CADMIUMROOT/fs/$ROOTFS/build $DESTDIR > log 2>&1
 
 	cp -r /CdFiles $DESTDIR/CdFiles
 
@@ -105,8 +112,6 @@ if [ $INSTMED != this ]; then
 
 	mkdir -p $DESTDIR/lib/modules/$(uname -r)
 	cp -r /lib/modules/$(uname -r) $DESTDIR/lib/modules/$(uname-r)
-	
-	dd if=/dev/disk/by-partlabel/SDKernelA of=$KERNPART status=none
 fi
 
 if [ -f "$CADMIUMROOT/board/$BOARD/local-overrides.quirks" ]; then
@@ -132,5 +137,3 @@ fi
 
 if [ "$FS_HAS_OOBE" = "false" ]; then
 fi
-
-# and install kernel

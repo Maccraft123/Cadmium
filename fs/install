@@ -1,0 +1,136 @@
+#!/bin/bash
+
+dmesg --console-off # make kernel shut up
+
+echo "Welcome to Cadmium installer"
+echo "Choose your fate:"
+echo "1: Installation to internal memory"
+echo "2: Installation to internal memory, with dual-booting ChromeOS"
+echo "3: Installation to this medium"
+echo "4: Drop to shell"
+
+opt=inv
+until [ "$opt" != "inv" ]; do
+	read -p ": " opt
+done
+
+case $opt in
+	1) INSTMED="emmc" ;; # install medium
+	2) INSTMED="this" ;;
+	3) INSTMED="oxide" ;;
+	4) exit 0 ;;
+esac
+
+#CADMIUMROOT="/CdFiles"
+CADMIUMROOT=~/cadmium
+
+# try finding current device in cadmium tree
+#COMPATIBLE="$(cat /sys/firmware/devicetree/base/compatible)"
+COMPATIBLE="google,lazorqcom,sc7180"
+for x in $(find $CADMIUMROOT/board/* -type d -printf '%f\n'); do
+	try=$(echo $COMPATIBLE | grep $x)
+	if [ -n "$try" ]; then
+		echo "Found device from compatible string: $x"
+		TARGET="$x"
+	fi
+done
+
+. $CADMIUMROOT/board/$TARGET/boardinfo
+. $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
+echo "$SOC $BOARD $BASEBOARD"
+
+if [ "$BASEBOARD" = "trogdor" ]; then
+	make -j$(nproc) -C /CdFiles/qmic install prefix=/usr
+	echo qmic >> /CdFiles/installed_progs
+	make -j$(nproc) -C /CdFiles/qrtr install prefix=/usr
+	echo qrtr >> /CdFiles/installed_progs
+	make -j$(nproc) -C /CdFiles/rmtfs install prefix=/usr
+	echo rmtfs >> /CdFiles/installed_progs
+
+	systemctl start rmtfs # TODO: make this work on voidlinux
+	sleep 10 # wait for ath10k_snoc to do its thing
+fi
+
+nmcli device wifi rescan
+sleep 4 # wait for wifi networks
+nmtui connect
+
+# try finding emmc
+MMCDEV="$(ls /dev/mmcblk* | grep -F boot0 | seed 's/boot0//')"
+
+DESTDIR=/
+if [ $INSTMED != this ]; then
+	# setup partitions
+	case $INSTMED in
+		oxide)
+			;;
+		emmc)
+			dd if=/dev/zero of=$MMCDEV bs=512k count=128 seek=$EMMC_OFFSET
+			parted --script $MMCDEV mklabel gpt >/dev/null 2>&1
+			cgpt create $MMCDEV
+			PARTOFFSET=0
+			cgpt add -i 3 -t data   -b $(expr 139264 + $EMMC_OFFSET)        -s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l Root ${MMCDEV}
+			cgpt add -i $(expr 1 + $PARTOFFSET) -t kernel   -b $(expr 8192 + $EMMC_OFFSET)          -s 65536 -l MMCKernelA -S 1 -T 2 -P 10  ${MMCDEV}
+			cgpt add -i $(expr 2 + $PARTOFFSET) -t kernel   -b $(expr 73728 + $EMMC_OFFSET)         -s 65536 -l MMCKernelB -S 0 -T 2 -P 5   ${MMCDEV}
+			# i sure do love confusing one-liners
+
+			ROOTPART=/dev/disk/by-partlabel/Root
+			KERNPART=/dev/disk/by-partlabel/MMCKernelA
+			;;
+	esac
+
+	# force rescan partitions
+	sleep 1
+	partx -a $MMCDEV >/dev/null 2>&1 || true
+	sleep 1
+
+	case "$FILESYSTEM" in
+		f2fs)
+			mkfs.f2fs -f $ROOTPART
+		;;
+		ext4)
+			mkfs.ext4 -F $ROOTPART
+		;;
+	esac
+
+	mount $ROOTPART /mnt
+	DESTDIR=/mnt
+
+	$CADMIUMROOT/fs/$ROOTFS/build $DESTDIR
+
+	cp -r /CdFiles $DESTDIR/CdFiles
+
+	mkdir -p $DESTDIR/lib/firmware
+	cp -r /lib/firmware/* $DESTDIR/lib/firmware/
+
+	mkdir -p $DESTDIR/lib/modules/$(uname -r)
+	cp -r /lib/modules/$(uname -r) $DESTDIR/lib/modules/$(uname-r)
+	
+	dd if=/dev/disk/by-partlabel/SDKernelA of=$KERNPART status=none
+fi
+
+if [ -f "$CADMIUMROOT/board/$BOARD/local-overrides.quirks" ]; then
+	mkdir -p $DESTDIR/etc/libinput
+	cp "$CADMIUMROOT/board/$BOARD/local-overrides.quirks" $DESTDIR/etc/libinput/local-overrides.quirks
+fi
+
+if [ -f "$CADMIUMROOT/board/$BOARD/accel-matrix.hwdb" ]; then
+	mkdir -p $DESTDIR/etc/udev/hwdb.d
+	cp $CADMIUMROOT/board/$BOARD/accel-matrix.hwdb $DESTDIR/etc/udev/hwdb.d
+	chroot $DESTDIR systemd-hwdb update # chroot to / does nothing
+fi
+
+if [ "$BASEBOARD" = "trogdor" ]; then
+	chroot $DESTDIR make -C /CdFiles/qmic clean
+	chroot $DESTDIR make -C /CdFiles/qrtr clean
+	chroot $DESTDIR make -C /CdFiles/rmtfs clean
+	chroot $DESTDIR make -C /CdFiles/qmic prefix=/usr install
+	chroot $DESTDIR make -C /CdFiles/qrtr prefix=/usr install
+	chroot $DESTDIR make -C /CdFiles/rmtfs prefix=/usr install
+	chroot $DESTDIR systemctl enable rmtfs
+fi
+
+if [ "$FS_HAS_OOBE" = "false" ]; then
+fi
+
+# and install kernel

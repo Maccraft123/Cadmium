@@ -5,6 +5,8 @@ set -e
 CADMIUMROOT=$(dirname $(dirname $(dirname $(realpath $0))))
 DESTDIR=$1
 
+. $CADMIUMROOT/config
+
 # debootstrap randomly just fails for no reason, but system turns out fine
 debootstrap --arch=$ARCH_DEB $SUITE $DESTDIR https://deb.debian.org/debian/
 

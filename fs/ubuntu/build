@@ -1,0 +1,22 @@
+#!/bin/bash
+set -x
+set -e
+
+device_arch=$(uname -m)
+
+CADMIUMROOT=$(dirname $(dirname $(dirname $(realpath $0))))
+DESTDIR=$1
+
+. $CADMIUMROOT/config
+
+# Ensure debootstrap has qemu-static bin before debootstrapping if it needs it
+if [[ "$device_arch" != "armv7a" ]] || [[ "$device_arch" != "aarch64" ]]; then
+	mkdir -p $DESTDIR/usr/bin
+	cp /usr/bin/qemu-arm-static $DESTDIR/usr/bin
+fi
+
+# debootstrap randomly just fails for no reason, but system turns out fine
+debootstrap --arch=$ARCH_DEB $SUITE $DESTDIR http://ports.ubuntu.com/ 
+
+chroot $DESTDIR apt update
+chroot $DESTDIR apt install -y vim network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston

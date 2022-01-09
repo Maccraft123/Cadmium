@@ -16,7 +16,7 @@ if [[ "$device_arch" != "armv7a" ]] || [[ "$device_arch" != "aarch64" ]]; then
 fi
 
 # debootstrap randomly just fails for no reason, but system turns out fine
-debootstrap --arch=$ARCH_DEB $SUITE $DESTDIR http://deb.debian.org/debian/
+debootstrap --arch=$ARCH_DEB $SUITE $DESTDIR https://deb.debian.org/debian/
 
 chroot $DESTDIR apt update
 chroot $DESTDIR apt install -y vim network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston

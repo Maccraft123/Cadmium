@@ -19,7 +19,7 @@ Thanks @LoganMD for the logo
 | 3D Acceleration	  	| Y		    	| Y			| Y				| Y(FW)			| ?			| Y (FW)		|
 | GPU reclocking		| Y			| Y			| ?				| Y			| ?			| Y			|
 | Audio		     		| Y			| Y			| Y				| P(only usb + bt)	| Y			| P(only usb + bt)	|
-| Bluetooth		 	| N		    	| ?			| N				| Y			| Y			| Y			|
+| Bluetooth		 	| Y		    	| ?			| N				| Y			| Y			| Y			|
 | Front Camera			| N			| Y			| Y				| Y			| ?			| N			|
 | Back Camera		    	| N		    	|		 	| 				|			| ?			| N			|
 | USB				| Y		    	| Y			| Y				| Y			| Y			| Y			|

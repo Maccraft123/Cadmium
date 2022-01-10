@@ -111,7 +111,7 @@ if [ $INSTMED != this ]; then
 	cp -r /lib/firmware/* $DESTDIR/lib/firmware/
 
 	mkdir -p $DESTDIR/lib/modules/$(uname -r)
-	cp -r /lib/modules/$(uname -r) $DESTDIR/lib/modules/$(uname-r)
+	cp -r /lib/modules/$(uname -r) $DESTDIR/lib/modules/$(uname -r)
 fi
 
 if [ -f "$CADMIUMROOT/board/$BOARD/local-overrides.quirks" ]; then

@@ -4,27 +4,27 @@
 # Target device
 # One of: bob, coachz, krane, kevin, minnie, speedy, lazor, 8101b
 if [ "$RELEASE" = "" ]; then
-	TARGET=minnie
+	TARGET=scriptdevice
 else
 	TARGET=$RELEASE
 fi
 
 # RootFS type
 # One of: debian, void, void-musl, ubuntu
-ROOTFS=debian
+ROOTFS=scriptdistro
 
 # FS type
 # f2fs, ext4
-FILESYSTEM=ext4
+FILESYSTEM=scriptfs
 
 # Debian and debian-ish distro suite
 # sid, testing, stable
 # impish, hirsute, focal
-SUITE=sid
+SUITE=scriptsuite
 
 # Which kernel should be built. disables firmware
 # kernelorg: from kernel.org libre: from linux-libre.fsfla.org
-KERNEL=kernelorg
+KERNEL=scriptkernel
 
 # Build Cadmium inside tmpfs?
-IN_RAM=false
+IN_RAM=scriptinram

@@ -38,7 +38,7 @@ Thanks @LoganMD for the logo
 - Reboot
 Once you have this out, continue with instructions:
 
-- Use the script by running ```./config``` or
+- Use the script by running ```bash config.sh``` in the same directory or
 - *Edit ./config to reflect your board*
 - ``` ./build-all /dev/sdX ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt and debootstrap are needed to work correctly.
 - When ```build-all``` is ran like ```./build-all <file> <size>```, it builds Cadmium to <file> with size of <size>(2G should be fine)

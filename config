@@ -4,7 +4,7 @@
 # Target device
 # One of: bob, coachz, krane, kevin, minnie, speedy, lazor, 8101b
 if [ "$RELEASE" = "" ]; then
-	TARGET=minnie
+	TARGET=krane
 else
 	TARGET=$RELEASE
 fi
@@ -15,12 +15,12 @@ ROOTFS=debian
 
 # FS type
 # f2fs, ext4
-FILESYSTEM=ext4
+FILESYSTEM=f2fs
 
 # Debian and debian-ish distro suite
 # sid, testing, stable
 # impish, hirsute, focal
-SUITE=sid
+SUITE=testing
 
 # Which kernel should be built. disables firmware
 # kernelorg: from kernel.org libre: from linux-libre.fsfla.org

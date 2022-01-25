@@ -11,4 +11,4 @@ DESTDIR=$1
 debootstrap --arch=$ARCH_DEB $SUITE $DESTDIR https://deb.debian.org/debian/
 
 chroot $DESTDIR apt update
-chroot $DESTDIR apt install -y vim network-manager debootstrap parted f2fs-tools libudev-dev build-essential git firmware-ath9k-htc kmscube weston
+chroot $DESTDIR apt install -y vim network-manager debootstrap parted f2fs-tools libudev-dev build-essential git kmscube weston

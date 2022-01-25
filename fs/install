@@ -83,6 +83,7 @@ if [ $INSTMED != this ]; then
 
 			ROOTPART=/dev/disk/by-partlabel/Root
 			KERNPART=/dev/disk/by-partlabel/MMCKernelA
+			dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA
 			;;
 	esac
 
@@ -135,5 +136,20 @@ if [ "$BASEBOARD" = "trogdor" ]; then
 	chroot $DESTDIR systemctl enable rmtfs
 fi
 
-#if [ "$FS_HAS_OOBE" = "false" ]; then
-#fi
+if [ "$FS_HAS_OOBE" = "false" ]; then
+	echo "Enter root password:"
+	until chroot /mnt passwd; do
+		echo "Enter root password:"
+	done
+
+	read -p "Enter username, no spaces or big letters: "
+	chroot /mnt useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
+
+	echo "Enter user password:"
+	until chroot /mnt passwd $REPLY; do
+		echo "Enter user password:"
+	done
+
+	export USERNAME=$REPLY
+	# TODO: ui install
+fi

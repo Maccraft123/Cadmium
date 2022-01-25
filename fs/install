@@ -135,5 +135,5 @@ if [ "$BASEBOARD" = "trogdor" ]; then
 	chroot $DESTDIR systemctl enable rmtfs
 fi
 
-if [ "$FS_HAS_OOBE" = "false" ]; then
-fi
+#if [ "$FS_HAS_OOBE" = "false" ]; then
+#fi

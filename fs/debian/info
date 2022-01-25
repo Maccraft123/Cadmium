@@ -9,7 +9,7 @@ FS_UPDATE="apt update && apt upgrade"
 
 # bootloader packages
 FS_PKGS_CD_BOOTFW_UBOOT="u-boot-tools"
-FS_PKGS_CD_BOOTFW_DEPTHCHARGE="$FS_PKGS_CD_BOOTFW_UBOOT vboot-utils"
+FS_PKGS_CD_BOOTFW_DEPTHCHARGE="$FS_PKGS_CD_BOOTFW_UBOOT vboot-utils cgpt"
 
 # ui packages
 FS_PKGS_CD_UI_GNOME="gnome gdm3 xwayland"

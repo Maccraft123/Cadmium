@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e
+set -x
+
+# !!!! TEMPORARY PLACEMENT, USE AT YOUR RISK !!!!
+
+CADMIUMROOT=$(dirname $(dirname $(dirname $(realpath $0))))
+DESTDIR=$1
+
+. $CADMIUMROOT/config
+
+echo "Installing Void Linux (musl)"
+ROOTFS_TAR="$(curl -s -L https://voidlinux.org/download/ | grep $ARCH_UNAME | tr '"' ' ' | awk '{print $3}' | grep musl)"
+if [ ! -f "$ROOTFS_TAR" ]; then
+	rm void-${ARCH_UNAME}.tar.xz || true
+	wget $ROOTFS_TAR -O void-$ARCH_UNAME.tar.xz # musl: void-aarch64, non-musl: void-aarch64-v
+
+fi
+tar xfp void-${ARCH_UNAME}.tar.xz -C $DESTDIR
+cp /etc/resolv.conf $DESTDIR/etc/resolv.conf
+chroot $DESTDIR $qemu /bin/xbps-install -Syu xbps
+chroot $DESTDIR $qemu /bin/xbps-install -yu
+chroot $DESTDIR $qemu /bin/xbps-install -y base-system
+chroot $DESTDIR $qemu /bin/xbps-remove -y base-voidstrap
+chroot $DESTDIR $qemu /bin/xbps-install -y vim NetworkManager parted f2fs-tools eudev-libudev-devel base-devel git
+cp void-${ARCH_UNAME}.tar.xz $DESTDIR/void.tar.xz

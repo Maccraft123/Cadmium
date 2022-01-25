@@ -103,7 +103,7 @@ if [ $INSTMED != this ]; then
 	mount $ROOTPART /mnt
 	DESTDIR=/mnt
 
-	$CADMIUMROOT/fs/$ROOTFS/build $DESTDIR > log 2>&1
+	$CADMIUMROOT/fs/$ROOTFS/build $DESTDIR
 
 	cp -r /CdFiles $DESTDIR/CdFiles
 

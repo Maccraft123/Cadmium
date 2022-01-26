@@ -7,7 +7,7 @@ FS_INST_PKG="/bin/xbps-install -y"
 FS_UPDATE="/bin/xbps-install -Syu"
 
 # bootloader packages
-FS_PKGS_CD_BOOTFW_UBOOT="u-boot-tools"
+FS_PKGS_CD_BOOTFW_UBOOT="u-boot-tools curl wget"
 FS_PKGS_CD_BOOTFW_DEPTHCHARGE="$FS_PKGS_CD_BOOTFW_UBOOT vboot-utils"
 
 # ui packages

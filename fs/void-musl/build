@@ -24,3 +24,6 @@ chroot $DESTDIR $qemu /bin/xbps-install -y base-system
 chroot $DESTDIR $qemu /bin/xbps-remove -y base-voidstrap
 chroot $DESTDIR $qemu /bin/xbps-install -y vim dbus NetworkManager parted f2fs-tools eudev-libudev-devel base-devel git curl wget vboot-utils u-boot-tools
 cp void-${ARCH_UNAME}.tar.xz $DESTDIR/void.tar.xz
+
+chroot $DESTDIR $qemu ln -s /etc/sv/dbus /var/service
+chroot $DESTDIR $qemu ln -s /etc/sv/NetworkManager /var/service

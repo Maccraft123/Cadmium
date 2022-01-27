@@ -137,18 +137,20 @@ fi
 
 if [ "$FS_HAS_OOBE" = "false" ]; then
 	echo "Enter root password:"
-	until chroot /mnt passwd; do
+	until chroot $DESTDIR passwd root; do
 		echo "Enter root password:"
 	done
 
 	read -p "Enter username, no spaces or big letters: "
-	chroot /mnt useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
+	chroot $DESTDIR useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
 
 	echo "Enter user password:"
-	until chroot /mnt passwd $REPLY; do
+	until chroot $DESTDIR passwd $REPLY; do
 		echo "Enter user password:"
 	done
 
 	export USERNAME=$REPLY
-	# TODO: ui install
+
+
+
 fi

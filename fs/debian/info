@@ -9,13 +9,13 @@ FS_UPDATE="apt update && apt upgrade"
 
 # packages:
 FS_PKGS_CD_BASE=""
+FS_PKGS_CD_UI_BASE=""
 
 # bootloader
 FS_PKGS_CD_BOOTFW_UBOOT="u-boot-tools"
 FS_PKGS_CD_BOOTFW_DEPTHCHARGE="$FS_PKGS_CD_BOOTFW_UBOOT vboot-utils cgpt"
 
-# u
-FS_PKGS_CD_UI_BASE=""
+# ui
 FS_PKGS_CD_UI_GNOME="gnome gdm3 xwayland"
 FS_PKGS_CD_UI_KDE="plasma-desktop kde-full krusader konsole plasma-nm muon kwin-x11 kwin-wayland sddm kinfocenter systemsettings powerdevil kde-config-sddm kde-config-screenlocker kde-config-gtk-style partitionmanager libkf5su-bin"
 FS_PKGS_CD_UI_PHOSH="xfce4-terminal phosh phosh-tablet xwayland"

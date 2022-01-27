@@ -126,7 +126,10 @@ if [ $INSTMED != this ]; then
 	mkdir -p $DESTDIR/lib/firmware
 	cp -r /lib/firmware/* $DESTDIR/lib/firmware/
 	cp -r /lib/modules/$(uname -r) $DESTDIR/lib/modules/$(uname -r)
+
 fi
+
+cp -r $CADMIUMROOT/fs/ucm/* $DESTDIR/usr/share/alsa/ucm2/
 
 if [ -f "$CADMIUMROOT/board/$BOARD/local-overrides.quirks" ]; then
 	mkdir -p $DESTDIR/etc/libinput

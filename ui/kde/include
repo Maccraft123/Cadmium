@@ -1,7 +1,0 @@
-#!/bin/false
-export DEBS="plasma-desktop kde-full krusader konsole plasma-nm muon kwin-x11 kwin-wayland sddm kinfocenter systemsettings powerdevil kde-config-sddm kde-config-screenlocker kde-config-gtk-style partitionmanager libkf5su-bin"
-export XBPS="; echo TODO"
-
-export WM="kwin"
-export DISPSERVER="xorg"
-export DISPSERVER_EXTRA="plasma"

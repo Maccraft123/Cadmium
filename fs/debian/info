@@ -3,7 +3,7 @@
 
 # basic info
 FS_FANCYNAME="Debian"
-FS_HAS_OOBE="true"
+FS_HAS_OOBE="false"
 FS_INST_PKG="apt install -y"
 FS_UPDATE="apt update && apt upgrade"
 

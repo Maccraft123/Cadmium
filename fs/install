@@ -97,7 +97,7 @@ if [ $INSTMED != this ]; then
 
 			ROOTPART=/dev/disk/by-partlabel/Root
 			KERNPART=/dev/disk/by-partlabel/MMCKernelA
-			dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA
+
 			;;
 	esac
 
@@ -106,6 +106,7 @@ if [ $INSTMED != this ]; then
 	partx -a $MMCDEV >/dev/null 2>&1 || true
 	sleep 1
 
+	dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA
 	case "$FILESYSTEM" in
 		f2fs)
 			mkfs.f2fs -f $ROOTPART
@@ -182,6 +183,10 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 		case $UI_CHOICE in
 			phosh)
 				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_PHOSH
+				# TODO: non-systemd rootfses
+				chroot $DESTDIR systemctl enable phosh
+				echo "Input a digit-only user password:"
+				chroot $DESTDIR passwd $USERNAME
 				;;
 			sway)
 				# TODO: config
@@ -195,4 +200,4 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 				;;
 		esac
 	fi
-fi
+f

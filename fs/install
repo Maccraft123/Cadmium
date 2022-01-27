@@ -64,6 +64,21 @@ nmtui connect
 MMCDEV="$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')"
 
 . $CADMIUMROOT/config
+. $CADMIUMROOT/fs/$ROOTFS/info
+
+# try finding out bootloader
+BOOTFW=unknown
+if cat /proc/cmdline | grep -s cros_secure >/dev/null 2>&1; then
+	chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
+	BOOTFW=depthcharge
+	BOOTFW_INST_PKGS="chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE"
+fi
+
+if [ "$BOOTFW" = "unknown" ]; then
+	echo "Seems the automatic bootloader detection failed"
+	echo "Bailing out, you're on your own"
+	exit 1
+fi
 
 DESTDIR=/
 if [ $INSTMED != this ]; then
@@ -134,6 +149,8 @@ if [ "$BASEBOARD" = "trogdor" ]; then
 	chroot $DESTDIR make -C /CdFiles/rmtfs prefix=/usr install
 	chroot $DESTDIR systemctl enable rmtfs
 fi
+
+$BOOTFW_INST_PKGS
 
 if [ "$FS_HAS_OOBE" = "false" ]; then
 	echo "Enter root password:"

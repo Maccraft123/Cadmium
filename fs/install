@@ -125,8 +125,6 @@ if [ $INSTMED != this ]; then
 
 	mkdir -p $DESTDIR/lib/firmware
 	cp -r /lib/firmware/* $DESTDIR/lib/firmware/
-
-	mkdir -p $DESTDIR/lib/modules/$(uname -r)
 	cp -r /lib/modules/$(uname -r) $DESTDIR/lib/modules/$(uname -r)
 fi
 

@@ -42,7 +42,7 @@ fi
 
 . $CADMIUMROOT/board/$TARGET/boardinfo
 . $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
-echo "$SOC $BOARD $BASEBOARD"
+#echo "$SOC $BOARD $BASEBOARD"
 
 if [ "$BASEBOARD" = "trogdor" ]; then
 	make -j$(nproc) -C /CdFiles/qmic install prefix=/usr

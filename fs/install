@@ -180,7 +180,7 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 	if [ "$UI_CHOICE" != "none" ]; then
 		case $UI_CHOICE in
 			phosh)
-				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_PHOSH
+				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE $FS_PKGS_CD_UI_PHOSH
 				# TODO: non-systemd rootfses
 				chroot $DESTDIR systemctl enable phosh
 				echo "Input a digit-only user password:"
@@ -188,13 +188,13 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 				;;
 			sway)
 				# TODO: config
-				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_SWAY
+				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE $FS_PKGS_CD_UI_SWAY
 				;;
 			gnome)
-				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_PHOSH
+				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE $FS_PKGS_CD_UI_GNOME
 				;;
 			kde)
-				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_KDE
+				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE $FS_PKGS_CD_UI_KDE
 				;;
 		esac
 	fi

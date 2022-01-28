@@ -126,7 +126,10 @@ if [ $INSTMED != this ]; then
 	mkdir -p $DESTDIR/lib/firmware
 	cp -r /lib/firmware/* $DESTDIR/lib/firmware/
 	cp -r /lib/modules/$(uname -r) $DESTDIR/lib/modules/$(uname -r)
+
 fi
+
+cp -r $CADMIUMROOT/fs/ucm/* $DESTDIR/usr/share/alsa/ucm2/
 
 if [ -f "$CADMIUMROOT/board/$BOARD/local-overrides.quirks" ]; then
 	mkdir -p $DESTDIR/etc/libinput
@@ -175,9 +178,9 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 	done
 
 	chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BASE
-	chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE
 
 	if [ "$UI_CHOICE" != "none" ]; then
+		chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE
 		case $UI_CHOICE in
 			phosh)
 				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE $FS_PKGS_CD_UI_PHOSH
@@ -191,11 +194,11 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE $FS_PKGS_CD_UI_SWAY
 				;;
 			gnome)
-				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE $FS_PKGS_CD_UI_GNOME
+				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_GNOME
 				;;
 			kde)
 				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE $FS_PKGS_CD_UI_KDE
 				;;
 		esac
 	fi
-f
+fi

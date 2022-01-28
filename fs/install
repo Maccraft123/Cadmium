@@ -194,11 +194,11 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_SWAY
 				;;
 			gnome)
-				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_PHOSH
+				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_GNOME
 				;;
 			kde)
 				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_KDE
 				;;
 		esac
 	fi
-f
+fi

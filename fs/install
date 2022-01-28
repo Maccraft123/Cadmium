@@ -69,7 +69,7 @@ MMCDEV="$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')"
 # try finding out bootloader
 BOOTFW=unknown
 if cat /proc/cmdline | grep -s cros_secure >/dev/null 2>&1; then
-	chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
+	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
 	BOOTFW=depthcharge
 	BOOTFW_INST_PKGS="chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE"
 fi
@@ -170,35 +170,44 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 
 	export USERNAME=$REPLY
 
-	UI_CHOICE="invalid"
-	until [ "$UI_CHOICE" != "invalid" ]; do
-		echo "Choose UI that you want:"
-		echo -n "One of: phosh, sway, gnome, kde or none"
-		read -p '? ' UI_CHOICE
-	done
+	if [ -n "$FS_SUPPORTED_UIS" ]; then
+		UI_CHOICE="invalid"
+		until [ "$UI_CHOICE" != "invalid" ]; do
+			echo "Choose UI that you want:"
+			echo -n "One of: $FS_SUPPORTED_UIS or none"
+			read -p '? ' UI_CHOICE
+			# make sure user doesnt try installing unsupported ui
+			if ! echo "$FS_SUPPORTED_UIS none" | grep -q "$UI_CHOICE"; then
+				UI_CHOICE=invalid
+			fi
+		done
 
-	chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BASE
+		chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BASE
 
-	if [ "$UI_CHOICE" != "none" ]; then
-		chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE
-		case $UI_CHOICE in
-			phosh)
-				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_PHOSH
-				# TODO: non-systemd rootfses
-				chroot $DESTDIR systemctl enable phosh
-				echo "Input a digit-only user password:"
-				chroot $DESTDIR passwd $USERNAME
-				;;
-			sway)
-				# TODO: config
-				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_SWAY
-				;;
-			gnome)
-				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_GNOME
-				;;
-			kde)
-				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_KDE
-				;;
-		esac
+		if [ "$UI_CHOICE" != "none" ]; then
+			chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE
+			case $UI_CHOICE in
+				phosh)
+					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_PHOSH
+					# TODO: non-systemd rootfses
+					chroot $DESTDIR systemctl enable phosh
+					echo "Input a digit-only user password:"
+					chroot $DESTDIR passwd $USERNAME
+					;;
+				sway)
+					# TODO: config
+					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_SWAY
+					;;
+				gnome)
+					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_GNOME
+					;;
+				kde)
+					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_KDE
+					;;
+			esac
+		fi
+	else
+		echo "Looks like, $FS_FANCYNAME does not support user environments"
+		echo "Skipping..."
 	fi
 fi

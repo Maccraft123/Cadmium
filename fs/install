@@ -64,6 +64,21 @@ nmtui connect
 MMCDEV="$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')"
 
 . $CADMIUMROOT/config
+. $CADMIUMROOT/fs/$ROOTFS/info
+
+# try finding out bootloader
+BOOTFW=unknown
+if cat /proc/cmdline | grep -s cros_secure >/dev/null 2>&1; then
+	chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
+	BOOTFW=depthcharge
+	BOOTFW_INST_PKGS="chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE"
+fi
+
+if [ "$BOOTFW" = "unknown" ]; then
+	echo "Seems the automatic bootloader detection failed"
+	echo "Bailing out, you're on your own"
+	exit 1
+fi
 
 DESTDIR=/
 if [ $INSTMED != this ]; then
@@ -82,7 +97,7 @@ if [ $INSTMED != this ]; then
 
 			ROOTPART=/dev/disk/by-partlabel/Root
 			KERNPART=/dev/disk/by-partlabel/MMCKernelA
-			dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA
+
 			;;
 	esac
 
@@ -91,6 +106,7 @@ if [ $INSTMED != this ]; then
 	partx -a $MMCDEV >/dev/null 2>&1 || true
 	sleep 1
 
+	dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA
 	case "$FILESYSTEM" in
 		f2fs)
 			mkfs.f2fs -f $ROOTPART
@@ -109,8 +125,6 @@ if [ $INSTMED != this ]; then
 
 	mkdir -p $DESTDIR/lib/firmware
 	cp -r /lib/firmware/* $DESTDIR/lib/firmware/
-
-	mkdir -p $DESTDIR/lib/modules/$(uname -r)
 	cp -r /lib/modules/$(uname -r) $DESTDIR/lib/modules/$(uname -r)
 fi
 
@@ -135,20 +149,53 @@ if [ "$BASEBOARD" = "trogdor" ]; then
 	chroot $DESTDIR systemctl enable rmtfs
 fi
 
+$BOOTFW_INST_PKGS
+
 if [ "$FS_HAS_OOBE" = "false" ]; then
 	echo "Enter root password:"
-	until chroot /mnt passwd; do
+	until chroot $DESTDIR passwd root; do
 		echo "Enter root password:"
 	done
 
 	read -p "Enter username, no spaces or big letters: "
-	chroot /mnt useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
+	chroot $DESTDIR useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
 
 	echo "Enter user password:"
-	until chroot /mnt passwd $REPLY; do
+	until chroot $DESTDIR passwd $REPLY; do
 		echo "Enter user password:"
 	done
 
 	export USERNAME=$REPLY
-	# TODO: ui install
-fi
+
+	UI_CHOICE="invalid"
+	until [ "$UI_CHOICE" != "invalid" ]; do
+		echo "Choose UI that you want:"
+		echo -n "One of: phosh, sway, gnome, kde or none"
+		read -p '? ' UI_CHOICE
+	done
+
+	chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BASE
+	chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE
+
+	if [ "$UI_CHOICE" != "none" ]; then
+		case $UI_CHOICE in
+			phosh)
+				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_PHOSH
+				# TODO: non-systemd rootfses
+				chroot $DESTDIR systemctl enable phosh
+				echo "Input a digit-only user password:"
+				chroot $DESTDIR passwd $USERNAME
+				;;
+			sway)
+				# TODO: config
+				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_SWAY
+				;;
+			gnome)
+				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_PHOSH
+				;;
+			kde)
+				chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_KDE
+				;;
+		esac
+	fi
+f

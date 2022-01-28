@@ -109,7 +109,7 @@ if [ $INSTMED != this ]; then
 	dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA
 	case "$FILESYSTEM" in
 		f2fs)
-			mkfs.f2fs -f $ROOTPART
+			mkfs.f2fs -f $ROOTPART -t 0
 		;;
 		ext4)
 			mkfs.ext4 -F $ROOTPART

@@ -1,0 +1,89 @@
+From ec5ba9f43454a7d630e25c062718b4daa836fdf8 Mon Sep 17 00:00:00 2001
+From: Urja Rannikko <urjaman@gmail.com>
+Date: Mon, 27 Aug 2018 19:03:49 +0000
+Subject: [PATCH] dts: rk3288-veyron-chromebook: dedicate npll to VOP0/HDMI +
+ HDMI rates
+
+This enables flexible HDMI rates on the rk3288 chromebooks so that they
+actually work with displays (also others than a 1080p one) in the wild.
+
+The frequency list matches what ChromeOS allows.
+
+Signed-off-by: Urja Rannikko <urjaman@gmail.com>
+---
+ .../boot/dts/rk3288-veyron-chromebook.dtsi    | 62 +++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+index 05112c25176d3..4d972bd6741c1 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+@@ -83,6 +83,68 @@
+ 	};
+ };
+ 
++&cru {
++	/* Dedicate NPLL for VOP0 / VOP_BIG for HDMI. */
++	rockchip,npll-for-vop = <0>;
++	/* The first assigned clocks are DCLK_VOP0 and DCLK_VOP1 */
++	assigned-clock-parents = <&cru PLL_NPLL>, <&cru PLL_GPLL>;
++};
++
++/* Delete the nodes that allow non-desirable VOP - connector links. That
++ * is the eDP cannot use vopb and HDMI cannot use vopl. */
++
++/delete-node/ &edp_in_vopb;
++/delete-node/ &vopb_out_edp;
++/delete-node/ &hdmi_in_vopl;
++/delete-node/ &vopl_out_hdmi;
++
++&hdmi {
++	/* These depend on NPLL being dedicated to HDMI use. */
++	rockchip,hdmi-rates-hz = <
++		25176471	/* for 25.175 MHz, 0.006% off */
++		25200000
++		27000000
++		28320000
++		30240000
++		31500000
++		32000000
++		33750000
++		36000000
++		40000000
++		49500000
++		50000000
++		54000000
++		57290323	/* for 57.284 MHz, .011 % off */
++		65000000
++		68250000
++		71000000
++		72000000
++		73250000
++		74250000
++		74437500	/* for 74.44 MHz, .003% off */
++		75000000
++		78750000
++		78800000
++		79500000
++		83500000
++		85500000
++		88750000
++		97750000
++		101000000
++		106500000
++		108000000
++		115500000
++		118666667	/* for 118.68 MHz, .011% off */
++		119000000
++		121714286	/* for 121.75 MHz, .029% off */
++		135000000
++		136800000	/* for 136.75 MHz, .037% off */
++		146250000
++		148500000
++		154000000
++		162000000 >;
++};
++
+ &rk808 {
+ 	vcc11-supply = <&vcc_5v>;
+ 

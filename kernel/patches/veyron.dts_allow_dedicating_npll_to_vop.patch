@@ -1,0 +1,35 @@
+From 4ade7af42f03522c31bd9450710c41b47b866766 Mon Sep 17 00:00:00 2001
+From: Urja Rannikko <urjaman@gmail.com>
+Date: Mon, 27 Aug 2018 19:00:50 +0000
+Subject: [PATCH] dts: rk3288: support for dedicating npll to a vop
+
+Add the VOP DCLKs to the assigned clocks list so their
+parents can be set in the dts include files for
+devices that do dedicate npll to a vop.
+
+Signed-off-by: Urja Rannikko <urjaman@gmail.com>
+---
+ arch/arm/boot/dts/rk3288.dtsi | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index aaaa61875701d..e8cb4dc8c27da 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -865,12 +865,14 @@
+ 		rockchip,grf = <&grf>;
+ 		#clock-cells = <1>;
+ 		#reset-cells = <1>;
+-		assigned-clocks = <&cru PLL_GPLL>, <&cru PLL_CPLL>,
++		assigned-clocks = <&cru DCLK_VOP0>, <&cru DCLK_VOP1>,
++				  <&cru PLL_GPLL>, <&cru PLL_CPLL>,
+ 				  <&cru PLL_NPLL>, <&cru ACLK_CPU>,
+ 				  <&cru HCLK_CPU>, <&cru PCLK_CPU>,
+ 				  <&cru ACLK_PERI>, <&cru HCLK_PERI>,
+ 				  <&cru PCLK_PERI>;
+-		assigned-clock-rates = <594000000>, <400000000>,
++		assigned-clock-rates = <0>, <0>,
++				       <594000000>, <400000000>,
+ 				       <500000000>, <300000000>,
+ 				       <150000000>, <75000000>,
+ 				       <300000000>, <150000000>,

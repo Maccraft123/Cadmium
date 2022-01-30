@@ -212,3 +212,5 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 		echo "Skipping..."
 	fi
 fi
+
+echo "Done!"

@@ -170,7 +170,6 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 
 	export USERNAME=$REPLY
 
-
 	if [ -n "$FS_SUPPORTED_UIS" ]; then
 		UI_CHOICE="invalid"
 		until [ "$UI_CHOICE" != "invalid" ]; do

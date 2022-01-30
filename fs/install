@@ -71,7 +71,7 @@ BOOTFW=unknown
 if cat /proc/cmdline | grep -s cros_secure >/dev/null 2>&1; then
 	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
 	BOOTFW=depthcharge
-	BOOTFW_INST_PKGS="chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE"
+	BOOTFW_PKGS="$FS_PKGS_CD_BOOTFW_DEPTHCHARGE"
 fi
 
 if [ "$BOOTFW" = "unknown" ]; then
@@ -125,6 +125,7 @@ if [ $INSTMED != this ]; then
 
 	mkdir -p $DESTDIR/lib/firmware
 	cp -r /lib/firmware/* $DESTDIR/lib/firmware/
+	mkdir -p $DESTDIR/lib/modules
 	cp -r /lib/modules/$(uname -r) $DESTDIR/lib/modules/$(uname -r)
 
 fi
@@ -152,7 +153,7 @@ if [ "$BASEBOARD" = "trogdor" ]; then
 	chroot $DESTDIR systemctl enable rmtfs
 fi
 
-$BOOTFW_INST_PKGS
+chroot $DESTDIR $FS_INST_PKG $BOOTFW_PKGS
 
 if [ "$FS_HAS_OOBE" = "false" ]; then
 	echo "Enter root password:"
@@ -211,3 +212,6 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 		echo "Skipping..."
 	fi
 fi
+
+umount /mnt
+echo "Done!"

@@ -36,7 +36,7 @@ fi
 
 $CADMIUMROOT/fs/$ROOTFS/build $DESTDIR
 source $CADMIUMROOT/fs/$ROOTFS/info
-chroot $DESTDIR $qemu $FS_INST_PKG $FS_PKGS_CD_BASE $FS_PKGS_CD_BOOTFW_UBOOT $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
+chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BASE
 
 if [ $KERNEL != libre ]; then
 	mkdir -p $DESTDIR/lib/firmware

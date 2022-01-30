@@ -71,7 +71,7 @@ BOOTFW=unknown
 if cat /proc/cmdline | grep -s cros_secure >/dev/null 2>&1; then
 	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
 	BOOTFW=depthcharge
-	BOOTFW_INST_PKGS="chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE"
+	BOOTFW_PKGS=$FS_PKGS_CD_BOOTFW_DEPTHCHARGE
 fi
 
 if [ "$BOOTFW" = "unknown" ]; then
@@ -152,7 +152,7 @@ if [ "$BASEBOARD" = "trogdor" ]; then
 	chroot $DESTDIR systemctl enable rmtfs
 fi
 
-$BOOTFW_INST_PKGS
+chroot $DESTDIR $FS_INST_PKGS $BOOTFW_PKGS
 
 if [ "$FS_HAS_OOBE" = "false" ]; then
 	echo "Enter root password:"

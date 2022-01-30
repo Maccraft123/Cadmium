@@ -21,5 +21,6 @@ chroot $DESTDIR $qemu /bin/xbps-install -yu
 chroot $DESTDIR $qemu /bin/xbps-install -y base-system
 chroot $DESTDIR $qemu /bin/xbps-remove -y base-voidstrap
 
-chroot $DESTDIR $qemu ln -s /etc/sv/dbus /var/service/dbus
-chroot $DESTDIR $qemu ln -s /etc/sv/NetworkManager /var/service/NetworkManager
+chroot $DESTDIR $qemu mkdir -p /var/service
+chroot $DESTDIR $qemu ln -s /etc/sv/dbus /var/service/
+chroot $DESTDIR $qemu ln -s /etc/sv/NetworkManager /var/service/

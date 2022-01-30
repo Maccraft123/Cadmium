@@ -1,0 +1,153 @@
+diff -Naur a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi	2022-01-29 22:43:21.564586347 +0000
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi	2022-01-29 22:23:29.179058153 +0000
+@@ -1728,6 +1728,17 @@
+ 			phy-names = "dphy";
+ 		};
+ 
++		dpi0: dpi@14015000 {
++			compatible = "mediatek,mt8183-dpi";
++			reg = <0 0x14015000 0 0x1000>;
++			interrupts = <GIC_SPI 237 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
++			clocks = <&mmsys CLK_MM_DPI_IF>,
++				 <&mmsys CLK_MM_DPI_MM>,
++				 <&apmixedsys CLK_APMIXED_TVDPLL>;
++			clock-names = "pixel", "engine", "pll";
++		};
++
+ 		mutex: mutex@14016000 {
+ 			compatible = "mediatek,mt8183-disp-mutex";
+ 			reg = <0 0x14016000 0 0x1000>;
+diff -Naur a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi	2022-01-29 22:43:21.560586382 +0000
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi	2022-01-29 17:55:54.649273984 +0000
+@@ -266,6 +266,18 @@
+ 	proc-supply = <&mt6358_vproc11_reg>;
+ };
+ 
++&dpi0 {
++	pinctrl-names = "default", "dpimode";
++	pinctrl-0 = <&dpi_pin_default>;
++	pinctrl-1 = <&dpi_pin_func>;
++	status = "okay";
++	port {
++		dpi_out: endpoint {
++			remote-endpoint = <&it6505_in>;
++		};
++	};
++};
++
+ &dsi0 {
+ 	status = "okay";
+ 	#address-cells = <1>;
+@@ -325,6 +337,28 @@
+ 	clock-frequency = <100000>;
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
++
++	it6505dptx: it6505dptx@5c {
++		afe-setting = <1>;
++		compatible = "ite,it6505";
++		status = "okay";
++		interrupt-parent = <&pio>;
++		interrupts = <152 IRQ_TYPE_EDGE_FALLING 152 0>;
++		reg = <0x5c>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&it6505_pins>;
++		ovdd-supply = <&mt6358_vsim2_reg>;
++		pwr18-supply = <&it6505_pp18_reg>;
++		reset-gpios = <&pio 179 1>;
++		hpd-gpios = <&pio 9 0>;
++		extcon = <&usbc_extcon>;
++		no-laneswap;
++		port {
++			it6505_in: endpoint {
++				remote-endpoint = <&dpi_out>;
++			};
++		};
++	};
+ };
+ 
+ &i2c5 {
+@@ -473,6 +507,50 @@
+ 		};
+ 	};
+ 
++	dpi_pin_default: dpi_pin_default {
++		pins_cmd_dat {
++			pinmux = <PINMUX_GPIO13__FUNC_GPIO13>,
++				<PINMUX_GPIO14__FUNC_GPIO14>,
++				<PINMUX_GPIO15__FUNC_GPIO15>,
++				<PINMUX_GPIO16__FUNC_GPIO16>,
++				<PINMUX_GPIO17__FUNC_GPIO17>,
++				<PINMUX_GPIO18__FUNC_GPIO18>,
++				<PINMUX_GPIO19__FUNC_GPIO19>,
++				<PINMUX_GPIO20__FUNC_GPIO20>,
++				<PINMUX_GPIO21__FUNC_GPIO21>,
++				<PINMUX_GPIO22__FUNC_GPIO22>,
++				<PINMUX_GPIO23__FUNC_GPIO23>,
++				<PINMUX_GPIO24__FUNC_GPIO24>,
++				<PINMUX_GPIO25__FUNC_GPIO25>,
++				<PINMUX_GPIO26__FUNC_GPIO26>,
++				<PINMUX_GPIO27__FUNC_GPIO27>,
++				<PINMUX_GPIO28__FUNC_GPIO28>;
++				drive-strength = <MTK_DRIVE_6mA>;
++				output-low;
++		};
++	};
++	dpi_pin_func: dpi_pin_func {
++		pins_cmd_dat {
++			pinmux = <PINMUX_GPIO13__FUNC_DBPI_D0>,
++				<PINMUX_GPIO14__FUNC_DBPI_D1>,
++				<PINMUX_GPIO15__FUNC_DBPI_D2>,
++				<PINMUX_GPIO16__FUNC_DBPI_D3>,
++				<PINMUX_GPIO17__FUNC_DBPI_D4>,
++				<PINMUX_GPIO18__FUNC_DBPI_D5>,
++				<PINMUX_GPIO19__FUNC_DBPI_D6>,
++				<PINMUX_GPIO20__FUNC_DBPI_D7>,
++				<PINMUX_GPIO21__FUNC_DBPI_D8>,
++				<PINMUX_GPIO22__FUNC_DBPI_D9>,
++				<PINMUX_GPIO23__FUNC_DBPI_D10>,
++				<PINMUX_GPIO24__FUNC_DBPI_D11>,
++				<PINMUX_GPIO25__FUNC_DBPI_HSYNC>,
++				<PINMUX_GPIO26__FUNC_DBPI_VSYNC>,
++				<PINMUX_GPIO27__FUNC_DBPI_DE>,
++				<PINMUX_GPIO28__FUNC_DBPI_CK>;
++				drive-strength = <MTK_DRIVE_6mA>;
++		};
++	};
++
+ 	ec_ap_int_odl: ec_ap_int_odl {
+ 		pins1 {
+ 			pinmux = <PINMUX_GPIO151__FUNC_GPIO151>;
+@@ -550,6 +628,29 @@
+ 		};
+ 	};
+ 
++	it6505_pins: it6505_pins {
++		pins_hpd {
++			pinmux = <PINMUX_GPIO9__FUNC_GPIO9>;
++			input-enable;
++			bias-pull-up;
++		};
++		pins_int {
++			pinmux = <PINMUX_GPIO152__FUNC_GPIO152>;
++			input-enable;
++			bias-pull-up;
++		};
++		pins_power_enable {
++			pinmux = <PINMUX_GPIO178__FUNC_GPIO178>;
++			output-low;
++			bias-pull-up;
++		};
++		pins_reset {
++			pinmux = <PINMUX_GPIO179__FUNC_GPIO179>;
++			output-low;
++			bias-pull-up;
++		};
++	};
++
+ 	mmc0_pins_default: mmc0-pins-default {
+ 		pins_cmd_dat {
+ 			pinmux = <PINMUX_GPIO123__FUNC_MSDC0_DAT0>,

@@ -3,8 +3,8 @@
 # basic info
 FS_FANCYNAME="Void with Musl libc"
 FS_HAS_OOBE="false"
-FS_INST_PKG="xbps-install -y"
-FS_UPDATE="xbps-install -Syu"
+FS_INST_PKG="/bin/xbps-install -y"
+FS_UPDATE="/bin/xbps-install -Syu"
 
 
 # packages

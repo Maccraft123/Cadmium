@@ -71,7 +71,7 @@ BOOTFW=unknown
 if cat /proc/cmdline | grep -s cros_secure >/dev/null 2>&1; then
 	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
 	BOOTFW=depthcharge
-	BOOTFW_PKGS=$FS_PKGS_CD_BOOTFW_DEPTHCHARGE
+	BOOTFW_PKGS="$FS_PKGS_CD_BOOTFW_DEPTHCHARGE"
 fi
 
 if [ "$BOOTFW" = "unknown" ]; then

@@ -3,11 +3,11 @@
 # basic info
 FS_FANCYNAME="Void"
 FS_HAS_OOBE="false"
-FS_INST_PKG="/bin/xbps-install -y"
-FS_UPDATE="/bin/xbps-install -Syu"
+FS_INST_PKG="xbps-install -y"
+FS_UPDATE="xbps-install -Syu"
 
 # packages
-FS_PKGS_CD_BASE="vim dbus NetworkManager parted f2fs-tools eudev-libudev-devel base-devel git curl wget"
+FS_PKGS_CD_BASE="vim parted f2fs-tools eudev-libudev-devel base-devel git curl wget"
 FS_PKGS_CD_UI_BASE="xorg-fonts elogind dbus-elogind"
 # bootloader
 FS_PKGS_CD_BOOTFW_UBOOT="u-boot-tools"

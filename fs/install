@@ -213,4 +213,5 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 	fi
 fi
 
+umount /mnt
 echo "Done!"

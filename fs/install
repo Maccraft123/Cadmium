@@ -152,7 +152,7 @@ if [ "$BASEBOARD" = "trogdor" ]; then
 	chroot $DESTDIR systemctl enable rmtfs
 fi
 
-chroot $DESTDIR $FS_INST_PKGS $BOOTFW_PKGS
+chroot $DESTDIR $FS_INST_PKG $BOOTFW_PKGS
 
 if [ "$FS_HAS_OOBE" = "false" ]; then
 	echo "Enter root password:"

@@ -1,9 +1,9 @@
 #!/bin/bash
-CADMIUMROOT=$(dirname $(realpath $0))
+CADMIUMROOT="$(dirname $(realpath $0))"
 
-. $CADMIUMROOT/config
-. $CADMIUMROOT/board/$TARGET/boardinfo
-. $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
+source "$CADMIUMROOT/config"
+source "$CADMIUMROOT/board/$TARGET/boardinfo"
+source "$CADMIUMROOT/baseboard/$BASEBOARD/boardinfo"
 
 set -e
 
@@ -16,7 +16,7 @@ sleep 1 # let's give user time if they commit a typo
 [ -z "$1" ] && exit 1
 [ $IN_RAM = true -a -z "$2" ] && exit 2
 
-
+# This script is usually tested with a physical pendrive
 if [ -n "$2" ]; then
 	echo "Warning,"
 	echo "Running $0 like that is not recommended"
@@ -24,59 +24,59 @@ if [ -n "$2" ]; then
 	sleep 2
 fi
 
-umount $CADMIUMROOT/tmp 2>/dev/null || true
+# Just in case we got lingering mounts
+umount "$CADMIUMROOT/tmp" 2>/dev/null || true
 
-if [ $IN_RAM = true ]; then
-	mount -t tmpfs tmpfs $CADMIUMROOT/tmp
+if [ "$IN_RAM" = true ]; then
+	mount -t tmpfs tmpfs "$CADMIUMROOT/tmp"
 fi
 
-# it deals with env vars
-source $CADMIUMROOT/bootfw/$BOOTFW/prepare_parts
+# it deals with env vars, TODO: make it not
+source "$CADMIUMROOT/bootfw/$BOOTFW/prepare_parts"
 
-# build, package and write kernel
-$CADMIUMROOT/kernel/build
+"$CADMIUMROOT/kernel/build"
 
 # TODO: move to bootfw/prepare_parts
 case "$FILESYSTEM" in
 	f2fs)
-		mkfs.f2fs -f $ROOTPART
+		mkfs.f2fs -f "$ROOTPART"
 	;;
 	ext4)
-		mkfs.ext4 -F $ROOTPART
+		mkfs.ext4 -F "$ROOTPART"
 	;;
 esac
 
-mkdir -p $CADMIUMROOT/tmp/root
-mount $ROOTPART $CADMIUMROOT/tmp/root
+mkdir -p "$CADMIUMROOT/tmp/root"
+mount "$ROOTPART" "$CADMIUMROOT/tmp/root"
 
 # write filesystem
-$CADMIUMROOT/fs/build $CADMIUMROOT/tmp/root
+"$CADMIUMROOT/fs/build" "$CADMIUMROOT/tmp/root"
 
-$CADMIUMROOT/bootfw/$BOOTFW/package $DEVICE $ROOTPART
+"$CADMIUMROOT/bootfw/$BOOTFW/package" "$DEVICE" "$ROOTPART"
 # TODO: move to bootfw/$BOOTFW/install
-if [ $BOOTFW = depthcharge ]; then
-	dd if=$CADMIUMROOT/tmp/linux-$ARCH/vmlinux.kpart of=$KERNPART
-	cp $CADMIUMROOT/tmp/oxide.kpart $CADMIUMROOT/tmp/root/
+if [ "$BOOTFW" = depthcharge ]; then
+	dd if="$CADMIUMROOT/tmp/linux-$ARCH/vmlinux.kpart" of="$KERNPART"
+	cp "$CADMIUMROOT/tmp/oxide.kpart" "$CADMIUMROOT/tmp/root/"
 fi
 
-if [ $BOOTFW = pmon ]; then
-	mkfs.ext4 ${DEVICE}1
-	mount ${DEVICE}1 $CADMIUMROOT/tmp/root/boot
+if [ "$BOOTFW" = pmon ]; then
+	mkfs.ext4 "${DEVICE}1"
+	mount "${DEVICE}1" "$CADMIUMROOT/tmp/root/boot"
 	# TODO
-	umount $CADMIUMROOT/tmp/root/boot
+	umount "$CADMIUMROOT/tmp/root/boot"
 fi
 
 
 # install modules
-make -C $CADMIUMROOT/tmp/linux-$ARCH INSTALL_MOD_PATH=$CADMIUMROOT/tmp/root modules_install
+make -C "$CADMIUMROOT/tmp/linux-$ARCH" INSTALL_MOD_PATH="$CADMIUMROOT/tmp/root" modules_install
 
 # we don't umount it in fs/build
-umount $CADMIUMROOT/tmp/root
+umount "$CADMIUMROOT/tmp/root"
 
 # yes, this fails when device is pendrive or sth
-losetup -d $DEVICE 2>/dev/null || true
+losetup -d "$DEVICE" 2>/dev/null || true
 
-sync
+sync # just to be sure
 
 echo "Done!"
-[ $IN_RAM = true ] && echo "Don't forget to umount $CADMIUMROOT/tmp"
+[ "$IN_RAM" = true ] && echo "Don't forget to umount $CADMIUMROOT/tmp"

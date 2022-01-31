@@ -1,5 +1,5 @@
 #!/bin/bash
-CADMIUMROOT=$(dirname $(dirname $(dirname $(realpath $0))))
+CADMIUMROOT="$(dirname $(dirname $(dirname $(realpath $0))))"
 
 set -e
 set -v
@@ -8,21 +8,21 @@ echo "Packaging kernel for depthcharge machines"
 
 [ -z "$CADMIUMROOT" ] && exit 1
 
-source $CADMIUMROOT/config
-source $CADMIUMROOT/board/$TARGET/boardinfo
-source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
+source "$CADMIUMROOT/config"
+source "$CADMIUMROOT/board/$TARGET/boardinfo"
+source "$CADMIUMROOT/baseboard/$BASEBOARD/boardinfo"
 
 # sanity check
 [ "$BOOTFW" != "depthcharge" ] && exit 1
 
-cd $CADMIUMROOT/tmp/linux-$ARCH
+cd "$CADMIUMROOT/tmp/linux-$ARCH"
 
-[ "$ARCH" != arm ] && lz4 -z -f arch/$ARCH/boot/Image c_linux.lz4
+[ "$ARCH" != arm ] && lz4 -z -f "arch/$ARCH/boot/Image" c_linux.lz4
 
 # TODO: generate
-cp $CADMIUMROOT/kernel/$ARCH.kernel.its kernel.its
-cp $CADMIUMROOT/kernel/cmdline cmdline
-cp $CADMIUMROOT/kernel/cmdline.p2 cmdline.p2
+cp "$CADMIUMROOT/kernel/$ARCH.kernel.its" kernel.its
+cp "$CADMIUMROOT/kernel/cmdline" cmdline
+cp "$CADMIUMROOT/kernel/cmdline.p2" cmdline.p2
 
 # make kernel partition
 # yes this is stolen from solidhal's prawnos, that's how open source works :D
@@ -37,7 +37,7 @@ vbutil_kernel --pack vmlinux.kpart \
 	--config cmdline \
 	--bootloader bootloader.bin
 
-cp vmlinux.kpart $CADMIUMROOT/tmp/
+cp vmlinux.kpart "$CADMIUMROOT/tmp/"
 
 vbutil_kernel --pack vmlinux.kpart.p2 \
 	--version 1 \
@@ -48,9 +48,9 @@ vbutil_kernel --pack vmlinux.kpart.p2 \
 	--config cmdline.p2 \
 	--bootloader bootloader.bin
 
-cp vmlinux.kpart.p2 $CADMIUMROOT/tmp/
+cp vmlinux.kpart.p2 "$CADMIUMROOT/tmp/"
 
-cp $CADMIUMROOT/kernel/cmdline.oxide ./
+cp "$CADMIUMROOT/kernel/cmdline.oxide" ./
 vbutil_kernel --pack oxide.kpart \
 	--version 1 \
 	--vmlinuz vmlinux.uimg \
@@ -59,4 +59,4 @@ vbutil_kernel --pack oxide.kpart \
 	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
 	--config cmdline.oxide \
 	--bootloader bootloader.bin
-cp oxide.kpart $CADMIUMROOT/tmp/
+cp oxide.kpart "$CADMIUMROOT/tmp/"

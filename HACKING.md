@@ -1,3 +1,6 @@
+# You can run Cadmium inside qemu if you built image into file:
+```qemu-system-aarch64 -M virt -cpu cortex-a57  -kernel tmp/linux-arm64/arch/arm64/boot/Image -nographic -m 2G -serial mon:stdio -append "console=ttyAMA0,115200 root=/dev/vda3" -drive file=cd.img,if=virtio,format=raw```
+
 # Explamantions of common env vars:
 - ```$TARGET``` is target device, krane, kevin or other
 - ```$ROOTFS``` represents target linux rootfs, Cadmium is made to be independent of rootfs

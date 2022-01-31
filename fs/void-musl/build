@@ -23,3 +23,5 @@ chroot $DESTDIR $qemu /bin/xbps-remove -y base-voidstrap
 
 chroot $DESTDIR $qemu ln -s /etc/sv/dbus /etc/runit/runsvdir/default/
 chroot $DESTDIR $qemu ln -s /etc/sv/NetworkManager /etc/runit/runsvdir/default/
+
+chroot $DESTDIR $qemu ln -s /etc/sv/agetty-ttyAMA0 /etc/runit/runsvdir/default/

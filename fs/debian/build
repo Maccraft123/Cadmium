@@ -2,13 +2,12 @@
 set -x
 set -e
 
-CADMIUMROOT=$(dirname $(dirname $(dirname $(realpath $0))))
+CADMIUMROOT="$(dirname $(dirname $(dirname $(realpath $0))))"
 DESTDIR=$1
 
-. $CADMIUMROOT/config
+source "$CADMIUMROOT/config"
 
-# debootstrap randomly just fails for no reason, but system turns out fine
-debootstrap --arch=$ARCH_DEB $SUITE $DESTDIR https://deb.debian.org/debian/
+debootstrap --arch="$ARCH_DEB" "$SUITE" "$DESTDIR" https://deb.debian.org/debian/
 
-chroot $DESTDIR apt update
-chroot $DESTDIR apt install -y vim network-manager debootstrap parted f2fs-tools libudev-dev build-essential git kmscube weston
+chroot "$DESTDIR" apt update
+chroot "$DESTDIR" apt install -y vim network-manager debootstrap parted f2fs-tools libudev-dev build-essential git kmscube weston

@@ -6,6 +6,7 @@ FS_FANCYNAME="Debian"
 FS_HAS_OOBE="false"
 FS_INST_PKG="apt install -y"
 FS_UPDATE="apt update && apt upgrade"
+FS_USERGROUPS="sudo,video,audio,render"
 
 # packages:
 FS_PKGS_CD_BASE=""

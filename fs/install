@@ -162,7 +162,7 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 	done
 
 	read -p "Enter username, no spaces or big letters: "
-	chroot $DESTDIR useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
+	chroot $DESTDIR useradd -G $FS_USERGROUPS -s /bin/bash -m $REPLY
 
 	echo "Enter user password:"
 	until chroot $DESTDIR passwd $REPLY; do

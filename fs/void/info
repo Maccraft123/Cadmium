@@ -9,7 +9,7 @@ FS_USERGROUPS="wheel,video,audio,input"
 
 # packages
 FS_PKGS_CD_BASE="vim parted f2fs-tools eudev-libudev-devel base-devel git curl wget"
-FS_PKGS_CD_UI_BASE="xorg-fonts elogind dbus-elogind mesa-dri"
+FS_PKGS_CD_UI_BASE="xorg-fonts elogind dbus-elogind mesa-dri alsa-ucm-conf"
 # bootloader
 FS_PKGS_CD_BOOTFW_UBOOT="u-boot-tools"
 FS_PKGS_CD_BOOTFW_DEPTHCHARGE="$FS_PKGS_CD_BOOTFW_UBOOT vboot-utils"

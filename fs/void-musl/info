@@ -5,6 +5,7 @@ FS_FANCYNAME="Void with Musl libc"
 FS_HAS_OOBE="false"
 FS_INST_PKG="/bin/xbps-install -y"
 FS_UPDATE="/bin/xbps-install -Syu"
+FS_USERGROUPS="wheel,video,audio,input"
 
 
 # packages

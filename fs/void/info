@@ -5,6 +5,7 @@ FS_FANCYNAME="Void"
 FS_HAS_OOBE="false"
 FS_INST_PKG="/bin/xbps-install -y"
 FS_UPDATE="/bin/xbps-install -Syu"
+FS_USERGROUPS="wheel,video,audio,input"
 
 # packages
 FS_PKGS_CD_BASE="vim parted f2fs-tools eudev-libudev-devel base-devel git curl wget"

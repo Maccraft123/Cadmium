@@ -1,6 +1,8 @@
 #!/bin/false
 # this is meant to run on a liveusb
 set -v
+set -x
+set -e
 
 . ~/info
 
@@ -26,6 +28,10 @@ if [ "$CHOSEN" != "none" ]; then
 			export INSTALLER='apt install -y'
 			export PKGS="$DEBS"
 			;;
+		arch)
+			export INSTALLER='pacman -Syu --noconfirm'
+			export PKGS="$PACM"
+			;;
 		void*)
 			export INSTALLER='xbps-install -y'
 			export PKGS="$XBPS"
@@ -44,7 +50,13 @@ if [ "$CHOSEN" != "none" ]; then
 			$CHRT systemctl enable phosh
 			;;
 		gnome)
-			$CHRT systemctl enable gdm3
+			if [ $ROOTFS = "arch" ]; then
+			  $CHRT systemctl enable gdm.service
+			  $CHRT systemctl start gdm.service
+			else
+			  $CHRT systemctl enable gdm3
+			fi
+
 			;;
 		kde)
 			$CHRT systemctl enable sddm

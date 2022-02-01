@@ -1,6 +1,13 @@
 #!/bin/bash
 . ~/info
 
+if [ $ROOTFS = "arch" ]; then
+  systemctl start NetworkManager.service
+  systemctl enable NetworkManager.service
+  # wait for service before scan
+  sleep 4
+fi
+
 # we need internet, TODO: make this run on voidlinux
 nmcli device wifi rescan
 sleep 4 # wait for it to show up
@@ -33,8 +40,13 @@ until passwd; do
 	echo "Enter root password:"
 done
 
-read -p "Enter username, no spaces or big letters: "
-useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
+if [ $ROOTFS = "arch" ]; then
+  read -p "Enter username, no spaces or big letters: "
+  useradd -G video,audio,render -s /bin/bash -m $REPLY
+else
+  read -p "Enter username, no spaces or big letters: "
+  useradd -G sudo,video,audio,render -s /bin/bash -m $REPLY
+fi
 
 echo "Enter user password:"
 until passwd $REPLY; do

@@ -1,0 +1,75 @@
+# start of install-to-emmc-middle
+
+set -x
+set -e
+
+export SYSTEMD=1
+export EUDEV=0
+
+# think we need to start the network to do this. Maybe not...
+systemctl start NetworkManager.service
+systemctl enable NetworkManager.service
+sleep 4
+
+nmcli device wifi rescan
+sleep 4 # wait for it to show up
+nmtui connect
+
+wget -N http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz
+bsdtar -xpf ArchLinuxARM-aarch64-latest.tar.gz -C /mnt
+cp --remove-destination /etc/resolv.conf /mnt/etc/resolv.conf
+
+# bind mounts to run pacman-key commands
+mount -o bind /dev /mnt/dev
+mount -t proc none /mnt/proc
+
+# start work on PACMAN!!! :D
+chroot /mnt /usr/bin/pacman-key --init
+chroot /mnt /usr/bin/pacman-key --populate archlinuxarm
+      
+# install packages needed to get wifi working and to be ready to compile stuff
+chroot /mnt /usr/bin/pacman -Syu --noconfirm f2fs-tools git base-devel networkmanager sudo vim cgpt parted
+
+
+# TODO: For reference: remove on completion
+
+
+# start of install-to-emmc-middle
+#
+#export SYSTEMD=1
+#export EUDEV=0
+#
+## Arch is annoying, like holy moly. I need to mess with the lib folder again
+## ALSO I need hax like frick
+#wget http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz
+#mkdir /mnt/mv-then-del
+#tar xfp ArchLinuxARM-aarch64-latest.tar.gz -C /mnt/mv-then-del
+#rm -r /mnt/lib
+#rm -r /mnt/mv-then-del/lib
+#cp -r /lib /mnt/lib
+#mv /mnt/mv-then-del/* /mnt/
+#rm -r /mnt/mv-then-del
+#
+## end of install-to-emmc-middle
+#
+## start of install-to-emmc-middle
+#
+#export SYSTEMD=1
+#export EUDEV=0
+#
+## debootstrap randomly just fails for no reason, but system turns out fine
+#debootstrap --arch=$ARCH_DEB $SUITE /mnt https://deb.debian.org/debian/ || true
+#
+## install packages needed to get wifi working and to be ready to compile stuff
+#chroot /mnt apt install -y f2fs-tools git build-essential network-manager locales sudo vim libudev-dev firmware-ath9k-htc console-setup
+#
+## this is last, because if user walks away during install they go back,
+## configure their system and have it ready immediately
+#chroot /mnt dpkg-reconfigure tzdata
+#chroot /mnt dpkg-reconfigure locales
+#chroot /mnt dpkg-reconfigure console-setup
+#
+## end of install-to-emmc-middle
+#
+#
+#

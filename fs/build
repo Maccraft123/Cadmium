@@ -2,6 +2,7 @@
 CADMIUMROOT=$(dirname $(dirname $(realpath $0)))
 ROOTPART=$1
 
+set -x
 set -e
 set -v
 
@@ -110,6 +111,23 @@ case "$ROOTFS" in
 		wget https://ci.ubports.com/job/xenial-mainline-edge-rootfs-$ARCH_DEB/lastSuccessfulBuild/artifact/out/ubuntu-touch-xenial-edge-$ARCH_DEB-rootfs.tar.gz
 		tar xfp ubuntu-touch-xenial-edge-$ARCH_DEB-rootfs.tar.gz -C $CADMIUMROOT/tmp/root
 	;;
+	arch)
+		echo "Installing Arch Linux"
+		# ARCH LINUX IS ONLY ON AARCH64!!! that's why it is hardcoded.
+		wget -N http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz
+		bsdtar -xpf ArchLinuxARM-aarch64-latest.tar.gz -C $CADMIUMROOT/tmp/root
+		cp --remove-destination /etc/resolv.conf root/etc/resolv.conf
+    	# bind mounts to run pacman-key commands
+		mount -o bind /dev $CADMIUMROOT/tmp/root/dev
+		mount -t proc none $CADMIUMROOT/tmp/root/proc
+
+    	# start work on PACMAN!!! :D
+		chroot root/ $qemu /usr/bin/bash /usr/bin/pacman-key --init
+		chroot root/ $qemu /usr/bin/bash /usr/bin/pacman-key --populate archlinuxarm
+        
+		# install packages needed to get wifi working and to be ready to compile stuff
+		chroot root/ $qemu /usr/bin/pacman -Syu --noconfirm f2fs-tools git base-devel networkmanager sudo vim cgpt parted
+	;;
 esac
 
 # remove root password, this is install medium so it's ok, not needed in ubports
@@ -147,7 +165,12 @@ git clone https://github.com/andersson/qrtr.git $CADMIUMROOT/tmp/root/CdFiles/qr
 git clone https://github.com/Maccraft123/rmtfs.git $CADMIUMROOT/tmp/root/CdFiles/rmtfs
 
 # copy over ucm files
-cp -r $CADMIUMROOT/fs/ucm $CADMIUMROOT/tmp/root/ucm
+mkdir -p $CADMIUMROOT/tmp/root/usr/share/alsa/ucm2/
+mkdir $CADMIUMROOT/tmp/root/ucm
+if ls $CADMIUMROOT/board/$TARGET/ucm; then
+	cp -r $CADMIUMROOT/board/$TARGET/ucm/* $CADMIUMROOT/tmp/root/usr/share/alsa/ucm2/
+	cp -r $CADMIUMROOT/board/$TARGET/ucm/* $CADMIUMROOT/tmp/root/ucm/
+fi
 
 # copy installation scripts if not ubports, double root is not a typo
 if [ ! "$ROOTFS" = "ubports" ]; then

@@ -1,0 +1,29 @@
+#!/bin/bash
+set -x
+set -e
+
+CADMIUMROOT="$(dirname $(dirname $(dirname $(realpath $0))))"
+DESTDIR="$1"
+
+. $CADMIUMROOT/config
+
+ROOTFS_TAR="http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz"
+if [ ! -f "$CADMIUMROOT/tmp/arch-$ARCH_ALARM.tar.gz" ]; then
+	rm $CADMIUMROOT/tmp/arch-$ARCH_ALARM.tar.gz || true
+	wget "$ROOTFS_TAR" -O $CADMIUMROOT/tmp/arch-$ARCH_ALARM.tar.gz
+fi
+tar xfp $CADMIUMROOT/tmp/arch-${ARCH_ALARM}.tar.gz -C $DESTDIR
+
+mount udev $DESTDIR/dev -t devtmpfs
+mount proc $DESTDIR/proc -t proc
+
+chroot $DESTDIR $qemu /usr/bin/pacman-key --init
+chroot $DESTDIR $qemu /usr/bin/pacman-key --populate archlinuxarm
+      
+chroot $DESTDIR $qemu /usr/bin/pacman -Syu --noconfirm f2fs-tools git base-devel networkmanager sudo vim cgpt parted
+
+chroot $DESTDIR $qemu systemctl start NetworkManager.service
+chroot $DESTDIR $qemu systemctl enable NetworkManager.service
+
+umount $DESTDIR/proc
+umount $DESTDIR/dev

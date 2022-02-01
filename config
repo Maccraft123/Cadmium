@@ -10,14 +10,14 @@ else
 fi
 
 # RootFS type
-# One of: debian, void, void-musl, ubuntu
-ROOTFS=debian
+# One of: debian, void, void-musl, ubuntu, arch
+ROOTFS=arch
 
 # FS type
 # f2fs, ext4
 FILESYSTEM=f2fs
 
-# Debian and debian-ish distro suite
+# Debian and debian-ish distro suite (Not for arch)
 # sid, testing, stable
 # impish, hirsute, focal
 SUITE=testing

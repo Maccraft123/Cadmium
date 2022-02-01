@@ -2,6 +2,7 @@
 CADMIUMROOT="$(dirname $(dirname $(realpath $0)))"
 DESTDIR="$1"
 
+set -x
 set -e
 
 source "$CADMIUMROOT/config"

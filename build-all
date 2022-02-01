@@ -5,6 +5,7 @@ source "$CADMIUMROOT/config"
 source "$CADMIUMROOT/board/$TARGET/boardinfo"
 source "$CADMIUMROOT/baseboard/$BASEBOARD/boardinfo"
 
+set -x
 set -e
 
 sleep 1 # let's give user time if they commit a typo
@@ -71,7 +72,21 @@ fi
 make -C "$CADMIUMROOT/tmp/linux-$ARCH" INSTALL_MOD_PATH="$CADMIUMROOT/tmp/root" modules_install
 
 # we don't umount it in fs/build
+<<<<<<< HEAD
 umount "$CADMIUMROOT/tmp/root"
+=======
+
+#TODO: for arch install need to kill gpg pids then unmount other mounts to also be able to unmount here
+if [ $ROOTFS = arch ]; then
+  echo "CADMIUMROOT=$CADMIUMROOT"
+  lsof $CADMIUMROOT/tmp/root | grep gpg | awk '{ print $2}' | xargs kill -9
+  sleep 1
+  umount $CADMIUMROOT/tmp/root/dev
+  umount $CADMIUMROOT/tmp/root/proc
+fi
+
+umount $CADMIUMROOT/tmp/root
+>>>>>>> legacy-fs
 
 # yes, this fails when device is pendrive or sth
 losetup -d "$DEVICE" 2>/dev/null || true

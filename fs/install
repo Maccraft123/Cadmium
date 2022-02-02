@@ -212,5 +212,7 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 	fi
 fi
 
-umount /mnt
+if [ $INSTMED != this ]; then
+	umount /mnt
+fi
 echo "Done!"

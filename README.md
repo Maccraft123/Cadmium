@@ -2,7 +2,7 @@
 
 Thanks @LoganMD for the logo
 
-# Cadmium, The state-of-the-art Linux distro for ARM Chromebooks
+# Cadmium, The state-of-the-art Linux distro for RISC laptops that I could get my hands on (atm only ARM Chromebooks)
 ### It also doesn't suck!
 
 ## Hardware support:

@@ -2,8 +2,7 @@
 CADMIUMROOT="$(dirname $(realpath $0))"
 
 source "$CADMIUMROOT/config"
-source "$CADMIUMROOT/board/$TARGET/boardinfo"
-source "$CADMIUMROOT/baseboard/$BASEBOARD/boardinfo"
+source "$CADMIUMROOT/flavor/$FLAV"
 
 set -x
 set -e

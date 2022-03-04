@@ -1,17 +1,17 @@
 #!/bin/false
 # TODO: fancy menu?
 
-# Target device
-# One of: bob, coachz, krane, kevin, minnie, speedy, lazor, 8101b
+# Cadmium flavor
+# One of: arm64-chromebook, arm32-chromebook
 if [ "$RELEASE" = "" ]; then
-	TARGET=krane
+	FLAV=arm64-chromebook
 else
-	TARGET=$RELEASE
+	FLAV=$RELEASE
 fi
 
 # RootFS type
 # One of: debian, void, void-musl, ubuntu, arch
-ROOTFS=arch
+ROOTFS=debian
 
 # FS type
 # f2fs, ext4
@@ -20,7 +20,7 @@ FILESYSTEM=f2fs
 # Debian and debian-ish distro suite (Not for arch)
 # sid, testing, stable
 # impish, hirsute, focal
-SUITE=testing
+SUITE=sid
 
 # Which kernel should be built. disables firmware
 # kernelorg: from kernel.org libre: from linux-libre.fsfla.org

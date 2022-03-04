@@ -1,0 +1,7 @@
+#!/bin/false
+export ARCH=arm64
+export ARCH_UNAME=aarch64
+export ARCH_DEB=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
+
+export BOOTFW=depthcharge

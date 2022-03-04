@@ -6,8 +6,7 @@ set -x
 set -e
 
 source "$CADMIUMROOT/config"
-source "$CADMIUMROOT/board/$TARGET/boardinfo"
-source "$CADMIUMROOT/baseboard/$BASEBOARD/boardinfo"
+source "$CADMIUMROOT/flavor/$FLAV"
 
 if [ "$(uname -m)" = "$ARCH_UNAME" ]; then
 	echo "Running natively, not using qemu"
@@ -56,6 +55,7 @@ echo "export ROOTFS=$ROOTFS" > "$DESTDIR/CdFiles/config"
 echo "export ARCH_DEB=$ARCH_DEB" >> "$DESTDIR/CdFiles/config"
 echo "export SUITE=$SUITE" >> "$DESTDIR/CdFiles/config"
 echo "export FILESYSTEM=$FILESYSTEM" >> "$DESTDIR/CdFiles/config"
+echo "export FLAV=$FLAV" >> "$DESTDIR/CdFiles/config"
 
 # install qcom binaries for lazor
 # TODO: trogdor units with lte modem probably wont work

@@ -9,8 +9,7 @@ echo "Packaging kernel for depthcharge machines"
 [ -z "$CADMIUMROOT" ] && exit 1
 
 source "$CADMIUMROOT/config"
-source "$CADMIUMROOT/board/$TARGET/boardinfo"
-source "$CADMIUMROOT/baseboard/$BASEBOARD/boardinfo"
+source "$CADMIUMROOT/flavor/$FLAV"
 
 # sanity check
 [ "$BOOTFW" != "depthcharge" ] && exit 1

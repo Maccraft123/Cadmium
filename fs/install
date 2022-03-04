@@ -220,6 +220,7 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 				sway)
 					# TODO: config
 					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_SWAY
+					echo 'tty | grep tty1 && exec sway' >> $DESTDIR/home/$USERNAME/.bashrc
 					;;
 				gnome)
 					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_GNOME

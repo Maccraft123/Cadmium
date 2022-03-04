@@ -166,9 +166,9 @@ if [ -f "$CADMIUMROOT/board/$BOARD/accel-matrix.hwdb" ]; then
 fi
 
 if [ "$BASEBOARD" = "trogdor" ]; then
-	chroot $DESTDIR make -C /CdFiles/qmic distclean
-	chroot $DESTDIR make -C /CdFiles/qrtr distclean
-	chroot $DESTDIR make -C /CdFiles/rmtfs distclean
+	chroot $DESTDIR make -C /CdFiles/qmic clean
+	chroot $DESTDIR make -C /CdFiles/qrtr clean
+	chroot $DESTDIR make -C /CdFiles/rmtfs clean
 	chroot $DESTDIR make -C /CdFiles/qmic prefix=/usr install
 	chroot $DESTDIR make -C /CdFiles/qrtr prefix=/usr install
 	chroot $DESTDIR make -C /CdFiles/rmtfs prefix=/usr install

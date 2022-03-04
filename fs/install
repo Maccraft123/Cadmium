@@ -220,6 +220,49 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 				sway)
 					# TODO: config
 					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_SWAY
+
+					MODKEY="invalid"
+					until [ "$MODKEY" != "invalid" ]; do
+						echo "Options for sway Mod key:"
+						echo "1: Search key(default)"
+						echo "2: Left Alt key"
+						read -p '? ' MODKEY
+						if ! echo "1 2" | grep -q "$MODKEY"; then
+							MODKEY=invalid
+						fi
+					done
+					case $MODKEY in
+						1) MODKEY=Mod4 ;;
+						2) MODKEY=Mod1 ;;
+					esac
+
+
+					# add sway config shim to cover up hardware differences between cadmium devices and whatever sway thinks is default
+					echo "input type:touch map_to_output $WLR_DISP" > $DESTDIR/etc/sway/cadmium-shim.conf
+					echo "input type:tablet_tool map_to_output $WLR_DISP" >> $DESTDIR/etc/sway/cadmium-shim.conf
+					echo "input type:touchpad click_method clickfinger" >> $DESTDIR/etc/sway/cadmium-shim.conf
+					echo "output $WLR_DISP transform $DISP_ROTATION" >> $DESTDIR/etc/sway/cadmium-shim.conf
+
+					# and also keybinds
+					echo 'bindsym '$MODKEY'+F4 exec sh -c grim -g "$(slurp)" - | wl-copy' >> $DESTDIR/etc/sway/cadmium-shim.conf
+					echo "bindsym $MODKEY+F6 exec brightnessctl s 5%-" >> $DESTDIR/etc/sway/cadmium-shim.conf
+					echo "bindsym $MODKEY+F7 exec brightnessctl s 5%+" >> $DESTDIR/etc/sway/cadmium-shim.conf
+
+					echo "bindsym $MODKEY+F8 exec pactl set-sink-mute @DEFAULT_SINK@ toggle" >> $DESTDIR/etc/sway/cadmium-shim.conf
+					echo "bindsym $MODKEY+F9 exec pactl set-sink-volume @DEFAULT_SINK@ -5%" >> $DESTDIR/etc/sway/cadmium-shim.conf
+					echo "bindsym $MODKEY+F10 exec pactl set-sink-volume @DEFAULT_SINK@ +5%" >> $DESTDIR/etc/sway/cadmium-shim.conf
+
+					# enable cadmium shim
+					(echo "include /etc/sway/cadmium-shim.conf" && cat $DESTDIR/etc/sway/config) > /tmp/sway-newconf.conf
+					mv /tmp/sway-newconf.conf $DESTDIR/etc/sway/config
+
+					# now you may ask me, "how does this work?" and the answer is: chuj wie
+					sed -i'' 's/^\s*status_command.*$/status_command/g' $DESTDIR/etc/sway/config
+					sed -i'' 's/^status_command/status_command while echo B: $(cat PLACEHOLDER_BAT\/capacity)\\%, $(date --date="@$(cat PLACEHOLDER_BAT\/time_to_empty_avg)" +"%H:%m") \\| T: $(date +"%d-%m-%Y  %k:%M:%S\"); do sleep 1; done/g' $DESTDIR/etc/sway/config
+					sed -i'' "s#PLACEHOLDER_BAT#$BAT#g" $DESTDIR/etc/sway/config
+
+					sed -i'' "s/Mod4/$MODKEY/g" $DESTDIR/etc/sway/config
+
 					echo 'tty | grep tty1 && exec sway' >> $DESTDIR/home/$USERNAME/.bashrc
 					;;
 				gnome)

@@ -5,9 +5,9 @@ dmesg --console-off # make kernel shut up
 echo "Welcome to Cadmium installer"
 echo "Choose your fate:"
 echo "1: Installation to internal memory"
-echo "2: Installation to internal memory, with dual-booting ChromeOS"
-echo "3: Installation to this medium"
-echo "4: Drop to shell"
+#echo "2: Installation to internal memory, with dual-booting ChromeOS"
+echo "2: Installation to this medium"
+echo "3: Drop to shell"
 
 opt=inv
 until [ "$opt" != "inv" ]; do
@@ -16,9 +16,9 @@ done
 
 case $opt in
 	1) INSTMED="emmc" ;; # install medium
-	2) INSTMED="oxide" ;;
-	3) INSTMED="this" ;;
-	4) exit 0 ;;
+#	2) INSTMED="oxide" ;;
+	2) INSTMED="this" ;;
+	3) exit 0 ;;
 esac
 
 CADMIUMROOT="/CdFiles"

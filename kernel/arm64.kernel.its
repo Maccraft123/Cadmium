@@ -181,7 +181,7 @@
 			hash@1{
 				algo = "sha1";
 			};
-        };
+		};
 		fdt@18{
 			description = "mt8183-kukui-kodama-sku272.dtb";
 			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama-sku272.dtb");
@@ -191,7 +191,7 @@
 			hash@1{
 				algo = "sha1";
 			};
-        };
+		};
 		fdt@19{
 			description = "mt8183-kukui-kodama-sku288.dtb";
 			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama-sku288.dtb");
@@ -201,7 +201,7 @@
 			hash@1{
 				algo = "sha1";
 			};
-        };
+		};
 		fdt@20{
 			description = "mt8183-kukui-kodama-sku32.dtb";
 			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama-sku32.dtb");
@@ -277,19 +277,19 @@
 		conf@16{
 			kernel = "kernel@1";
 			fdt = "fdt@16";
-        };
+		};
 		conf@17{
 			kernel = "kernel@1";
 			fdt = "fdt@17";
-        };
+		};
 		conf@18{
 			kernel = "kernel@1";
 			fdt = "fdt@18";
-        };
+		};
 		conf@19{
 			kernel = "kernel@1";
 			fdt = "fdt@19";
-        };
+		};
 		conf@20{
 			kernel = "kernel@1";
 			fdt = "fdt@20";

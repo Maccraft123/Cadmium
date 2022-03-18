@@ -16,8 +16,8 @@ done
 
 case $opt in
 	1) INSTMED="emmc" ;; # install medium
-#	2) INSTMED="oxide" ;;
 	2) INSTMED="this" ;;
+#	3) INSTMED="oxide" ;;
 	3) exit 0 ;;
 esac
 

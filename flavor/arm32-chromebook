@@ -1,0 +1,7 @@
+#!/bin/false
+export ARCH=arm
+export ARCH_UNAME=armv7l
+export ARCH_DEB=armhf
+export CROSS_COMPILE=arm-linux-gnueabihf-
+
+export BOOTFW=depthcharge

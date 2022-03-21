@@ -1,8 +1,0 @@
---- linux-kukui/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts	2021-06-23 21:48:58.128171064 +0200
-+++ linux-kukui-gud/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts	2021-06-23 18:35:25.532087704 +0200
-@@ -20,4 +20,5 @@
- &panel {
-         status = "okay";
-         compatible = "boe,tv101wum-nl6";
-+	rotation = <270>;
- };

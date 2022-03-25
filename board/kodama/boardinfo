@@ -1,0 +1,12 @@
+#!/bin/false
+
+# explanation is in HACKING.md
+# arch missing? go to baseboard/$BASEBOARD/boardinfo
+
+export BASEBOARD=kukui
+export BOARD=kodama
+export TYPE=convertible-tablet
+
+export WLR_DISP=DSI-1
+
+export DISP_ROTATION=270

@@ -269,7 +269,7 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_KDE
 					;;
 			esac
-			cp -r $CADMIUMROOT/fs/ucm/* $DESTDIR/usr/share/alsa/ucm2/
+			cp -r $CADMIUMROOT/fs/ucm/* $DESTDIR/usr/share/alsa/ucm2/conf.d/
 		fi
 	else
 		echo "Looks like, $FS_FANCYNAME does not support user environments"

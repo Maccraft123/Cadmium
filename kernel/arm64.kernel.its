@@ -212,6 +212,16 @@
 				algo = "sha1";
 			};
 		};
+		fdt@21{
+			description = "mt8173-elm-hana.dtb";
+			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8173-elm-hana.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
 	};
 	configurations {
 		conf@1{
@@ -293,6 +303,10 @@
 		conf@20{
 			kernel = "kernel@1";
 			fdt = "fdt@20";
+		};
+		conf@21{
+			kernel = "kernel@1";
+			fdt = "fdt@21";
 		};
 	};
 };

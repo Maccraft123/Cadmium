@@ -1,0 +1,5 @@
+#!/bin/false
+
+# explanation is in HACKING.md
+export EMMC_OFFSET=0
+export SOC=mt8173

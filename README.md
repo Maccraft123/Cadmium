@@ -7,27 +7,27 @@ Thanks @LoganMD for the logo
 
 ## Hardware support:
 ### Note: (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
-| Hardware support matrix      	| Duet		 	| Kevin and Bob	 	| Asus C100PA and C201PA	| Acer Spin 513		| Duet 5		| HP X2 (2021)		|
-|-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|-----------------------|-----------------------|
-| Internal Display		| Y		   	| Y		 	| Y				| Y			| Y			| Y			|
-| External Display		| N			| Y(FW)			| Y				| N			| ?			| N			|
-| Display autorotation    	| Y		    	| Y			| N				| N			| Y			| Y			|
-| Hardware video decoding	| N			| P			| P				| Y(FW)			| ?			| ?			|
-| Touchscreen	    	  	| Y		    	| Y			| Y				| Y			| Y			| Y			|
-| Pen Input			| Y			| Y			| 				| Y			| ?			| Y			|
-| WiFi		     	 	| Y(FW)			| Y(FW)	   		| Y(FW)				| Y(FW)			| Y(FW)			| Y (FW)		|
-| 3D Acceleration	  	| Y		    	| Y			| Y				| Y(FW)			| ?			| Y (FW)		|
-| GPU reclocking		| Y			| Y			| ?				| Y			| ?			| Y			|
-| Audio		     		| Y			| Y			| Y				| P(only usb + bt)	| Y			| P(only usb + bt)	|
-| Bluetooth		 	| Y		    	| ?			| N				| Y			| Y			| Y			|
-| Front Camera			| N			| Y			| Y				| Y			| ?			| N			|
-| Back Camera		    	| N		    	|		 	| 				|			| ?			| N			|
-| USB				| Y		    	| Y			| Y				| Y			| Y			| Y			|
-| USB Gadget			| ?		    	| ?			| N				| 			| ?			| ?			|
-| Suspending and resuming 	| Y		    	| Y			| Y				| Y			| ?			| N			|
-| eMMC installation		| Y		    	| Y			| Y				| Y			| Y			| ?			|
-| KVM Virtualtization		| N			| N			| N				| N			| ?			| Y			|
-| Anbox				| P			| N			|				| N			| ?			| ?			|
+| Hardware support matrix      	| Duet		 	| Kevin and Bob	 	| Asus C100PA and C201PA	| Acer Spin 513		| Duet 5		| HP X2 (2021)		|Lenovo C or S 330			|
+|-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|-----------------------|-----------------------|-----------------------			|
+| Internal Display		| Y		   	| Y		 	| Y				| Y			| Y			| Y			|Y			| 
+| External Display		| N			| Y(FW)			| Y				| N			| ?			| N			|N			| 
+| Display autorotation    	| Y		    	| Y			| N				| N			| Y			| Y			|Y			| 
+| Hardware video decoding	| N			| P			| P				| Y(FW)			| ?			| ?			|?			| 
+| Touchscreen	    	  	| Y		    	| Y			| Y				| Y			| Y			| Y			|Y			| 
+| Pen Input			| Y			| Y			| 				| Y			| ?			| Y			|?			| 
+| WiFi		     	 	| Y(FW)			| Y(FW)	   		| Y(FW)				| Y(FW)			| Y(FW)			| Y (FW)		|Y(FW)			| 
+| 3D Acceleration	  	| Y		    	| Y			| Y				| Y(FW)			| ?			| Y (FW)		|?			| 
+| GPU reclocking		| Y			| Y			| ?				| Y			| ?			| Y			|?			|
+| Audio		     		| Y			| Y			| Y				| P(only usb + bt)	| Y			| P(only usb + bt)	|Y			|
+| Bluetooth		 	| Y		    	| ?			| N				| Y			| Y			| Y			|N			| 
+| Front Camera			| N			| Y			| Y				| Y			| ?			| N			|Y			| 
+| Back Camera		    	| N		    	|		 	| 				|			| ?			| N			|			| 
+| USB				| Y		    	| Y			| Y				| Y			| Y			| Y			|Y			|
+| USB Gadget			| ?		    	| ?			| N				| 			| ?			| ?			|Y			| 
+| Suspending and resuming 	| Y		    	| Y			| Y				| Y			| ?			| N			|Y			| 
+| eMMC installation		| Y		    	| Y			| Y				| Y			| Y			| ?			|Y			| 
+| KVM Virtualtization		| N			| N			| N				| N			| ?			| Y			|?			| 
+| Anbox				| P			| N			|				| N			| ?			| ?			|?			| 
 
 ## Official IRC channel is #cadmium on Libera.chat
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV

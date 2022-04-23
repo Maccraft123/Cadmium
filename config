@@ -26,5 +26,8 @@ SUITE=sid
 # kernelorg: from kernel.org libre: from linux-libre.fsfla.org
 KERNEL=kernelorg
 
+# How many threads should be used for building kernel
+THREADS="$(nproc)"
+
 # Build Cadmium inside tmpfs?
 IN_RAM=false

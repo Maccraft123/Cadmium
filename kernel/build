@@ -45,8 +45,8 @@ fi
 
 #make nconfig # if you want to customize config just uncomment this
 
-echo Bulding $KERNEL kernel for $ARCH in $(pwd) with $(nproc) threads using $CROSS_COMPILE
-time make -j$(nproc)
+echo "Bulding $KERNEL kernel for $ARCH in $(pwd) with $THREADS threads using $CROSS_COMPILE"
+time make -j"$THREADS"
 
 # FIXME: broken on loongson2f
 #make tarxz-pkg

@@ -8,7 +8,7 @@ FS_UPDATE="pacman -Syu"
 FS_USERGROUPS="wheel,video,audio,input"
 
 # packages
-FS_PKGS_CD_BASE="f2fs-tools git base-devel networkmanager sudo vim cgpt parted wget"
+FS_PKGS_CD_BASE="f2fs-tools git base-devel networkmanager sudo vim cgpt parted wget arch-install-scripts"
 FS_PKGS_CD_UI_BASE=""
 # bootloader
 FS_PKGS_CD_BOOTFW_UBOOT="uboot-tools"
@@ -19,4 +19,4 @@ FS_SUPPORTED_UIS="kde gnome sway"
 FS_PKGS_CD_UI_GNOME="gnome"
 FS_PKGS_CD_UI_KDE="plasma"
 #FS_PKGS_CD_UI_PHOSH="xfce4-terminal phosh phosh-tablet xwayland"
-FS_PKGS_CD_UI_SWAY="sway i3status dmenu xorg-server-xwayland grim slurp brightnessctl"
+FS_PKGS_CD_UI_SWAY="sway i3status dmenu xorg-server-xwayland grim slurp brightnessctl foot"

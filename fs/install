@@ -145,6 +145,9 @@ if [ $INSTMED != this ]; then
 	mount $ROOTPART /mnt
 	DESTDIR=/mnt
 
+	if [ "$ROOTFS" = "arch" ]; then
+		export chroot="arch-chroot";
+	fi
 	$CADMIUMROOT/fs/$ROOTFS/build $DESTDIR
 
 	cp -r /CdFiles $DESTDIR/CdFiles
@@ -153,10 +156,6 @@ if [ $INSTMED != this ]; then
 	cp -r /lib/firmware/* $DESTDIR/lib/firmware/
 	mkdir -p $DESTDIR/lib/modules
 	cp -r /lib/modules/$(uname -r) $DESTDIR/lib/modules/$(uname -r)
-
-	if [ "$ROOTFS" = "arch" ]; then
-		export chroot="arch-chroot";
-	fi
 fi
 
 if [ -f "$CADMIUMROOT/board/$BOARD/local-overrides.quirks" ]; then

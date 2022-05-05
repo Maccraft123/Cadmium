@@ -3,7 +3,7 @@
 # basic info
 FS_FANCYNAME="Arch Linux ARM"
 FS_HAS_OOBE="false"
-FS_INST_PKG="pacman -Syu"
+FS_INST_PKG="pacman -Syu --noconfirm"
 FS_UPDATE="pacman -Syu"
 FS_USERGROUPS="wheel,video,audio,input"
 

@@ -104,6 +104,8 @@ if [ "$BOOTFW" = "unknown" ]; then
 	exit 1
 fi
 
+export chroot="chroot"
+
 DESTDIR=/
 if [ $INSTMED != this ]; then
 	# setup partitions
@@ -152,6 +154,9 @@ if [ $INSTMED != this ]; then
 	mkdir -p $DESTDIR/lib/modules
 	cp -r /lib/modules/$(uname -r) $DESTDIR/lib/modules/$(uname -r)
 
+	if [ "$ROOTFS" = "arch" ]; then
+		export chroot="arch-chroot";
+	fi
 fi
 
 if [ -f "$CADMIUMROOT/board/$BOARD/local-overrides.quirks" ]; then
@@ -162,29 +167,29 @@ fi
 if [ -f "$CADMIUMROOT/board/$BOARD/accel-matrix.hwdb" ]; then
 	mkdir -p $DESTDIR/etc/udev/hwdb.d
 	cp $CADMIUMROOT/board/$BOARD/accel-matrix.hwdb $DESTDIR/etc/udev/hwdb.d
-	chroot $DESTDIR udevadm hwdb -u
+	$chroot $DESTDIR udevadm hwdb -u
 fi
 
 if [ "$BASEBOARD" = "trogdor" ]; then
 	make -C /CdFiles/qmic prefix=$DESTDIR/usr install
 	make -C /CdFiles/qrtr prefix=$DESTDIR/usr install
 	make -C /CdFiles/rmtfs prefix=$DESTDIR/usr install
-	chroot $DESTDIR systemctl enable rmtfs
+	$chroot $DESTDIR systemctl enable rmtfs
 fi
 
-chroot $DESTDIR $FS_INST_PKG $BOOTFW_PKGS
+$chroot $DESTDIR $FS_INST_PKG $BOOTFW_PKGS
 
 if [ "$FS_HAS_OOBE" = "false" ]; then
 	echo "Enter root password:"
-	until chroot $DESTDIR passwd root; do
+	until $chroot $DESTDIR passwd root; do
 		echo "Enter root password:"
 	done
 
 	read -p "Enter username, no spaces or big letters: "
-	chroot $DESTDIR useradd -G "$FS_USERGROUPS" -s /bin/bash -m $REPLY
+	$chroot $DESTDIR useradd -G "$FS_USERGROUPS" -s /bin/bash -m $REPLY
 
 	echo "Enter user password:"
-	until chroot $DESTDIR passwd $REPLY; do
+	until $chroot $DESTDIR passwd $REPLY; do
 		echo "Enter user password:"
 	done
 
@@ -202,21 +207,21 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 			fi
 		done
 
-		chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BASE
+		$chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BASE
 
 		if [ "$UI_CHOICE" != "none" ]; then
-			chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE
+			$chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_BASE
 			case $UI_CHOICE in
 				phosh)
-					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_PHOSH
+					$chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_PHOSH
 					# TODO: non-systemd rootfses
-					chroot $DESTDIR systemctl enable phosh
+					$chroot $DESTDIR systemctl enable phosh
 					echo "Input a digit-only user password:"
-					chroot $DESTDIR passwd $USERNAME
+					$chroot $DESTDIR passwd $USERNAME
 					;;
 				sway)
 					# TODO: config
-					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_SWAY
+					$chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_SWAY
 
 					MODKEY="invalid"
 					until [ "$MODKEY" != "invalid" ]; do
@@ -263,10 +268,10 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 					echo 'tty | grep tty1 && exec sway' >> $DESTDIR/home/$USERNAME/.bashrc
 					;;
 				gnome)
-					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_GNOME
+					$chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_GNOME
 					;;
 				kde)
-					chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_KDE
+					$chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_KDE
 					;;
 			esac
 			cp -r $CADMIUMROOT/fs/ucm/* $DESTDIR/usr/share/alsa/ucm2/conf.d/

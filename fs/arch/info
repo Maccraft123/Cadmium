@@ -8,7 +8,7 @@ FS_UPDATE="pacman -Syu"
 FS_USERGROUPS="wheel,video,audio,input"
 
 # packages
-FS_PKGS_CD_BASE=""
+FS_PKGS_CD_BASE="f2fs-tools git base-devel networkmanager sudo vim cgpt parted wget"
 FS_PKGS_CD_UI_BASE=""
 # bootloader
 FS_PKGS_CD_BOOTFW_UBOOT="uboot-tools"

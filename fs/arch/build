@@ -20,7 +20,7 @@ $chroot $DESTDIR $qemu /usr/bin/pacman-key --populate archlinuxarm
 rm $DESTDIR/etc/resolv.conf # resolv.conf -> /run/systemd/resolve/resolv.conf not working in $chroot
 echo "nameserver 1.1.1.1" > $DESTDIR/etc/resolv.conf # TODO: make it configurable or fetch from host?
 
-$chroot $DESTDIR $qemu /usr/bin/pacman -Syu --noconfirm f2fs-tools git base-devel networkmanager sudo vim cgpt parted
+$chroot $DESTDIR $qemu /usr/bin/pacman -Syu --noconfirm networkmanager
 
 $chroot $DESTDIR $qemu systemctl start NetworkManager.service
 $chroot $DESTDIR $qemu systemctl enable NetworkManager.service

@@ -7,7 +7,8 @@ DESTDIR="$1"
 
 . $CADMIUMROOT/config
 
-ROOTFS_TAR="http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz"
+mkdir -p "$CADMIUMROOT/tmp"
+ROOTFS_TAR="http://os.archlinuxarm.org/os/ArchLinuxARM-$ARCH_ALARM-latest.tar.gz"
 if [ ! -f "$CADMIUMROOT/tmp/arch-$ARCH_ALARM.tar.gz" ]; then
 	rm $CADMIUMROOT/tmp/arch-$ARCH_ALARM.tar.gz || true
 	wget "$ROOTFS_TAR" -O $CADMIUMROOT/tmp/arch-$ARCH_ALARM.tar.gz

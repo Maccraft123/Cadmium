@@ -1,0 +1,69 @@
+From 5883a83a910994d71a6707a3fadf47808d1c7d28 Mon Sep 17 00:00:00 2001
+From: Stephen Boyd <swboyd@chromium.org>
+Date: Thu, 2 Jun 2022 12:06:21 -0700
+Subject: [PATCH] arm64: dts: qcom: Remove duplicate sc7180-trogdor include on
+ lazor/homestar
+
+The sc7180-trogdor-{lazor,homestar}-*.dtsi files all include
+sc7180-trogdor.dtsi and sc7180-trogdor-lazor.dtsi or
+sc7180-trogdor-homestar.dtsi, so including it here in the
+sc7180-trogdor-{lazor,homestar}.dtsi file means we have a duplicate
+include after commit 19794489fa24 ("arm64: dts: qcom: Only include
+sc7180.dtsi in sc7180-trogdor.dtsi"). We include the sc7180-trogdor.dtsi
+file in a board like sc7180-trogdor-lazor-r1.dts so that we can include
+the display bridge snippet (e.g. sc7180-trogdor-ti-sn65dsi86.dtsi)
+instead of making ever increasing variants like
+sc7180-trogdor-lazor-ti-sn65dsi86.dtsi.
+
+Unfortunately, having the double include like this means the display
+bridge's i2c bus is left disabled instead of enabled by the bridge
+snippet. Any boards that use the i2c bus for the display bridge will
+have the bus disabled when we include sc7180-trogdor.dtsi the second
+time, which picks up the i2c status="disabled" line from sc7180.dtsi.
+This leads to the display not turning on and black screens at boot on
+lazor and homestar devices.
+
+Fix this by dropping the include and making a note that the
+sc7180-trogdor-{lazor,homestar}.dtsi file must be included after
+sc7180-trogdor.dtsi
+
+Reported-by: Douglas Anderson <dianders@chromium.org>
+Cc: "Joseph S. Barrera III" <joebar@chromium.org>
+Cc: Matthias Kaehlcke <mka@chromium.org>
+Fixes: 19794489fa24 ("arm64: dts: qcom: Only include sc7180.dtsi in sc7180-trogdor.dtsi")
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/20220602190621.1646679-1-swboyd@chromium.org
+---
+ arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi | 2 +-
+ arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
+index 9b3e3d13c165..d1e2df5164ea 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar.dtsi
+@@ -5,7 +5,7 @@
+  * Copyright 2021 Google LLC.
+  */
+ 
+-#include "sc7180-trogdor.dtsi"
++/* This file must be included after sc7180-trogdor.dtsi */
+ 
+ / {
+ 	/* BOARD-SPECIFIC TOP LEVEL NODES */
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+index fe2369c29aad..88f6a7d4d020 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+@@ -5,7 +5,7 @@
+  * Copyright 2020 Google LLC.
+  */
+ 
+-#include "sc7180-trogdor.dtsi"
++/* This file must be included after sc7180-trogdor.dtsi */
+ 
+ &ap_sar_sensor {
+ 	semtech,cs0-ground;
+-- 
+GitLab
+

@@ -179,6 +179,10 @@ fi
 $chroot $DESTDIR $FS_INST_PKG $BOOTFW_PKGS
 
 if [ "$FS_HAS_OOBE" = "false" ]; then
+	echo "Enter hostname, if no hostname is entered, your hostname will be set to a default:"
+	read hostname
+	chroot $DESTDIR hostnamectl hostname $hostname
+
 	echo "Enter root password:"
 	until $chroot $DESTDIR passwd root; do
 		echo "Enter root password:"

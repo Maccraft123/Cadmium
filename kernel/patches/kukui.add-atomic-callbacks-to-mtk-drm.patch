@@ -1,0 +1,47 @@
+From eeda05b5e92f51d9a09646ecb493f0a1e872a6ef Mon Sep 17 00:00:00 2001
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Date: Thu, 21 Jul 2022 19:27:27 +0200
+Subject: drm/mediatek: dsi: Add atomic {destroy,duplicate}_state, reset
+ callbacks
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add callbacks for atomic_destroy_state, atomic_duplicate_state and
+atomic_reset to restore functionality of the DSI driver: this solves
+vblank timeouts when another bridge is present in the chain.
+
+Tested bridge chain: DSI <=> ANX7625 => aux-bus panel
+
+Fixes: 7f6335c6a258 ("drm/mediatek: Modify dsi funcs to atomic operations")
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Tested-by: Chen-Yu Tsai <wenst@chromium.org>
+Reviewed-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+Tested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+Link: https://patchwork.kernel.org/project/linux-mediatek/patch/20220721172727.14624-1-angelogioacchino.delregno@collabora.com/
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+---
+ drivers/gpu/drm/mediatek/mtk_dsi.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+index 9cc406e1eee19..5b624e0f5b0a6 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dsi.c
++++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+@@ -808,10 +808,13 @@ static void mtk_dsi_bridge_atomic_post_disable(struct drm_bridge *bridge,
+ 
+ static const struct drm_bridge_funcs mtk_dsi_bridge_funcs = {
+ 	.attach = mtk_dsi_bridge_attach,
++	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
+ 	.atomic_disable = mtk_dsi_bridge_atomic_disable,
++	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
+ 	.atomic_enable = mtk_dsi_bridge_atomic_enable,
+ 	.atomic_pre_enable = mtk_dsi_bridge_atomic_pre_enable,
+ 	.atomic_post_disable = mtk_dsi_bridge_atomic_post_disable,
++	.atomic_reset = drm_atomic_helper_bridge_reset,
+ 	.mode_set = mtk_dsi_bridge_mode_set,
+ };
+ 
+-- 
+cgit 
+

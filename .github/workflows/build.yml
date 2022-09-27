@@ -43,6 +43,7 @@ jobs:
         with:
           name: arm64-debian
           path: arm64-debian.img
+
   build-debian-arm-32:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -74,6 +75,7 @@ jobs:
         with:
           name: arm32-debian
           path: arm32-debian.img
+
   build-arch-arm-64:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -106,6 +108,7 @@ jobs:
         with:
           name: arm64-arch
           path: arm64-arch.img
+
   build-arch-arm-32:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -137,4 +140,68 @@ jobs:
         uses: actions/upload-artifact@v2.2.2
         with:
           name: arm32-arch
-          path: arm32-arch.img             
+          path: arm32-arch.img        
+
+  build-void-arm-64:
+  # The type of runner that the job will run on
+   runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+   steps:
+     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+     - uses: actions/checkout@v2
+      # Runs a set of commands using the runners shell
+     - name: set up environment
+       run: |
+         cd $GITHUB_WORKSPACE
+         echo 'deb-src http://azure.archive.ubuntu.com/ubuntu/ focal main restricted' | sudo tee -a /etc/apt/sources.list
+         sudo apt update
+         sudo apt build-dep linux
+         sudo apt install arch-install-scripts gcc-arm-linux-gnueabihf libarchive-tools curl wget f2fs-tools cgpt vboot-utils libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf qemu-user-static gcc-aarch64-linux-gnu debootstrap binutils-aarch64-linux-gnu git u-boot-tools binfmt-support lz4 
+         
+     - name: remove existing config
+       run: |
+         rm config
+         
+     - name: build arm64-void
+       run: |
+         ls
+         cp cadmium-configs/config-arm64-void config
+         sudo ./build-all arm64-void.img 3G
+     - name: Upload artifacts
+       uses: actions/upload-artifact@v2.2.2
+       with:
+         name: arm64-void
+         path: arm64-void.img             
+
+  build-void-arm-32:
+  # The type of runner that the job will run on
+   runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+   steps:
+     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+     - uses: actions/checkout@v2
+      # Runs a set of commands using the runners shell
+     - name: set up environment
+       run: |
+         cd $GITHUB_WORKSPACE
+         echo 'deb-src http://azure.archive.ubuntu.com/ubuntu/ focal main restricted' | sudo tee -a /etc/apt/sources.list
+         sudo apt update
+         sudo apt build-dep linux
+         sudo apt install arch-install-scripts gcc-arm-linux-gnueabihf libarchive-tools curl wget f2fs-tools cgpt vboot-utils libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf qemu-user-static gcc-aarch64-linux-gnu debootstrap binutils-aarch64-linux-gnu git u-boot-tools binfmt-support lz4 
+         
+     - name: remove existing config
+       run: |
+         rm config
+         
+     - name: build arm32-void
+       run: |
+         ls
+         cp cadmium-configs/config-arm32-void config
+         sudo ./build-all arm32-void.img 3G
+     - name: Upload artifacts
+       uses: actions/upload-artifact@v2.2.2
+       with:
+         name: arm32-void
+         path: arm32-void.img   

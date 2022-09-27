@@ -19,7 +19,7 @@ cp /etc/resolv.conf $DESTDIR/etc/resolv.conf
 chroot $DESTDIR $qemu /bin/xbps-install -Syu xbps
 chroot $DESTDIR $qemu /bin/xbps-install -Su
 chroot $DESTDIR $qemu /bin/xbps-install -yu
-chroot $DESTDIR $qemu export XBPS_ARCH=${ARCH_UNAME}  /bin/xbps-install -y base-system dbus NetworkManager
+chroot $DESTDIR $qemu /bin/xbps-install -y base-system dbus NetworkManager
 chroot $DESTDIR $qemu /bin/xbps-remove -y base-voidstrap
 
 chroot $DESTDIR $qemu ln -s /etc/sv/dbus /etc/runit/runsvdir/default/

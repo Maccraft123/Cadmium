@@ -222,6 +222,16 @@
 				algo = "sha1";
 			};
 		};
+		fdt@22{
+			description = "sc7180-trogdor-homestar-r4.dtb";
+			data = /incbin/("arch/arm64/boot/dts/qcom/sc7180-trogdor-homestar-r4.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
 	};
 	configurations {
 		conf@1{
@@ -307,6 +317,10 @@
 		conf@21{
 			kernel = "kernel@1";
 			fdt = "fdt@21";
+		};
+		conf@22{
+			kernel = "kernel@1";
+			fdt = "fdt@22";
 		};
 	};
 };

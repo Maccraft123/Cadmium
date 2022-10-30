@@ -222,6 +222,46 @@
 				algo = "sha1";
 			};
 		};
+		fdt@22{
+			description = "mt8183-kukui-jacuzzi-kappa.dtb";
+			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kappa.dtb");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
+		fdt@23{
+			description = "mt8183-kukui-jacuzzi-fennel-sku1.dts";
+			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku1.dts");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
+		fdt@24{
+			description = "mt8183-kukui-jacuzzi-fennel-sku6.dts";
+			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku6.dts");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
+		fdt@25{
+			description = "mt8183-kukui-jacuzzi-fennel-sku7.dts";
+			data = /incbin/("arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku7.dts");
+			type = "flat_dt";
+			arch = "arm64";
+			compression = "none";
+			hash@1{
+				algo = "sha1";
+			};
+		};
 	};
 	configurations {
 		conf@1{
@@ -307,6 +347,18 @@
 		conf@21{
 			kernel = "kernel@1";
 			fdt = "fdt@21";
+		};
+		conf@22{
+			kernel = "kernel@1";
+			fdt = "fdt@22";
+		};
+		conf@23{
+			kernel = "kernel@1";
+			fdt = "fdt@23";
+		};
+		conf@24{
+			kernel = "kernel@1";
+			fdt = "fdt@24";
 		};
 	};
 };

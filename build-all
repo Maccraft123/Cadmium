@@ -46,8 +46,14 @@ case "$FILESYSTEM" in
 	;;
 esac
 
+function umount_root() {
+	echo "Cleaning up..."
+	umount "$CADMIUMROOT/tmp/root"
+}
+
 mkdir -p "$CADMIUMROOT/tmp/root"
 mount "$ROOTPART" "$CADMIUMROOT/tmp/root"
+trap umount_root EXIT
 
 # write filesystem
 "$CADMIUMROOT/fs/build" "$CADMIUMROOT/tmp/root"
@@ -66,12 +72,8 @@ if [ "$BOOTFW" = pmon ]; then
 	umount "$CADMIUMROOT/tmp/root/boot"
 fi
 
-
 # install modules
 make -C "$CADMIUMROOT/tmp/linux-$ARCH" INSTALL_MOD_PATH="$CADMIUMROOT/tmp/root" modules_install
-
-# we don't umount it in fs/build
-umount "$CADMIUMROOT/tmp/root"
 
 # yes, this fails when device is pendrive or sth
 losetup -d "$DEVICE" 2>/dev/null || true

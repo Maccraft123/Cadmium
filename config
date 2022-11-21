@@ -11,7 +11,7 @@ fi
 
 # RootFS type
 # One of: debian, void, void-musl, arch
-ROOTFS=arch
+ROOTFS=debian
 
 # FS type
 # f2fs, ext4
@@ -27,7 +27,7 @@ SUITE=sid
 KERNEL=kernelorg
 
 # How many threads should be used for building kernel
-THREADS="$(nproc)"
+THREADS="$(expr $(nproc) - 2)"
 
 # Build Cadmium inside tmpfs?
 IN_RAM=false

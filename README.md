@@ -44,14 +44,14 @@ Once you have this out, continue with instructions:
 - Enable developer mode
 - Plug pendrive into your laptop.
 - Boot from USB
-- After running ``` ./install-to-emmc ``` after connecting to internet, Cadmium will be installed on internal emmc memory
+- After running ``` ./install``` after connecting to internet, Cadmium will be installed on internal emmc memory
 - To update kernel on eMMC memory run: ```./install-kernel``` from pendrive
 
 ### OR
 - Enable developer mode(instructions are in the wiki for krane)
 - Download and uncompress ```cadmium-<device>.tar.gz``` to your pendrive
 - Boot from USB
-- Run ```./install-to-emmc```
+- Run ```./install```
 
 #### *Binary drivers are unsupported in Cadmium and never will be*
 

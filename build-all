@@ -80,5 +80,6 @@ losetup -d "$DEVICE" 2>/dev/null || true
 
 sync # just to be sure
 
-echo "Done!"
 [ "$IN_RAM" = true ] && echo "Don't forget to umount $CADMIUMROOT/tmp"
+
+echo "Done!"

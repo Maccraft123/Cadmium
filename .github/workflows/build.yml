@@ -1,25 +1,12 @@
-# This is a basic workflow to help you get started with Actions
 name: Build cadmium images
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-#  push:
-#    branches: [ master ]
-#  pull_request:
-#    branches: [ master ]
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+
   build-debian-arm-64:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      # Runs a set of commands using the runners shell
       - name: set up environment
         run: |
           cd $GITHUB_WORKSPACE
@@ -43,15 +30,11 @@ jobs:
         with:
           name: arm64-debian
           path: arm64-debian.img
-  build-debian-arm-32:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  build-debian-arm-32:
+    runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      # Runs a set of commands using the runners shell
       - name: set up environment
         run: |
           cd $GITHUB_WORKSPACE
@@ -74,16 +57,11 @@ jobs:
         with:
           name: arm32-debian
           path: arm32-debian.img
+
   build-arch-arm-64:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Runs a set of commands using the runners shell
       - name: set up environment
         run: |
           cd $GITHUB_WORKSPACE
@@ -106,16 +84,11 @@ jobs:
         with:
           name: arm64-arch
           path: arm64-arch.img
+
   build-arch-arm-32:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Runs a set of commands using the runners shell
       - name: set up environment
         run: |
           cd $GITHUB_WORKSPACE
@@ -137,16 +110,12 @@ jobs:
         uses: actions/upload-artifact@v2.2.2
         with:
           name: arm32-arch
-          path: arm32-arch.img             
-  build-void-arm-64:
-  # The type of runner that the job will run on
-   runs-on: ubuntu-latest
+          path: arm32-arch.img   
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  build-void-arm-64:
+   runs-on: ubuntu-latest
    steps:
-     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
      - uses: actions/checkout@v2
-      # Runs a set of commands using the runners shell
      - name: set up environment
        run: |
          cd $GITHUB_WORKSPACE
@@ -168,16 +137,12 @@ jobs:
        uses: actions/upload-artifact@v2.2.2
        with:
          name: arm64-void
-         path: arm64-void.img             
-  build-void-arm-32:
-  # The type of runner that the job will run on
-   runs-on: ubuntu-latest
+         path: arm64-void.img    
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  build-void-arm-32:
+   runs-on: ubuntu-latest
    steps:
-     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
      - uses: actions/checkout@v2
-      # Runs a set of commands using the runners shell
      - name: set up environment
        run: |
          cd $GITHUB_WORKSPACE
@@ -200,15 +165,11 @@ jobs:
        with:
          name: arm32-void
          path: arm32-void.img
-  build-void-musl-arm-64:
-  # The type of runner that the job will run on
-   runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  build-void-musl-arm-64:
+   runs-on: ubuntu-latest
    steps:
-     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
      - uses: actions/checkout@v2
-      # Runs a set of commands using the runners shell
      - name: set up environment
        run: |
          cd $GITHUB_WORKSPACE
@@ -230,16 +191,12 @@ jobs:
        uses: actions/upload-artifact@v2.2.2
        with:
          name: arm64-void-musl
-         path: arm64-void-musl.img             
-  build-void-musl-arm-32:
-  # The type of runner that the job will run on
-   runs-on: ubuntu-latest
+         path: arm64-void-musl.img    
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  build-void-musl-arm-32:
+   runs-on: ubuntu-latest
    steps:
-     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
      - uses: actions/checkout@v2
-      # Runs a set of commands using the runners shell
      - name: set up environment
        run: |
          cd $GITHUB_WORKSPACE

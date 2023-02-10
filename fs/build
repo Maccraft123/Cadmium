@@ -50,11 +50,6 @@ if [ "$KERNEL" != libre ]; then
 	cp -r "$CADMIUMROOT"/fs/firmware/* "$DESTDIR/lib/firmware/"
 fi
 
-if [ "$BASEBOARD" = "oak" ]; then
-	mkdir -p "$DESTDIR/etc/NetworkManager/conf.d/"
-	cp -r "$CADMIUMROOT"/baseboard/oak/default-wifipowersave-on.conf "$DESTDIR/etc/NetworkManager/conf.d/"
-fi
-
 mkdir "$DESTDIR/CdFiles"
 cp -r "$CADMIUMROOT/fs" "$DESTDIR/CdFiles/fs"
 cp -r "$CADMIUMROOT/board" "$DESTDIR/CdFiles/board"

@@ -46,9 +46,9 @@ fi
 
 if [ "$BASEBOARD" = "oak" ]; then
 	mkdir -p /etc/NetworkManager/conf.d/
-	cp -r "$CADMIUMROOT/fs/configs/oak/default-wifipowersave-on.config" /etc/NetworkManager/conf.d/
+	cp -r "$CADMIUMROOT/fs/configs/oak/default-wifipowersave-on.conf" /etc/NetworkManager/conf.d/
 	mkdir -p "$DESTDIR/etc/NetworkManager/conf.d/"
-	cp -r "$CADMIUMROOT/fs/configs/oak/default-wifipowersave-on.config" "$DESTDIR/etc/NetworkManager/conf.d/"
+	cp -r "$CADMIUMROOT/fs/configs/oak/default-wifipowersave-on.conf" "$DESTDIR/etc/NetworkManager/conf.d/"
 fi
 
 # don't even try installing if the device is about to die

@@ -1,0 +1,23 @@
+#!/bin/false
+
+# basic info
+FS_FANCYNAME="Gentoo Linux Arm"
+FS_HAS_OOBE="false"
+FS_INST_PKG="emerge -v"
+FS_SYNC_PKG="emaint sync -a"
+FS_UPDATE="emaint sync -a && emerge --update --newuse --deep @world"
+FS_USERGROUPS="wheel,video,audio,input,portage"
+
+# packages
+FS_PKGS_CD_BASE="sys-kernel/linux-firmware sys-fs/f2fs-tools dev-vcs/git net-misc/networkmanager app-admin/sudo app-editors/vim sys-block/parted net-misc/wget app-eselect/eselect-repository"
+FS_PKGS_CD_UI_BASE=""
+# bootloader
+FS_PKGS_CD_BOOTFW_UBOOT="dev-embedded/u-boot-tools"
+FS_PKGS_CD_BOOTFW_DEPTHCHARGE="$FS_PKGS_CD_BOOTFW_UBOOT sys-boot/vboot-utils"
+
+# ui
+FS_SUPPORTED_UIS=""
+# FS_PKGS_CD_UI_GNOME="gnome-base/gnome"
+# FS_PKGS_CD_UI_KDE="kde-plasma/plasma-meta x11-misc/sddm gui-libs/display-manager-init"
+# FS_PKGS_CD_UI_PHOSH="xfce4-terminal phosh phosh-tablet xwayland"
+# FS_PKGS_CD_UI_SWAY="gui-wm/sway x11-misc/i3status x11-misc/dmenu x11-base/xwayland gui-apps/grim gui-apps/slurp app-misc/brightnessctl gui-apps/foot"

@@ -27,7 +27,7 @@ SUITE=sid
 KERNEL=kernelorg
 
 # How many threads should be used for building kernel
-THREADS="$(nproc)"
+THREADS="$(expr $(nproc) - 2)"
 
 # Build Cadmium inside tmpfs?
 IN_RAM=false

@@ -44,6 +44,13 @@ fi
 . $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 #echo "$SOC $BOARD $BASEBOARD"
 
+if [ "$BASEBOARD" = "oak" ]; then
+	mkdir -p /etc/NetworkManager/conf.d/
+	cp "$CADMIUMROOT/baseboard/oak/default-wifipowersave-on.conf" /etc/NetworkManager/conf.d/
+	systemctl restart NetworkManager
+	sleep 5
+fi
+
 # don't even try installing if the device is about to die
 for x in /sys/class/power_supply/*; do
 	echo "Trying path: $x"
@@ -174,6 +181,11 @@ if [ "$BASEBOARD" = "trogdor" ]; then
 	make -C /CdFiles/qrtr prefix=$DESTDIR/usr install
 	make -C /CdFiles/rmtfs prefix=$DESTDIR/usr install
 	$chroot $DESTDIR systemctl enable rmtfs
+fi
+
+if [ "$BASEBOARD" = "oak" ]; then
+	mkdir -p "$DESTDIR/etc/NetworkManager/conf.d/"
+	cp "$CADMIUMROOT/baseboard/oak/default-wifipowersave-on.conf" $DESTDIR/etc/NetworkManager/conf.d/default-wifipowersave-on.conf
 fi
 
 $chroot $DESTDIR $FS_INST_PKG $BOOTFW_PKGS

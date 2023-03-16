@@ -11,7 +11,7 @@ fi
 
 # RootFS type
 # One of: debian, void, void-musl, arch
-ROOTFS=arch
+ROOTFS=debian
 
 # FS type
 # f2fs, ext4

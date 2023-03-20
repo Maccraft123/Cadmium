@@ -274,6 +274,9 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 					;;
 			esac
 			cp -r $CADMIUMROOT/fs/ucm/* $DESTDIR/usr/share/alsa/ucm2/conf.d/
+			cp -r $CADMIUMROOT/fs/ucm/* $DESTDIR/usr/share/alsa/ucm/
+			chmod 755 -R $DESTDIR/usr/share/alsa/ucm2/conf.d/
+			chmod 755 -R $DESTDIR/usr/share/alsa/ucm/
 		fi
 	else
 		echo "Looks like, $FS_FANCYNAME does not support user environments"

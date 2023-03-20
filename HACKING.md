@@ -36,4 +36,4 @@
 - YES ALL THIS ARCH STUFF IS A GIANT MESS
 - ```CROSS_COMPILE``` is self-explanatory
 - ```SOC``` - self explanatory
-- ```BOOTFW``` is boot firmware of device, chromebooks use ```depthcharge```
+- ```BOOTFW``` is boot firmware of device, chromebooks use ```depthcharge``` 

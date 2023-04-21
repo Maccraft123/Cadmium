@@ -14,17 +14,17 @@ Thanks @LoganMD for the logo
 | Display autorotation    	| Y		    	| Y			| N				| N			| Y			| Y			|Y			| 
 | Hardware video decoding	| N			| P			| P				| Y(FW)			| ?			| ?			|?			| 
 | Touchscreen	    	  	| Y		    	| Y			| Y				| Y			| Y			| Y			|Y			| 
-| Pen Input			| Y			| Y			| 				| Y			| ?			| Y			|?			| 
+| Pen Input			| Y			| Y			| 				| Y			| Y			| Y			|?			| 
 | WiFi		     	 	| Y(FW)			| Y(FW)	   		| Y(FW)				| Y(FW)			| Y(FW)			| Y (FW)		|Y(FW)			| 
 | 3D Acceleration	  	| Y		    	| Y			| Y				| Y(FW)			| ?			| Y (FW)		|?			| 
 | GPU reclocking		| Y			| Y			| ?				| Y			| ?			| Y			|?			|
 | Audio		     		| Y			| Y			| Y				| P(only usb + bt)	| Y			| P(only usb + bt)	|Y			|
 | Bluetooth		 	| Y		    	| ?			| N				| Y			| Y			| Y			|N			| 
-| Front Camera			| N			| Y			| Y				| Y			| ?			| N			|Y			| 
-| Back Camera		    	| N		    	|		 	| 				|			| ?			| N			|			| 
+| Front Camera			| N			| Y			| Y				| Y			| N			| N			|Y			| 
+| Back Camera		    	| N		    	|		 	| 				|			| N			| N			|			| 
 | USB				| Y		    	| Y			| Y				| Y			| Y			| Y			|Y			|
 | USB Gadget			| ?		    	| ?			| N				| 			| ?			| ?			|Y			| 
-| Suspending and resuming 	| Y		    	| Y			| Y				| Y			| ?			| N			|Y			| 
+| Suspending and resuming 	| Y		    	| Y			| Y				| Y			| Y			| N			|Y			| 
 | eMMC installation		| Y		    	| Y			| Y				| Y			| Y			| ?			|Y			| 
 | KVM Virtualtization		| N			| N			| N				| N			| ?			| Y			|?			| 
 | Anbox				| P			| N			|				| N			| ?			| ?			|?			| 

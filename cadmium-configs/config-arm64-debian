@@ -1,0 +1,33 @@
+#!/bin/false
+# TODO: fancy menu?
+
+# Cadmium flavor
+# One of: arm64-chromebook, arm32-chromebook
+if [ "$RELEASE" = "" ]; then
+	FLAV=arm64-chromebook
+else
+	FLAV=$RELEASE
+fi
+
+# RootFS type
+# One of: debian, void, void-musl, arch
+ROOTFS=debian
+
+# FS type
+# f2fs, ext4
+FILESYSTEM=ext4
+
+# Debian and debian-ish distro suite (Not for arch)
+# sid, testing, stable
+# impish, hirsute, focal
+SUITE=sid
+
+# Which kernel should be built. disables firmware
+# kernelorg: from kernel.org libre: from linux-libre.fsfla.org
+KERNEL=kernelorg
+
+# How many threads should be used for building kernel
+THREADS="$(nproc)"
+
+# Build Cadmium inside tmpfs?
+IN_RAM=false

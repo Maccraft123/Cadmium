@@ -38,3 +38,10 @@ sync
 
 partx -a $DEVICE >/dev/null 2>&1 || true # fails if something else added partitions
 sync
+
+# resolves issue with mmcblk devices. need to check after creating partitions
+if [ -e "${DEVICE}p1" ]; then
+	KERNPART=${DEVICE}p1
+	KERNPART_B=${DEVICE}p2
+	ROOTPART=${DEVICE}p3
+fi

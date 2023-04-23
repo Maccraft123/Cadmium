@@ -56,6 +56,16 @@ Once you have this out, continue with instructions:
 #### *Binary drivers are unsupported in Cadmium and never will be*
 
 ## Dependencies on build machine
+### Docker Method
+`Dockerfile` defines a build environment containing all the dependencies needed. The docker image can be build with `docker build . -t cadmium_build`. After this, it can be run as follows
+```
+user@hostname:~/Cadmium$ docker run --rm -it --privileged -v /dev:/dev -v $(pwd):/code cadmium bash
+root@3519cde987d5:/# update-binfmts --enable
+root@3519cde987d5:/# 
+```
+The docker container has to be run with `--privileged` and `-v /dev:/dev` as this is needed for mounting loopback devices and running debootstrap/chroot. Inside the docker shell, `update-binfmts --enable` has to be run once, after which the environment is ready for building Cadmium images.
+
+### Non-Docker Method
 - Recent Linux distribution
 - Binfmt when Debian rootfs is used
 - ```debootstrap``` when Debian rootfs is used

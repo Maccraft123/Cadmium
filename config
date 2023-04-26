@@ -10,7 +10,7 @@ else
 fi
 
 # RootFS type
-# One of: debian, void, void-musl, arch
+# One of: debian, void, void-musl, arch, gentoo
 ROOTFS=debian
 
 # FS type

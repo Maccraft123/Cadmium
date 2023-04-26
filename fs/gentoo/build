@@ -1,0 +1,46 @@
+#!/bin/bash
+set -x
+set -e
+
+CADMIUMROOT="$(dirname $(dirname $(dirname $(realpath $0))))"
+DESTDIR="$1"
+
+. $CADMIUMROOT/config
+
+THREADS="$(expr $(nproc) / 2)"
+
+GENTOOVER=$(sed 's|/[^/]*$||' <<< $(head -3 <<< $(curl --silent http://www.gtlib.gatech.edu/pub/gentoo/releases/$ARCH/autobuilds/latest-stage3-$ARCH_GENTOO-openrc.txt) | tail -1))
+
+mkdir -p "$CADMIUMROOT/tmp"
+ROOTFS_TAR="http://www.gtlib.gatech.edu/pub/gentoo/releases/$ARCH/autobuilds/$GENTOOVER/stage3-$ARCH_GENTOO-openrc-$GENTOOVER.tar.xz"
+if [ ! -f "$CADMIUMROOT/tmp/stage3-$ARCH_GENTOO-openrc-$GENTOOVER.tar.xz" ]; then
+	rm $CADMIUMROOT/tmp/stage3-$ARCH_GENTOO-openrc-$GENTOOVER.tar.xz || true
+	wget "$ROOTFS_TAR" -O $CADMIUMROOT/tmp/stage3-$ARCH_GENTOO-openrc-$GENTOOVER.tar.xz
+fi
+
+tar xpvf $CADMIUMROOT/tmp/stage3*.tar.xz --xattrs-include='*.*' --numeric-owner -C $DESTDIR
+
+cp --dereference /etc/resolv.conf $DESTDIR/etc/resolv.conf
+
+sudo mount --bind /proc $DESTDIR/proc
+sudo mount --rbind /sys $DESTDIR/sys
+sudo mount --make-rslave $DESTDIR/sys
+sudo mount --rbind /dev $DESTDIR/dev
+sudo mount --make-rslave $DESTDIR/dev
+sudo mount --bind /run $DESTDIR/run
+sudo mount --make-slave $DESTDIR/run
+
+$chroot $DESTDIR $qemu /usr/bin/emerge-webrsync
+$chroot $DESTDIR $qemu /usr/bin/emerge --sync
+
+echo 'FEATURES="-pid-sandbox candy parallel-install parallel-fetch"' >> $DESTDIR/etc/portage/make.conf
+echo 'ACCEPT_LICENSE="*"' >> $DESTDIR/etc/portage/make.conf
+echo "ACCEPT_KEYWORDS=\"~$ARCH"\" >> $DESTDIR/etc/portage/make.conf
+echo "MAKEOPTS=\"-j$THREADS"\"
+echo "EMERGE_DEFAULT_OPTS=\"--with-bdeps y --complete-graph y"\"
+echo 'USE="-gtk-doc -doc -consolekit -systemd elogind dbus pulseaudio opengl vulkan X"' >> $DESTDIR/etc/portage/make.conf
+
+$chroot $DESTDIR $qemu /usr/bin/emerge -uvDN @world
+
+$chroot $DESTDIR $qemu /usr/bin/emerge -v net-misc/networkmanager sys-kernel/linux-firmware
+$chroot $DESTDIR $qemu /sbin/rc-update add NetworkManager default

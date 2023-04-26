@@ -36,8 +36,8 @@ $chroot $DESTDIR $qemu /usr/bin/emerge --sync
 echo 'FEATURES="-pid-sandbox candy parallel-install parallel-fetch"' >> $DESTDIR/etc/portage/make.conf
 echo 'ACCEPT_LICENSE="*"' >> $DESTDIR/etc/portage/make.conf
 echo "ACCEPT_KEYWORDS=\"~$ARCH"\" >> $DESTDIR/etc/portage/make.conf
-echo "MAKEOPTS=\"-j$THREADS -l$THREADS"\"
-echo "EMERGE_DEFAULT_OPTS=\"--jobs=$THREADS --load-average=$THREADS"\"
+echo "MAKEOPTS=\"-j$THREADS"\"
+echo "EMERGE_DEFAULT_OPTS=\"--with-bdeps y --complete-graph y"\"
 echo 'USE="-gtk-doc -doc -consolekit -systemd elogind dbus pulseaudio opengl vulkan X"' >> $DESTDIR/etc/portage/make.conf
 
 $chroot $DESTDIR $qemu /usr/bin/emerge -uvDN @world

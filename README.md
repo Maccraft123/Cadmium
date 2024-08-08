@@ -2,8 +2,7 @@
 
 Thanks @LoganMD for the logo
 
-# Cadmium, The state-of-the-art Linux distro for RISC laptops that I could get my hands on (atm only ARM Chromebooks)
-### It also doesn't suck!
+# Cadmium, A Linux ~~distro~~ installer for some RISC laptops (ARM Chromebooks)
 
 ## Hardware support:
 ### Note: (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
@@ -29,7 +28,6 @@ Thanks @LoganMD for the logo
 | KVM Virtualtization		| N			| N			| N				| N			| ?			| Y			|?			| 
 | Anbox				| P			| N			|				| N			| ?			| ?			|?			| 
 
-## Official IRC channel is #cadmium on Libera.chat
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV
 
 ## Installation
@@ -55,7 +53,7 @@ Once you have this out, continue with instructions:
 
 #### *Binary drivers are unsupported in Cadmium and never will be*
 
-## Dependencies on build machine
+## Dependencies on build machine, Debian is recommended
 - Recent Linux distribution
 - Binfmt when Debian rootfs is used
 - ```debootstrap``` when Debian rootfs is used

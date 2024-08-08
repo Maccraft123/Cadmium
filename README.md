@@ -55,13 +55,12 @@ Once you have this out, continue with instructions:
 
 ## Dependencies on build machine, Debian is recommended
 - Recent Linux distribution
-- Binfmt when Debian rootfs is used
 - ```debootstrap``` when Debian rootfs is used
-- ```qemu-user-static``` when build machine can't run binaries for target machine
+- ```qemu-user-static``` when build machine can't run binaries for the target machine, with binfmt support
 - ```vboot-utils u-boot-tools``` (vbutil_kernel, cgpt and mkimage) to pack kernel into format understandable by depthcharge
 - ```gcc-aarch64-linux-gnu``` for compiling to ARM64 or ```gcc-arm-linux-gnueabihf``` for compiling to ARMv7
 - ```curl``` to download the kernel
-- ```bsdtar``` for writing the archive file (from the ```libarchive-tools``` package)
+- ```bsdtar``` for writing the archive file (from the ```libarchive-tools``` .deb package)
 - ```f2fs-tools``` for creating the filesystem used by Cadmium
 - ```parted``` to prepare gpt table to be modified by cgpt
 - Build dependencies for kernel compilation

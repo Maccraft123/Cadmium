@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -e
+
+FAIL=false
+
+function check_exe() {
+	if ! which $1 >/dev/null 2>&1; then
+		echo "$1 not found"
+		FAIL=true
+	fi
+}
+
+check_exe cgpt
+check_exe mkfs.ext4
+check_exe mkfs.f2fs
+check_exe make
+check_exe bsdtar
+check_exe debootstrap
+check_exe parted
+check_exe mkimage
+check_exe futility
+check_exe aarch64-linux-gnu-gcc
+
+if [ "$FAIL" = "true" ]; then
+	echo "Error: Some utilities were not found"
+	exit 1
+fi

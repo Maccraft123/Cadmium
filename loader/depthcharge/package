@@ -2,17 +2,24 @@
 CADMIUMROOT="$(dirname $(dirname $(dirname $(realpath $0))))"
 
 set -e
-set -v
+set -x
 
 echo "Packaging kernel for depthcharge machines"
 
 [ -z "$CADMIUMROOT" ] && exit 1
 
+VBUTIL_KERNEL=""
+if which vbutil_kernel >/dev/null 2>&1; then
+	VBUTIL_KERNEL="vbutil_kernel"
+elif which futility >/dev/null 2>&1; then
+	VBUTIL_KERNEL="futility vbutil_kernel"
+else
+	echo "vbutil_kernel not found"
+	exit 1
+fi
+
 source "$CADMIUMROOT/config"
 source "$CADMIUMROOT/flavor/$FLAV"
-
-# sanity check
-[ "$BOOTFW" != "depthcharge" ] && exit 1
 
 cd "$CADMIUMROOT/tmp/linux-$ARCH"
 
@@ -24,10 +31,10 @@ cp "$CADMIUMROOT/kernel/cmdline" cmdline
 cp "$CADMIUMROOT/kernel/cmdline.p2" cmdline.p2
 
 # make kernel partition
-# yes this is stolen from solidhal's prawnos, that's how open source works :D
+# yes this is stolen from solidhal's prawnos
 mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg || true # HACK, kernel.its needs fixing
 dd if=/dev/zero of=bootloader.bin bs=512 count=1
-vbutil_kernel --pack vmlinux.kpart \
+$VBUTIL_KERNEL --pack vmlinux.kpart \
 	--version 1 \
 	--vmlinuz vmlinux.uimg \
 	--arch arm \
@@ -38,7 +45,7 @@ vbutil_kernel --pack vmlinux.kpart \
 
 cp vmlinux.kpart "$CADMIUMROOT/tmp/"
 
-vbutil_kernel --pack vmlinux.kpart.p2 \
+$VBUTIL_KERNEL --pack vmlinux.kpart.p2 \
 	--version 1 \
 	--vmlinuz vmlinux.uimg \
 	--arch arm \
@@ -50,7 +57,7 @@ vbutil_kernel --pack vmlinux.kpart.p2 \
 cp vmlinux.kpart.p2 "$CADMIUMROOT/tmp/"
 
 cp "$CADMIUMROOT/kernel/cmdline.oxide" ./
-vbutil_kernel --pack oxide.kpart \
+$VBUTIL_KERNEL --pack oxide.kpart \
 	--version 1 \
 	--vmlinuz vmlinux.uimg \
 	--arch arm \

@@ -1,42 +1,31 @@
 #!/bin/bash
 CADMIUMROOT="$(dirname $(realpath $0))"
 
+unset CC
+unset CXX
+
+"$CADMIUMROOT/check"
+
 source "$CADMIUMROOT/config"
 source "$CADMIUMROOT/flavor/$FLAV"
 
-set -x
 set -e
-
-sleep 1 # let's give user time if they commit a typo
 
 # Usage:
 # build-all <device>
 # build-all <file> <size>
 
 [ -z "$1" ] && exit 1
-[ $IN_RAM = true -a -z "$2" ] && exit 2
-
-# This script is usually tested with a physical pendrive
-if [ -n "$2" ]; then
-	echo "Warning,"
-	echo "Running $0 like that is not recommended"
-	echo "Consider $0 /dev/sdX"
-	sleep 2
-fi
 
 # Just in case we got lingering mounts
 umount "$CADMIUMROOT/tmp" 2>/dev/null || true
 
-if [ "$IN_RAM" = true ]; then
-	mount -t tmpfs tmpfs "$CADMIUMROOT/tmp"
-fi
-
 # it deals with env vars, TODO: make it not
-source "$CADMIUMROOT/bootfw/$BOOTFW/prepare_parts"
+source "$CADMIUMROOT/loader/$LOADER/prepare_parts"
 
 "$CADMIUMROOT/kernel/build"
 
-# TODO: move to bootfw/prepare_parts
+# TODO: move to loader/prepare_parts
 case "$FILESYSTEM" in
 	f2fs)
 		mkfs.f2fs -f "$ROOTPART"
@@ -58,11 +47,14 @@ trap umount_root EXIT
 # write filesystem
 "$CADMIUMROOT/fs/build" "$CADMIUMROOT/tmp/root"
 
-"$CADMIUMROOT/bootfw/$BOOTFW/package" "$DEVICE" "$ROOTPART"
-# TODO: move to bootfw/$BOOTFW/install
-if [ "$BOOTFW" = depthcharge ]; then
+"$CADMIUMROOT/loader/$LOADER/package" "$DEVICE" "$ROOTPART"
+# TODO: move to loader/$LOADER/install
+if [ "$LOADER" = depthcharge ]; then
 	dd if="$CADMIUMROOT/tmp/linux-$ARCH/vmlinux.kpart" of="$KERNPART"
 	cp "$CADMIUMROOT/tmp/oxide.kpart" "$CADMIUMROOT/tmp/root/"
+else
+	echo "non-depthcharge machines are not supported"
+	exit 1
 fi
 
 # install modules
@@ -74,4 +66,3 @@ losetup -d "$DEVICE" 2>/dev/null || true
 sync # just to be sure
 
 echo "Done!"
-[ "$IN_RAM" = true ] && echo "Don't forget to umount $CADMIUMROOT/tmp"

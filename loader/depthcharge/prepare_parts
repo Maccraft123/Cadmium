@@ -2,27 +2,17 @@
 # we deal with env vars
 # so no /bin/bash
 
-
-
 if [ -n "$2" ]; then # if $2 is set, it means that user wants a file
 	echo "Making file $1 with size of $2"
-	IMG=$(realpath $1)
-	fallocate $IMG -l $2
-	DEVICE=$(losetup -f)
-	losetup $DEVICE $IMG
-
-	KERNPART=${DEVICE}p1
-	KERNPART_B=${DEVICE}p2
-	ROOTPART=${DEVICE}p3
+	IMG="$(realpath $1)"
+	fallocate "$IMG" -l "$2"
+	DEVICE="$(losetup -f)"
+	losetup "$DEVICE" "$IMG"
 else
-	DEVICE=$1
-	KERNPART=${DEVICE}1
-	KERNPART_B=${DEVICE}2
-	ROOTPART=${DEVICE}3
-	dd if=/dev/zero of=$DEVICE bs=1M count=64
+	DEVICE="$1"
 fi
 
-sync
+dd if=/dev/zero of=$DEVICE bs=1M count=64
 
 # make partition table
 parted --script $DEVICE mklabel gpt # cgpt dislikes if i don't do that, so do that
@@ -38,3 +28,11 @@ sync
 
 partx -a $DEVICE >/dev/null 2>&1 || true # fails if something else added partitions
 sync
+
+if [ -e ${DEVICE}p1 ]; then
+	P="p"
+fi
+
+KERNPART=${DEVICE}${P}1
+KERNPART_B=${DEVICE}${P}2
+ROOTPART=${DEVICE}${P}3

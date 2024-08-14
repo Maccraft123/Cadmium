@@ -5,4 +5,4 @@ export ARCH_DEB=arm64
 export ARCH_ALARM=aarch64
 export CROSS_COMPILE=aarch64-linux-gnu-
 
-export BOOTFW=depthcharge
+export LOADER=depthcharge

@@ -15,7 +15,7 @@ ROOTFS=debian
 
 # FS type
 # f2fs, ext4
-FILESYSTEM=f2fs
+FILESYSTEM=ext4
 
 # Debian and debian-ish distro suite (Not for arch)
 # sid, testing, stable
@@ -28,6 +28,3 @@ KERNEL=kernelorg
 
 # How many threads should be used for building kernel
 THREADS="$(expr $(nproc) - 2)"
-
-# Build Cadmium inside tmpfs?
-IN_RAM=false

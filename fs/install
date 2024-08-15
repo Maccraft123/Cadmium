@@ -5,7 +5,6 @@ dmesg --console-off # make kernel shut up
 echo "Welcome to Cadmium installer"
 echo "Choose your fate:"
 echo "1: Installation to internal memory"
-#echo "2: Installation to internal memory, with dual-booting ChromeOS"
 echo "2: Installation to this medium"
 echo "3: Drop to shell"
 
@@ -17,7 +16,6 @@ done
 case $opt in
 	1) INSTMED="emmc" ;; # install medium
 	2) INSTMED="this" ;;
-#	3) INSTMED="oxide" ;;
 	3) exit 0 ;;
 esac
 
@@ -110,8 +108,6 @@ DESTDIR=/
 if [ $INSTMED != this ]; then
 	# setup partitions
 	case $INSTMED in
-		oxide)
-			;;
 		emmc)
 			dd if=/dev/zero of=$MMCDEV bs=512k count=128 seek=$EMMC_OFFSET
 			parted --script $MMCDEV mklabel gpt >/dev/null 2>&1 || true # ???

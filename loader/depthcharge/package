@@ -55,14 +55,3 @@ $VBUTIL_KERNEL --pack vmlinux.kpart.p2 \
 	--bootloader bootloader.bin
 
 cp vmlinux.kpart.p2 "$CADMIUMROOT/tmp/"
-
-cp "$CADMIUMROOT/kernel/cmdline.oxide" ./
-$VBUTIL_KERNEL --pack oxide.kpart \
-	--version 1 \
-	--vmlinuz vmlinux.uimg \
-	--arch arm \
-	--keyblock /usr/share/vboot/devkeys/kernel.keyblock \
-	--signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
-	--config cmdline.oxide \
-	--bootloader bootloader.bin
-cp oxide.kpart "$CADMIUMROOT/tmp/"

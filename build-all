@@ -51,7 +51,6 @@ trap umount_root EXIT
 # TODO: move to loader/$LOADER/install
 if [ "$LOADER" = depthcharge ]; then
 	dd if="$CADMIUMROOT/tmp/linux-$ARCH/vmlinux.kpart" of="$KERNPART"
-	cp "$CADMIUMROOT/tmp/oxide.kpart" "$CADMIUMROOT/tmp/root/"
 else
 	echo "non-depthcharge machines are not supported"
 	exit 1

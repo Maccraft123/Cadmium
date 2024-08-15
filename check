@@ -20,7 +20,7 @@ check_exe debootstrap
 check_exe parted
 check_exe mkimage
 check_exe futility
-check_exe aarch64-linux-gnu-gcc
+check_exe clang
 
 if [ "$FAIL" = "true" ]; then
 	echo "Error: Some utilities were not found"

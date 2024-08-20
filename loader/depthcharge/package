@@ -23,7 +23,8 @@ source "$CADMIUMROOT/flavor/$FLAV"
 
 cd "$CADMIUMROOT/tmp/linux-$ARCH"
 
-[ "$ARCH" != arm ] && lz4 -z -f "arch/$ARCH/boot/Image" c_linux.lz4
+[ "$ARCH" != arm ] && lz4 -z --best -f "arch/$ARCH/boot/Image" c_linux.lz4
+#[ "$ARCH" != arm ] && lzma -z -e "arch/$ARCH/boot/Image" -c > c_linux.lzma
 
 # TODO: generate
 cp "$CADMIUMROOT/kernel/$ARCH.kernel.its" kernel.its
@@ -32,7 +33,7 @@ cp "$CADMIUMROOT/kernel/cmdline.p2" cmdline.p2
 
 # make kernel partition
 # yes this is stolen from solidhal's prawnos
-mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg || true # HACK, kernel.its needs fixing
+mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg
 dd if=/dev/zero of=bootloader.bin bs=512 count=1
 $VBUTIL_KERNEL --pack vmlinux.kpart \
 	--version 1 \

@@ -11,6 +11,8 @@ source "$CADMIUMROOT/flavor/$FLAV"
 
 set -e
 
+[ "$DEBUG" = "true" ] && set -x
+
 # Usage:
 # build-all <device>
 # build-all <file> <size>

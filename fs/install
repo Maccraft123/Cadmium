@@ -53,7 +53,7 @@ done
 
 if [ "$BAT" = "NOTFOUND" ]; then
 	. /CdFiles/info
-	echo "Debug info: K: $KERNEL R: $ROOTFS B: $BASEBOARD T: $BOARD"
+	echo "Debug info: R: $ROOTFS B: $BASEBOARD T: $BOARD"
 	echo "Uh oh, automatic battery detection failed"
 	echo "Make a photo of this screen and include it in issue on Cadmium Github page"
 fi

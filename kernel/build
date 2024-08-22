@@ -12,15 +12,11 @@ cd $CADMIUMROOT/tmp
 
 
 # check if kernel has been downloaded this week, if not download/update it
-if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$ARCH 2>/dev/null)" ]; then
+if [ "$(date +'%V%y')" != "$(cat kern-dl-date-$ARCH 2>/dev/null)" ]; then
 	echo "Downloading kernel for $ARCH"
 	rm -rf linux-$ARCH
 
-	if [ $KERNEL = libre ]; then
-		curl -L "https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/$(curl https://linux-libre.fsfla.org/pub/linux-libre/releases/LATEST-5.N/ | egrep -o 'linux-libre-....-gnu.tar.xz' | head -n1)" -o Linux-archive
-	else
-		curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
-	fi
+	curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
 	mkdir linux-$ARCH
 	bsdtar xf Linux-archive --strip-components=1 -C linux-$ARCH
 
@@ -31,19 +27,14 @@ if [ "$(date +'%V%y') $KERNEL" != "$(cat kern-dl-date-$ARCH 2>/dev/null)" ]; the
 		patch -p1 --forward < $x
 	done
 
-	echo "$(date +'%V%y') $KERNEL" > $CADMIUMROOT/tmp/kern-dl-date-$ARCH
+	echo "$(date +'%V%y')" > $CADMIUMROOT/tmp/kern-dl-date-$ARCH
 fi
 
 cd $CADMIUMROOT/tmp/linux-$ARCH
 
 [ -f .config ] || cp $CADMIUMROOT/kernel/config.$ARCH .config
 
-if [ $KERNEL = libre ]; then
-	# it looks better this way
-	sed -i'' 's/cadmium/-cadmium/' .config
-fi
+#make nconfig LLVM=1 # if you want to customize config just uncomment this
 
-#make nconfig # if you want to customize config just uncomment this
-
-echo "Bulding $KERNEL kernel for $ARCH in $(pwd) with $THREADS threads using $CROSS_COMPILE"
+echo "Bulding kernel for $ARCH in $(pwd) with $THREADS threads"
 time make -j"$THREADS" LLVM=1

@@ -44,10 +44,9 @@ fi
 source "$CADMIUMROOT/fs/$ROOTFS/info"
 $chroot "$DESTDIR" $FS_INST_PKG $FS_PKGS_CD_BASE
 
-if [ "$KERNEL" != libre ]; then
-	mkdir -p "$DESTDIR/lib/firmware"
-	cp -r "$CADMIUMROOT"/fs/firmware/* "$DESTDIR/lib/firmware/"
-fi
+# FIXME: some distros ship their own firmware
+mkdir -p "$DESTDIR/lib/firmware"
+cp -r "$CADMIUMROOT"/fs/firmware/* "$DESTDIR/lib/firmware/"
 
 mkdir "$DESTDIR/CdFiles"
 cp -r "$CADMIUMROOT/fs" "$DESTDIR/CdFiles/fs"

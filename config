@@ -22,4 +22,4 @@ FILESYSTEM=ext4
 SUITE=sid
 
 # How many threads should be used for building kernel
-THREADS="$(expr $(nproc) - 2)"
+THREADS=$(echo "if ($(nproc) > 2) $(nproc) - 2 else 1" | bc)

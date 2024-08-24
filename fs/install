@@ -66,18 +66,6 @@ if [ "$BATCAPACITY" -le 30 ]; then
 	exit 1
 fi
 
-if [ "$BASEBOARD" = "trogdor" ]; then
-	make -j$(nproc) -C /CdFiles/qmic install prefix=/usr
-	echo qmic >> /CdFiles/installed_progs
-	make -j$(nproc) -C /CdFiles/qrtr install prefix=/usr
-	echo qrtr >> /CdFiles/installed_progs
-	make -j$(nproc) -C /CdFiles/rmtfs install prefix=/usr
-	echo rmtfs >> /CdFiles/installed_progs
-
-	systemctl start rmtfs # TODO: make this work on voidlinux
-	sleep 10 # wait for ath10k_snoc to do its thing
-fi
-
 nmcli device wifi rescan
 sleep 4 # wait for wifi networks
 nmtui connect
@@ -163,13 +151,6 @@ if [ -f "$CADMIUMROOT/board/$BOARD/accel-matrix.hwdb" ]; then
 	mkdir -p $DESTDIR/etc/udev/hwdb.d
 	cp $CADMIUMROOT/board/$BOARD/accel-matrix.hwdb $DESTDIR/etc/udev/hwdb.d
 	$chroot $DESTDIR udevadm hwdb -u
-fi
-
-if [ "$BASEBOARD" = "trogdor" ]; then
-	make -C /CdFiles/qmic prefix=$DESTDIR/usr install
-	make -C /CdFiles/qrtr prefix=$DESTDIR/usr install
-	make -C /CdFiles/rmtfs prefix=$DESTDIR/usr install
-	$chroot $DESTDIR systemctl enable rmtfs
 fi
 
 $chroot $DESTDIR $FS_INST_PKG $BOOTFW_PKGS

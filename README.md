@@ -5,11 +5,12 @@ Thanks @LoganMD for the logo
 # Cadmium, A Linux ~~distro~~ installer for some RISC laptops (ARM Chromebooks)
 
 ## Hardware support:
-### Note: (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
+- (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
 - "Y" means "Is known to work as of last time it was tested"
 - "N" means "Is known to not work as of last time it was tested"
 - "?" means "Not tested/Unknown"
 - "P" means "Partial/Incomplete support, refer to notes"
+- "N/A" means "Missing hardware"
 
 | Feature      | RK3288 | MT8173 | MT8183 | SC7180 |
 | ------------ | ------ | ------ | ------ | ------ |
@@ -26,7 +27,7 @@ Thanks @LoganMD for the logo
 | Asus Chromebook C100PA   | veyron-minnie  | RK3288 | N/A       | ?                     | ?    | ?         | ?     |       |
 | Samsung Chromebook Plus  | gru-kevin      | RK3399 | ?         | ?                     | ?    | ?         | ?     |       |
 | Lenovo Chromebook S330   | elm-hana       | MT8173 | N/A       | ?                     | ?    | ?         | ?     |       |
-| Lenovo Chromebook Duet 3 | kukui-krane    | MT8183 | ?         | ?                     | ?    | ?         | ?     |       |
+| Lenovo Chromebook Duet   | kukui-krane    | MT8183 | ?         | ?                     | ?    | ?         | ?     |       |
 | Acer Chromebook Spin 513 | trogdor-lazor  | SC7180 | ?         | ?                     | ?    | ?         | ?     |       |
 
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV

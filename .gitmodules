@@ -1,0 +1,3 @@
+[submodule "fs/firmware"]
+	path = fs/firmware
+	url = https://github.com/CadmiumLinux/firmware.git

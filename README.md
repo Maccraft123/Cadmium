@@ -6,27 +6,28 @@ Thanks @LoganMD for the logo
 
 ## Hardware support:
 ### Note: (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
-| Hardware support matrix      	| Duet		 	| Kevin and Bob	 	| Asus C100PA and C201PA	| Acer Spin 513		| Duet 5		| HP X2 (2021)		|Lenovo C or S 330			|
-|-------------------------	|--------------------	|----------------	|-------------------------	|-----------------------|-----------------------|-----------------------|-----------------------			|
-| Internal Display		| Y		   	| Y		 	| Y				| Y			| Y			| Y			|Y			| 
-| External Display		| N			| Y(FW)			| Y				| N			| ?			| N			|N			| 
-| Display autorotation    	| Y		    	| Y			| N				| N			| Y			| Y			|Y			| 
-| Hardware video decoding	| N			| P			| P				| Y(FW)			| ?			| ?			|?			| 
-| Touchscreen	    	  	| Y		    	| Y			| Y				| Y			| Y			| Y			|Y			| 
-| Pen Input			| Y			| Y			| 				| Y			| ?			| Y			|?			| 
-| WiFi		     	 	| Y(FW)			| Y(FW)	   		| Y(FW)				| Y(FW)			| Y(FW)			| Y (FW)		|Y(FW)			| 
-| 3D Acceleration	  	| Y		    	| Y			| Y				| Y(FW)			| ?			| Y (FW)		|?			| 
-| GPU reclocking		| Y			| Y			| ?				| Y			| ?			| Y			|?			|
-| Audio		     		| Y			| Y			| Y				| P(only usb + bt)	| Y			| P(only usb + bt)	|Y			|
-| Bluetooth		 	| Y		    	| ?			| N				| Y			| Y			| Y			|N			| 
-| Front Camera			| N			| Y			| Y				| Y			| ?			| N			|Y			| 
-| Back Camera		    	| N		    	|		 	| 				|			| ?			| N			|			| 
-| USB				| Y		    	| Y			| Y				| Y			| Y			| Y			|Y			|
-| USB Gadget			| ?		    	| ?			| N				| 			| ?			| ?			|Y			| 
-| Suspending and resuming 	| Y		    	| Y			| Y				| Y			| ?			| N			|Y			| 
-| eMMC installation		| Y		    	| Y			| Y				| Y			| Y			| ?			|Y			| 
-| KVM Virtualtization		| N			| N			| N				| N			| ?			| Y			|?			| 
-| Anbox				| P			| N			|				| N			| ?			| ?			|?			| 
+- "Y" means "Is known to work as of last time it was tested"
+- "N" means "Is known to not work as of last time it was tested"
+- "?" means "Not tested/Unknown"
+- "P" means "Partial/Incomplete support, refer to notes"
+
+| Feature      | RK3288 | MT8173 | MT8183 | SC7180 |
+| ------------ | ------ | ------ | ------ | ------ |
+| Display      | Y      | Y      | Y      | Y      |
+| OpenGL       | Y      | N      | Y      | Y      |
+| Vulkan       | N      | N      | N      | Y      |
+| Video decode | ?      | ?      | ?      | ?      |
+| USB Host     | Y      | Y      | Y      | Y      |
+| USB Device   | N      | N      | N      | N      |
+| KVM          | Y      | Y      | Y      | Y      |
+
+| Commercial name          | Codename       |  SOC   | Pen input | Internal Installation | WiFi | Bluetooth | Audio | Notes |
+| ------------------------ | -------------- | ------ | --------- | --------------------- | ---- | --------- | ----- | ----- |
+| Asus Chromebook C100PA   | veyron-minnie  | RK3288 | N/A       | ?                     | ?    | ?         | ?     |       |
+| Samsung Chromebook Plus  | gru-kevin      | RK3399 | ?         | ?                     | ?    | ?         | ?     |       |
+| Lenovo Chromebook S330   | elm-hana       | MT8173 | N/A       | ?                     | ?    | ?         | ?     |       |
+| Lenovo Chromebook Duet 3 | kukui-krane    | MT8183 | ?         | ?                     | ?    | ?         | ?     |       |
+| Acer Chromebook Spin 513 | trogdor-lazor  | SC7180 | ?         | ?                     | ?    | ?         | ?     |       |
 
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV
 
@@ -55,12 +56,12 @@ Once you have this out, continue with instructions:
 
 ## Dependencies on build machine, Debian is recommended
 - Recent Linux distribution
+- A working LLVM toolchain
+- Build dependencies for kernel compilation
 - ```debootstrap``` when Debian rootfs is used
 - ```qemu-user-static``` when build machine can't run binaries for the target machine, with binfmt support
-- ```vboot-utils u-boot-tools``` (vbutil_kernel, cgpt and mkimage) to pack kernel into format understandable by depthcharge
-- ```gcc-aarch64-linux-gnu``` for compiling to ARM64 or ```gcc-arm-linux-gnueabihf``` for compiling to ARMv7
+- For Chromebooks machines: ```vboot-utils u-boot-tools``` (vbutil_kernel or futility, cgpt and mkimage)
 - ```curl``` to download the kernel
 - ```bsdtar``` for writing the archive file (from the ```libarchive-tools``` .deb package)
 - ```f2fs-tools``` for creating the filesystem used by Cadmium
 - ```parted``` to prepare gpt table to be modified by cgpt
-- Build dependencies for kernel compilation

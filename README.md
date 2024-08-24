@@ -15,7 +15,7 @@ Thanks @LoganMD for the logo
 | Feature      | RK3288 | MT8173 | MT8183 | SC7180 |
 | ------------ | ------ | ------ | ------ | ------ |
 | Display      | Y      | Y      | Y      | Y      |
-| OpenGL       | Y      | N      | Y      | Y      |
+| OpenGL       | Y      | N      | 3.1    | Y      |
 | Vulkan       | N      | N      | N      | Y      |
 | Video decode | ?      | ?      | ?      | ?      |
 | USB Host     | Y      | Y      | Y      | Y      |
@@ -27,7 +27,7 @@ Thanks @LoganMD for the logo
 | Asus Chromebook C100PA   | veyron-minnie  | RK3288 | N/A       | ?                     | ?    | ?         | ?     |       |
 | Samsung Chromebook Plus  | gru-kevin      | RK3399 | ?         | ?                     | ?    | ?         | ?     |       |
 | Lenovo Chromebook S330   | elm-hana       | MT8173 | N/A       | ?                     | ?    | ?         | ?     |       |
-| Lenovo Chromebook Duet   | kukui-krane    | MT8183 | ?         | ?                     | ?    | ?         | ?     |       |
+| Lenovo Chromebook Duet   | kukui-krane    | MT8183 | ?         | Y                     | Y    | ?         | Y     |       |
 | Acer Chromebook Spin 513 | trogdor-lazor  | SC7180 | ?         | ?                     | ?    | ?         | ?     |       |
 
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV

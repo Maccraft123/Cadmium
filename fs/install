@@ -249,6 +249,9 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 				kde)
 					$chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_KDE
 					;;
+				lomiri)
+					$chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_UI_GNOME
+					;;
 			esac
 			cp -r $CADMIUMROOT/fs/ucm/* $DESTDIR/usr/share/alsa/ucm2/conf.d/
 		fi

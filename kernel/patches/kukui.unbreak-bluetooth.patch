@@ -1,0 +1,78 @@
+--- a/drivers/tty/serial/8250/8250_mtk.c	2024-09-01 03:46:02.000000000 -0400
++++ b/drivers/tty/serial/8250/8250_mtk.c	2024-09-04 16:13:16.167848508 -0400
+@@ -37,7 +37,7 @@
+ #define MTK_UART_IER_RTSI	0x40	/* Enable RTS Modem status interrupt */
+ #define MTK_UART_IER_CTSI	0x80	/* Enable CTS Modem status interrupt */
+ 
+-#define MTK_UART_EFR		38	/* I/O: Extended Features Register */
++//#define MTK_UART_EFR		38	/* I/O: Extended Features Register */
+ #define MTK_UART_EFR_EN		0x10	/* Enable enhancement feature */
+ #define MTK_UART_EFR_RTS	0x40	/* Enable hardware rx flow control */
+ #define MTK_UART_EFR_CTS	0x80	/* Enable hardware tx flow control */
+@@ -54,8 +54,8 @@
+ #define MTK_UART_TX_TRIGGER	1
+ #define MTK_UART_RX_TRIGGER	MTK_UART_RX_SIZE
+ 
+-#define MTK_UART_XON1		40	/* I/O: Xon character 1 */
+-#define MTK_UART_XOFF1		42	/* I/O: Xoff character 1 */
++//#define MTK_UART_XON1		40	/* I/O: Xon character 1 */
++//#define MTK_UART_XOFF1		42	/* I/O: Xoff character 1 */
+ 
+ #ifdef CONFIG_SERIAL_8250_DMA
+ enum dma_rx_status {
+@@ -173,7 +173,7 @@
+ 		   MTK_UART_DMA_EN_RX | MTK_UART_DMA_EN_TX);
+ 
+ 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
+-	serial_out(up, MTK_UART_EFR, UART_EFR_ECB);
++	serial_out(up, UART_EFR, UART_EFR_ECB);
+ 	serial_out(up, UART_LCR, lcr);
+ 
+ 	if (dmaengine_slave_config(dma->rxchan, &dma->rxconf) != 0)
+@@ -249,7 +249,7 @@
+ 	lockdep_assert_held_once(&port->lock);
+ 
+ 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
+-	serial_out(up, MTK_UART_EFR, UART_EFR_ECB);
++	serial_out(up, UART_EFR, UART_EFR_ECB);
+ 	serial_out(up, UART_LCR, lcr);
+ 	lcr = serial_in(up, UART_LCR);
+ 
+@@ -258,7 +258,7 @@
+ 		serial_out(up, MTK_UART_ESCAPE_DAT, MTK_UART_ESCAPE_CHAR);
+ 		serial_out(up, MTK_UART_ESCAPE_EN, 0x00);
+ 		serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
+-		serial_out(up, MTK_UART_EFR, serial_in(up, MTK_UART_EFR) &
++		serial_out(up, UART_EFR, serial_in(up, UART_EFR) &
+ 			(~(MTK_UART_EFR_HW_FC | MTK_UART_EFR_SW_FC_MASK)));
+ 		serial_out(up, UART_LCR, lcr);
+ 		mtk8250_disable_intrs(up, MTK_UART_IER_XOFFI |
+@@ -272,8 +272,8 @@
+ 		serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
+ 
+ 		/*enable hw flow control*/
+-		serial_out(up, MTK_UART_EFR, MTK_UART_EFR_HW_FC |
+-			(serial_in(up, MTK_UART_EFR) &
++		serial_out(up, UART_EFR, MTK_UART_EFR_HW_FC |
++			(serial_in(up, UART_EFR) &
+ 			(~(MTK_UART_EFR_HW_FC | MTK_UART_EFR_SW_FC_MASK))));
+ 
+ 		serial_out(up, UART_LCR, lcr);
+@@ -287,12 +287,12 @@
+ 		serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
+ 
+ 		/*enable sw flow control */
+-		serial_out(up, MTK_UART_EFR, MTK_UART_EFR_XON1_XOFF1 |
+-			(serial_in(up, MTK_UART_EFR) &
++		serial_out(up, UART_EFR, MTK_UART_EFR_XON1_XOFF1 |
++			(serial_in(up, UART_EFR) &
+ 			(~(MTK_UART_EFR_HW_FC | MTK_UART_EFR_SW_FC_MASK))));
+ 
+-		serial_out(up, MTK_UART_XON1, START_CHAR(port->state->port.tty));
+-		serial_out(up, MTK_UART_XOFF1, STOP_CHAR(port->state->port.tty));
++		serial_out(up, UART_XON1, START_CHAR(port->state->port.tty));
++		serial_out(up, UART_XOFF1, STOP_CHAR(port->state->port.tty));
+ 		serial_out(up, UART_LCR, lcr);
+ 		mtk8250_disable_intrs(up, MTK_UART_IER_CTSI|MTK_UART_IER_RTSI);
+ 		mtk8250_enable_intrs(up, MTK_UART_IER_XOFFI);
+

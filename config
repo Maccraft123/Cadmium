@@ -2,7 +2,7 @@
 # TODO: fancy menu?
 
 # Cadmium flavor
-# One of: arm64-chromebook, arm32-chromebook
+# One of: arm64-chromebook, arm32-chromebook, arm64-uboot
 if [ "$RELEASE" = "" ]; then
 	FLAV=arm64-chromebook
 else

@@ -1,0 +1,33 @@
+#!/bin/bash
+CADMIUMROOT="$(dirname $(dirname $(dirname $(realpath $0))))"
+
+set -e
+set -x
+
+echo "Making it bootable on U-Boot"
+
+[ -z "$CADMIUMROOT" ] && exit 1
+
+source "$CADMIUMROOT/config"
+source "$CADMIUMROOT/flavor/$FLAV"
+
+export CMDLINE="$($CADMIUMROOT/kernel/cmdline)"
+export $(blkid --output export $ROOTPART | grep -E '^UUID=.*')
+
+mkdir -p "$CADMIUMROOT/tmp/root/boot/extlinux"
+mkdir -p "$CADMIUMROOT/tmp/root/boot/dtb"
+echo "
+default cadmium
+menu title cadmium
+prompt 0
+timeout 1
+
+label cadmium
+	menu label Start Cadmium
+	linux /boot/Image
+	fdtdir /boot/dts
+	append $CMDLINE root=$UUID
+" > "$CADMIUMROOT/tmp/root/boot/extlinux/extlinux.conf"
+
+cp "$CADMIUMROOT/tmp/linux-$ARCH/arch/$ARCH/boot/Image" "$CADMIUMROOT/tmp/root/boot/Image"
+make -C "$CADMIUMROOT/tmp/linux-$ARCH/" INSTALL_DTBS_PATH="$CADMIUMROOT/tmp/root/boot/dtb" dtbs_install

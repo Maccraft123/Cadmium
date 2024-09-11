@@ -46,17 +46,9 @@ mkdir -p "$CADMIUMROOT/tmp/root"
 mount "$ROOTPART" "$CADMIUMROOT/tmp/root"
 trap umount_root EXIT
 
-# write filesystem
 "$CADMIUMROOT/fs/build" "$CADMIUMROOT/tmp/root"
 
-"$CADMIUMROOT/loader/$LOADER/package" "$DEVICE" "$ROOTPART"
-# TODO: move to loader/$LOADER/install
-if [ "$LOADER" = depthcharge ]; then
-	dd if="$CADMIUMROOT/tmp/linux-$ARCH/vmlinux.kpart" of="$KERNPART"
-else
-	echo "non-depthcharge machines are not supported"
-	exit 1
-fi
+"$CADMIUMROOT/loader/$LOADER/install" "$DEVICE" "$ROOTPART"
 
 # install modules
 make -C "$CADMIUMROOT/tmp/linux-$ARCH" INSTALL_MOD_PATH="$CADMIUMROOT/tmp/root" modules_install

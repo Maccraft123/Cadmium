@@ -28,8 +28,10 @@ cd "$CADMIUMROOT/tmp/linux-$ARCH"
 
 # TODO: generate
 cp "$CADMIUMROOT/kernel/$ARCH.kernel.its" kernel.its
-cp "$CADMIUMROOT/kernel/cmdline" cmdline
-cp "$CADMIUMROOT/kernel/cmdline.p2" cmdline.p2
+
+cp "$CADMIUMROOT/kernel/cmdline" cmdline cmdline.p2
+echo ' root=PARTUUID=%U/PARTNROFF=2' >> cmdline
+echo ' root=PARTUUID=%U/PARTNROFF=1' >> cmdline.p2
 
 # make kernel partition
 # yes this is stolen from solidhal's prawnos
@@ -45,6 +47,7 @@ $VBUTIL_KERNEL --pack vmlinux.kpart \
 	--bootloader bootloader.bin
 
 cp vmlinux.kpart "$CADMIUMROOT/tmp/"
+dd if="$vmlinux.kpart" of="$KERNPART" conv=fsync
 
 $VBUTIL_KERNEL --pack vmlinux.kpart.p2 \
 	--version 1 \

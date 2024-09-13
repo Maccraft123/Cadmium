@@ -61,7 +61,9 @@ Once you have this out, continue with instructions:
 - Build dependencies for kernel compilation
 - ```debootstrap``` when Debian rootfs is used
 - ```qemu-user-static``` when build machine can't run binaries for the target machine, with binfmt support
-- For Chromebooks machines: ```vboot-utils u-boot-tools``` (vbutil_kernel or futility, cgpt and mkimage)
+- For Chromebook machines running stock boot firmware: ```vboot-utils u-boot-tools``` (vbutil_kernel or futility, cgpt and mkimage)
+- For EFI machines: ```ukify```, usually provided in ```systemd-boot``` or related package
+- ```bc``` to calculate number of threads to be used for compilation
 - ```curl``` to download the kernel
 - ```bsdtar``` for writing the archive file (from the ```libarchive-tools``` .deb package)
 - ```f2fs-tools``` for creating the filesystem used by Cadmium

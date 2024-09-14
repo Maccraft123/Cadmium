@@ -1,0 +1,33 @@
+#!/bin/bash
+CADMIUMROOT="$(dirname $(dirname $(dirname $(realpath $0))))"
+set -e
+set -x
+
+# TODO: check for newer versions
+VERSION="256.6-1"
+ARCH="$1"
+OUT="$(realpath $2)"
+
+case $ARCH in
+	arm64)
+		EFIARCH="aa64"
+		;;
+	armhf)
+		EFIARCH="arm"
+		;;
+	*)
+		echo "Unknown architecture $ARCH"
+		exit 1
+		;;
+esac
+
+if [[ ! -e "$CADMIUMROOT/tmp/systemd-boot-efi/$VERSION/usr/lib/systemd/boot/efi/systemd-boot$EFIARCH.efi" ]]; then
+	mkdir -p "$CADMIUMROOT/tmp/systemd-boot-efi/$VERSION"
+	cd "$CADMIUMROOT/tmp/systemd-boot-efi/$VERSION"
+
+	wget "http://ftp.debian.org/debian/pool/main/s/systemd/systemd-boot-efi_${VERSION}_${ARCH}.deb" -O "./systemd-boot-efi-$ARCH.deb"
+	bsdtar xf "systemd-boot-efi-$ARCH.deb"
+	bsdtar xf "data.tar.xz"
+fi
+cp "$CADMIUMROOT/tmp/systemd-boot-efi/$VERSION/usr/lib/systemd/boot/efi/systemd-boot$EFIARCH.efi" "$OUT"
+

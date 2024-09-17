@@ -5,4 +5,3 @@ export ARCH_DEB=arm64
 export ARCH_ALARM=aarch64
 
 export LOADER=efi
-export UEFI_DTB=qcom\\x1e80100-lenovo-yoga-slim7x.dtb

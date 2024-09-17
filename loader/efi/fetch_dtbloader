@@ -1,0 +1,4 @@
+#!/bin/bash
+
+VERSION="1.2.1"
+wget "https://github.com/TravMurav/dtbloader/releases/download/$VERSION/dtbloader.efi" -O "$1"

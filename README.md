@@ -2,7 +2,7 @@
 
 Thanks @LoganMD for the logo
 
-# Cadmium, A Linux ~~distro~~ installer for some RISC laptops (ARM Chromebooks)
+# Cadmium, A Linux ~~distro~~ installer for some RISC laptops
 
 ## Hardware support:
 - (FW) entries are meant to indicate that firmware(that is included in Cadmium) is needed for piece of hardware to work correctly.
@@ -12,23 +12,24 @@ Thanks @LoganMD for the logo
 - "P" means "Partial/Incomplete support, refer to notes"
 - "N/A" means "Missing hardware"
 
-| Feature      | RK3288 | MT8173 | MT8183 | SC7180 |
-| ------------ | ------ | ------ | ------ | ------ |
-| Display      | Y      | Y      | Y      | Y      |
-| OpenGL       | Y      | N      | 3.1    | Y      |
-| Vulkan       | N      | N      | N      | Y      |
-| Video decode | ?      | ?      | ?      | ?      |
-| USB Host     | Y      | Y      | Y      | Y      |
-| USB Device   | N      | N      | N      | N      |
-| KVM          | Y      | Y      | Y      | Y      |
+| Feature      | RK3288 | MT8173 | MT8183 | SC7180 | X1 Elite |
+| ------------ | ------ | ------ | ------ | ------ | -------- |
+| Display      | Y      | Y      | Y      | Y      | Y        |
+| OpenGL       | Y      | N      | 3.1    | Y      | N        |
+| Vulkan       | N      | N      | N      | Y      | N        |
+| Video decode | ?      | ?      | ?      | ?      | N        |
+| USB Host     | Y      | Y      | Y      | Y      | Y        |
+| USB Device   | N      | N      | N      | N      | Y        |
+| KVM          | Y      | Y      | Y      | Y      | N        |
 
-| Commercial name          | Codename       |  SOC   | Pen input | Internal Installation | WiFi | Bluetooth | Audio | Notes |
-| ------------------------ | -------------- | ------ | --------- | --------------------- | ---- | --------- | ----- | ----- |
-| Asus Chromebook C100PA   | veyron-minnie  | RK3288 | N/A       | ?                     | ?    | ?         | ?     |       |
-| Samsung Chromebook Plus  | gru-kevin      | RK3399 | ?         | ?                     | ?    | ?         | ?     |       |
-| Lenovo Chromebook S330   | elm-hana       | MT8173 | N/A       | ?                     | ?    | ?         | ?     |       |
-| Lenovo Chromebook Duet   | kukui-krane    | MT8183 | ?         | Y                     | Y    | ?         | Y     |       |
-| Acer Chromebook Spin 513 | trogdor-lazor  | SC7180 | ?         | ?                     | ?    | ?         | ?     |       |
+| Commercial name          | Codename       |  SOC     | Pen input | Internal Installation | WiFi | Bluetooth | Audio | Notes        |
+| ------------------------ | -------------- | -------- | --------- | --------------------- | ---- | --------- | ----- | ------------ |
+| Asus Chromebook C100PA   | veyron-minnie  | RK3288   | N/A       | ?                     | ?    | ?         | ?     |              |
+| Samsung Chromebook Plus  | gru-kevin      | RK3399   | ?         | ?                     | ?    | ?         | ?     |              |
+| Lenovo Chromebook S330   | elm-hana       | MT8173   | N/A       | ?                     | ?    | ?         | ?     |              |
+| Lenovo Chromebook Duet   | kukui-krane    | MT8183   | ?         | Y                     | Y    | ?         | Y     |              |
+| Acer Chromebook Spin 513 | trogdor-lazor  | SC7180   | ?         | ?                     | ?    | ?         | ?     |              |
+| Lenovo Yoga Slim 7x      | N/A            | X1 Elite | ?         | N                     | N    | N         | N     | EFI booting  |
 
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV
 

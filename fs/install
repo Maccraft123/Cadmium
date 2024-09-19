@@ -73,7 +73,7 @@ nmtui connect
 which ntpdate >/dev/null 2>&1 && ntpdate pool.ntp.org
 
 # try finding emmc
-MMCDEV="$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')"
+INTDEV="$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')"
 
 . $CADMIUMROOT/config
 . $CADMIUMROOT/fs/$ROOTFS/info
@@ -99,12 +99,12 @@ if [ $INSTMED != this ]; then
 	# setup partitions
 	case $INSTMED in
 		emmc)
-			dd if=/dev/zero of=$MMCDEV bs=512k count=128 seek=$EMMC_OFFSET
-			parted --script $MMCDEV mklabel gpt >/dev/null 2>&1 || true # ???
-			cgpt create $MMCDEV
-			cgpt add -i 1 -t kernel   -b $(expr 8192 + $EMMC_OFFSET)          -s 65536 -l MMCKernelA -S 1 -T 2 -P 10  ${MMCDEV}
-			cgpt add -i 2 -t kernel   -b $(expr 73728 + $EMMC_OFFSET)         -s 65536 -l MMCKernelB -S 0 -T 2 -P 5   ${MMCDEV}	
-			cgpt add -i 3 -t data     -b $(expr 139264 + $EMMC_OFFSET)        -s $(expr $(cgpt show ${MMCDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l Root ${MMCDEV}
+			dd if=/dev/zero of=$INTDEV bs=512k count=128 seek=$EMMC_OFFSET
+			parted --script $INTDEV mklabel gpt >/dev/null 2>&1 || true # ???
+			cgpt create $INTDEV
+			cgpt add -i 1 -t kernel   -b $(expr 8192 + $EMMC_OFFSET)          -s 65536 -l MMCKernelA -S 1 -T 2 -P 10  ${INTDEV}
+			cgpt add -i 2 -t kernel   -b $(expr 73728 + $EMMC_OFFSET)         -s 65536 -l MMCKernelB -S 0 -T 2 -P 5   ${INTDEV}	
+			cgpt add -i 3 -t data     -b $(expr 139264 + $EMMC_OFFSET)        -s $(expr $(cgpt show ${INTDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l Root ${INTDEV}
 			# i sure do love confusing one-liners
 
 			ROOTPART=/dev/disk/by-partlabel/Root
@@ -115,7 +115,7 @@ if [ $INSTMED != this ]; then
 
 	# force rescan partitions
 	sleep 1
-	partx -a $MMCDEV >/dev/null 2>&1 || true
+	partx -a $INTDEV >/dev/null 2>&1 || true
 	sleep 1
 
 	dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA
@@ -204,7 +204,7 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 					MODKEY="invalid"
 					until [ "$MODKEY" != "invalid" ]; do
 						echo "Options for sway Mod key:"
-						echo "1: Search key(default)"
+						echo "1: Search/Super key(default)"
 						echo "2: Left Alt key"
 						read -p '? ' MODKEY
 						if ! echo "1 2" | grep -q "$MODKEY"; then

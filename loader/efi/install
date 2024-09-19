@@ -10,7 +10,7 @@ source "$CADMIUMROOT/config"
 source "$CADMIUMROOT/flavor/$FLAV"
 
 export $(blkid --output export $ROOTPART | grep -E '^PARTUUID=.*')
-export CMDLINE="$(< $CADMIUMROOT/kernel/cmdline) root=PARTUUID=$PARTUUID"
+export CMDLINE="$(< $CADMIUMROOT/kernel/cmdline) rootfstype=$FILESYSTEM root=PARTUUID=$PARTUUID"
 
 function umount_boot() {
 	echo "Unmounting ESP"

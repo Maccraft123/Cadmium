@@ -15,12 +15,13 @@ Thanks @LoganMD for the logo
 | Feature      | RK3288 | MT8173 | MT8183 | SC7180 | X1 Elite |
 | ------------ | ------ | ------ | ------ | ------ | -------- |
 | Display      | Y      | Y      | Y      | Y      | Y        |
-| OpenGL       | Y      | N      | 3.1    | Y      | N        |
-| Vulkan       | N      | N      | N      | Y      | N        |
+| OpenGL       | Y      | N      | 3.1    | Y      | 4.6      |
+| Vulkan       | N      | N      | N      | Y      | 1.3.211  |
 | Video decode | ?      | ?      | ?      | ?      | N        |
 | USB Host     | Y      | Y      | Y      | Y      | Y        |
-| USB Device   | N      | N      | N      | N      | Y        |
+| USB Device   | N      | N      | N      | N      | ?        |
 | KVM          | Y      | Y      | Y      | Y      | N        |
+| CPUFreq      | Y      | Y      | Y      | Y      | Needs manual modprobe scmi-cpufreq |
 
 | Commercial name          | Codename       |  SOC     | Pen input | Internal Installation | WiFi | Bluetooth | Audio | Notes        |
 | ------------------------ | -------------- | -------- | --------- | --------------------- | ---- | --------- | ----- | ------------ |
@@ -29,7 +30,7 @@ Thanks @LoganMD for the logo
 | Lenovo Chromebook S330   | elm-hana       | MT8173   | N/A       | ?                     | ?    | ?         | ?     |              |
 | Lenovo Chromebook Duet   | kukui-krane    | MT8183   | ?         | Y                     | Y    | ?         | Y     |              |
 | Acer Chromebook Spin 513 | trogdor-lazor  | SC7180   | ?         | ?                     | ?    | ?         | ?     |              |
-| Lenovo Yoga Slim 7x      | N/A            | X1 Elite | ?         | N                     | N    | N         | N     | EFI booting  |
+| Lenovo Yoga Slim 7x      | N/A            | X1 Elite | N/A?      | N                     | Y    | N         | N     | EFI booting  |
 
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV
 

@@ -21,16 +21,16 @@ Thanks @LoganMD for the logo
 | USB Host     | Y      | Y      | Y      | Y      | Y        |
 | USB Device   | N      | N      | N      | N      | ?        |
 | KVM          | Y      | Y      | Y      | Y      | N        |
-| CPUFreq      | Y      | Y      | Y      | Y      | Needs manual modprobe scmi-cpufreq |
+| CPUFreq      | Y      | Y      | Y      | Y      | Y        |
 
-| Commercial name          | Codename       |  SOC     | Pen input | Internal Installation | WiFi | Bluetooth | Audio | Notes        |
-| ------------------------ | -------------- | -------- | --------- | --------------------- | ---- | --------- | ----- | ------------ |
-| Asus Chromebook C100PA   | veyron-minnie  | RK3288   | N/A       | ?                     | ?    | ?         | ?     |              |
-| Samsung Chromebook Plus  | gru-kevin      | RK3399   | ?         | ?                     | ?    | ?         | ?     |              |
-| Lenovo Chromebook S330   | elm-hana       | MT8173   | N/A       | ?                     | ?    | ?         | ?     |              |
-| Lenovo Chromebook Duet   | kukui-krane    | MT8183   | ?         | Y                     | Y    | ?         | Y     |              |
-| Acer Chromebook Spin 513 | trogdor-lazor  | SC7180   | ?         | ?                     | ?    | ?         | ?     |              |
-| Lenovo Yoga Slim 7x      | N/A            | X1 Elite | N/A?      | N                     | Y    | N         | N     | EFI booting  |
+| Commercial name          | Codename       |  SOC     | Pen input | Internal Installation  | WiFi | Bluetooth | Audio | Notes        |
+| ------------------------ | -------------- | -------- | --------- | ---------------------- | ---- | --------- | ----- | ------------ |
+| Asus Chromebook C100PA   | veyron-minnie  | RK3288   | N/A       | ?                      | ?    | ?         | ?     |              |
+| Samsung Chromebook Plus  | gru-kevin      | RK3399   | ?         | ?                      | ?    | ?         | ?     |              |
+| Lenovo Chromebook S330   | elm-hana       | MT8173   | N/A       | ?                      | ?    | ?         | ?     |              |
+| Lenovo Chromebook Duet   | kukui-krane    | MT8183   | ?         | Y                      | Y    | ?         | Y     |              |
+| Acer Chromebook Spin 513 | trogdor-lazor  | SC7180   | ?         | ?                      | ?    | ?         | ?     |              |
+| Lenovo Yoga Slim 7x      | N/A            | X1 Elite | N/A?      | Dual-boot with Windows | Y    | N         | N     | EFI booting  |
 
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV
 

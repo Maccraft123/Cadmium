@@ -27,9 +27,13 @@ mkdir -p "$CADMIUMROOT/tmp/boot/efi/boot/"
 mkdir -p "$CADMIUMROOT/tmp/boot/efi/systemd/drivers/"
 mkdir -p "$CADMIUMROOT/tmp/boot/loader/entries"
 # FIXME: x1e doesn't boot without clk_ignore_unused
-echo "linux /Image
+echo "title Start Cadmium
+linux /Image
 options $CMDLINE clk_ignore_unused
 architecture aa64" > "$CADMIUMROOT/tmp/boot/loader/entries/cadmium.conf"
+echo "default @saved
+timeout 5
+console-mode max" > "$CADMIUMROOT/tmp/boot/loader/loader.conf"
 
 "$CADMIUMROOT/loader/efi/fetch_sdboot" "$ARCH" "$CADMIUMROOT/tmp/boot/efi/boot/bootaa64.efi"
 "$CADMIUMROOT/loader/efi/fetch_dtbloader" "$CADMIUMROOT/tmp/boot/efi/systemd/drivers/dtbloaderaa64.efi"

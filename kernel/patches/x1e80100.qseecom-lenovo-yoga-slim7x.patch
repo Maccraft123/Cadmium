@@ -1,0 +1,29 @@
+From 22755c31faf5994761e3c43cac6fddfb22204ae0 Mon Sep 17 00:00:00 2001
+From: Maya Matuszczyk <maccraft123mc@gmail.com>
+Date: Thu, 19 Sep 2024 15:36:15 +0200
+Subject: [PATCH] firmware: qcom: enable qseecom on Lenovo Yoga Slim 7x
+
+I'm not sure how to test it beyond checking if efivars work fine, and
+reading and writing them works, persisting after reboot - adding a new
+boot option with efibootmgr works perfectly.
+
+Signed-off-by: Maya Matuszczyk <maccraft123mc@gmail.com>
+---
+ drivers/firmware/qcom/qcom_scm.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+index 00c379a3cceb..4ba8ad2a017c 100644
+--- a/drivers/firmware/qcom/qcom_scm.c
++++ b/drivers/firmware/qcom/qcom_scm.c
+@@ -1725,6 +1725,7 @@ EXPORT_SYMBOL_GPL(qcom_scm_qseecom_app_send);
+ static const struct of_device_id qcom_scm_qseecom_allowlist[] __maybe_unused = {
+ 	{ .compatible = "lenovo,flex-5g" },
+ 	{ .compatible = "lenovo,thinkpad-x13s", },
++	{ .compatible = "lenovo,yoga-slim7x" },
+ 	{ .compatible = "qcom,sc8180x-primus" },
+ 	{ .compatible = "qcom,x1e80100-crd" },
+ 	{ .compatible = "qcom,x1e80100-qcp" },
+-- 
+2.46.1
+

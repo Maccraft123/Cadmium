@@ -1,0 +1,48 @@
+From bd6db1f1486eedb8460647b3fbe9b5ae8fd09207 Mon Sep 17 00:00:00 2001
+From: Stephan Gerhold <stephan.gerhold@linaro.org>
+Date: Mon, 8 Jul 2024 18:22:09 +0200
+Subject: soc: qcom: pd_mapper: Add X1E80100
+
+X1E80100 has the same protection domains as SM8550, except that MPSS is
+missing. Add it to the in-kernel pd-mapper to avoid having to run the
+daemon in userspace for charging and audio functionality.
+
+Signed-off-by: Stephan Gerhold <stephan.gerhold@linaro.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20240708-x1e80100-pd-mapper-v1-1-854386af4cf5@linaro.org
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+---
+ drivers/soc/qcom/qcom_pd_mapper.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/soc/qcom/qcom_pd_mapper.c b/drivers/soc/qcom/qcom_pd_mapper.c
+index 9afa09c3920e10..d3d853ceb6e859 100644
+--- a/drivers/soc/qcom/qcom_pd_mapper.c
++++ b/drivers/soc/qcom/qcom_pd_mapper.c
+@@ -517,6 +517,15 @@ static const struct qcom_pdm_domain_data *sm8550_domains[] = {
+ 	NULL,
+ };
+ 
++static const struct qcom_pdm_domain_data *x1e80100_domains[] = {
++	&adsp_audio_pd,
++	&adsp_root_pd,
++	&adsp_charger_pd,
++	&adsp_sensor_pd,
++	&cdsp_root_pd,
++	NULL,
++};
++
+ static const struct of_device_id qcom_pdm_domains[] __maybe_unused = {
+ 	{ .compatible = "qcom,apq8064", .data = NULL, },
+ 	{ .compatible = "qcom,apq8074", .data = NULL, },
+@@ -545,6 +554,7 @@ static const struct of_device_id qcom_pdm_domains[] __maybe_unused = {
+ 	{ .compatible = "qcom,sm8450", .data = sm8350_domains, },
+ 	{ .compatible = "qcom,sm8550", .data = sm8550_domains, },
+ 	{ .compatible = "qcom,sm8650", .data = sm8550_domains, },
++	{ .compatible = "qcom,x1e80100", .data = x1e80100_domains, },
+ 	{},
+ };
+ 
+-- 
+cgit 1.2.3-korg
+

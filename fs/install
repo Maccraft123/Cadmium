@@ -70,6 +70,8 @@ nmcli device wifi rescan
 sleep 4 # wait for wifi networks
 nmtui connect
 
+which ntpdate >/dev/null 2>&1 && ntpdate pool.ntp.org
+
 # try finding emmc
 MMCDEV="$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')"
 

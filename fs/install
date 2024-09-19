@@ -108,7 +108,12 @@ fi
 
 export chroot="chroot"
 
-DESTDIR=/
+# gonna be using that device
+if [ -n "$(cat /proc/self/mounts | grep /boot)" ]; then
+	umount /boot/
+fi
+
+export DESTDIR=/
 if [ $INSTMED != this ]; then
 	# setup partitions
 	case $BOOTFW in
@@ -180,7 +185,7 @@ if [ $INSTMED != this ]; then
 	esac
 
 	mount $ROOTPART /mnt
-	DESTDIR=/mnt
+	export DESTDIR=/mnt
 
 	if [ "$ROOTFS" = "arch" ]; then
 		export chroot="arch-chroot";
@@ -312,6 +317,10 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 		echo "Looks like, $FS_FANCYNAME does not support user environments"
 		echo "Skipping..."
 	fi
+fi
+
+if [ -e "$CADMIUMROOT/baseboard/$BASEBOARD/postinstall" ]; then
+	"$CADMIUMROOT/baseboard/$BASEBOARD/postinstall"
 fi
 
 if [ $INSTMED != this ]; then

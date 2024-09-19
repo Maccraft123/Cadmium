@@ -51,19 +51,22 @@ for x in /sys/class/power_supply/*; do
 	fi
 done
 
-if [ "$BAT" = "NOTFOUND" ]; then
+if [ "$BASEBOARD" = "x1e80100-woa" ]; then
+	echo "WARNING: THIS DEVICE DOESN'T HAVE WORKING BATTERY READOUT ON USB BOOT"
+	echo "IF IT DISCHARGES DURING INSTALLATION DON'T BLAME ME"
+elif [ "$BAT" = "NOTFOUND" ]; then
 	. /CdFiles/info
 	echo "Debug info: R: $ROOTFS B: $BASEBOARD T: $BOARD"
 	echo "Uh oh, automatic battery detection failed"
 	echo "Make a photo of this screen and include it in issue on Cadmium Github page"
-fi
+else
+	BATCAPACITY="$(cat $BAT/capacity)"
 
-BATCAPACITY="$(cat $BAT/capacity)"
-
-if [ "$BATCAPACITY" -le 30 ]; then
-	echo "Looks like your device is about to discharge"
-	echo "Bailing out for safety reasons"
-	exit 1
+	if [ "$BATCAPACITY" -le 30 ]; then
+		echo "Looks like your device is about to discharge"
+		echo "Bailing out for safety reasons"
+		exit 1
+	fi
 fi
 
 nmcli device wifi rescan
@@ -73,7 +76,14 @@ nmtui connect
 which ntpdate >/dev/null 2>&1 && ntpdate pool.ntp.org
 
 # try finding emmc
-INTDEV="$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')"
+case "$BASEBOARD" in
+	x1e80100-woa)
+		INTDEV="/dev/nvme0n1"
+		;;
+	*)
+		INTDEV="$(ls /dev/mmcblk* | grep -F boot0 | sed 's/boot0//')"
+		;;
+esac
 
 . $CADMIUMROOT/config
 . $CADMIUMROOT/fs/$ROOTFS/info
@@ -84,6 +94,10 @@ if cat /proc/cmdline | grep -s cros_secure >/dev/null 2>&1; then
 	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
 	BOOTFW=depthcharge
 	BOOTFW_PKGS="$FS_PKGS_CD_BOOTFW_DEPTHCHARGE"
+elif [ -d "/sys/firmware/efi" ]; then
+	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_EFI
+	BOOTFW=efi
+	BOOTFW_PKGS="$FS_PKGS_CD_BOOTFW_EFI"
 fi
 
 if [ "$BOOTFW" = "unknown" ]; then
@@ -97,7 +111,7 @@ export chroot="chroot"
 DESTDIR=/
 if [ $INSTMED != this ]; then
 	# setup partitions
-	case $INSTMED in
+	case $BOOTFW in
 		emmc)
 			dd if=/dev/zero of=$INTDEV bs=512k count=128 seek=$EMMC_OFFSET
 			parted --script $INTDEV mklabel gpt >/dev/null 2>&1 || true # ???
@@ -110,6 +124,44 @@ if [ $INSTMED != this ]; then
 			ROOTPART=/dev/disk/by-partlabel/Root
 			KERNPART=/dev/disk/by-partlabel/MMCKernelA
 
+			dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA
+			;;
+		efi)
+			# note that this only does dual-boot with windows
+			BOOTPART_NUM="$(parted -s -m $INTDEV print | grep esp | head -n1 | cut -d':' -f1)"
+			BOOTPART="/dev/nvme0n1p$BOOTPART_NUM"
+			# FIXME FIXME FIXME: detect properly, check what's mounted on / and the same drive's esp partition is it
+			BOOTPART_EXT="/dev/sda1"
+			mkdir -p /mnt2
+			mount $BOOTPART_EXT /mnt2 -o ro
+			mount $BOOTPART /mnt
+			cp -r /mnt2/loader /mnt/loader
+			cp -r /mnt2/dtbs /mnt/dtbs
+			cp /mnt2/Image /mnt/Image
+			cp -r /mnt2/efi/systemd /mnt/efi/systemd
+			cp /mnt2/efi/boot/bootaa64.efi /mnt/efi/systemd/systemd-bootaa64.efi
+
+			if [ -z "$(efibootmgr | grep Cadmium)" ]; then
+				efibootmgr -c -d "$INTDEV" -p "$BOOTPART_NUM" -L "Cadmium" -l '\efi\systemd\systemd-bootaa64.efi'
+			fi
+
+			ROOTPART="/dev/disk/by-partlabel/Root"
+
+			# now let's make root partition if it's not there
+			if [ ! -e "$ROOTPART" ]; then
+				# list everything, including free partitions | sort using general numbers, use : as key separator and consider only 4th key(size) | take last(biggest) value
+				BIGFREE="$(parted -s -m $INTDEV unit s print free | grep free | sort --sort=g -t':' -k4,4 | tail -n1)"
+				ROOTSTART="$(echo $BIGFREE | cut -d: -f2)"
+				ROOTEND="$(echo $BIGFREE | cut -d: -f3)"
+				parted -s -m $INTDEV unit s mkpart Root "$ROOTSTART" "$ROOTEND"
+			fi
+
+			export $(blkid --output export $ROOTPART | grep -E '^PARTUUID=.*')
+			sed -i'' "s/PARTUUID=........-....-....-....-............/PARTUUID=$PARTUUID/" /mnt/loader/entries/cadmium.conf
+			unset PARTUUID
+
+			umount /mnt2
+			umount /mnt
 			;;
 	esac
 
@@ -118,7 +170,6 @@ if [ $INSTMED != this ]; then
 	partx -a $INTDEV >/dev/null 2>&1 || true
 	sleep 1
 
-	dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA
 	case "$FILESYSTEM" in
 		f2fs)
 			mkfs.f2fs -f $ROOTPART -t 0

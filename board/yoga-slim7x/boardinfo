@@ -1,0 +1,11 @@
+#!/bin/false
+
+# explanation is in HACKING.md
+# arch missing? go to baseboard/$BASEBOARD/boardinfo
+
+export BASEBOARD=x1e80100-woa
+export BOARD=yoga-slim7x
+export TYPE=laptop
+
+export WLR_DISP=eDP-1
+export DISP_ROTATION=0

@@ -22,11 +22,6 @@ else
 			qemu="/qemu-aarch64-static"
 			echo "Emulating with qemu"
 		;;
-		mips64el)
-			cp "$(which qemu-mips64el-static)" "$DESTDIR/qemu-mips64el-static"
-			qemu="/qemu-mips64el-static"
-			echo "Emulating with qemu"
-		;;
 		*)
 			exit 1
 		;;

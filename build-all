@@ -38,7 +38,6 @@ case "$FILESYSTEM" in
 esac
 
 function umount_root() {
-	echo "Cleaning up..."
 	umount "$CADMIUMROOT/tmp/root"
 }
 

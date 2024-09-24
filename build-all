@@ -30,10 +30,11 @@ source "$CADMIUMROOT/loader/$LOADER/prepare_parts"
 # TODO: move to loader/prepare_parts
 case "$FILESYSTEM" in
 	f2fs)
-		mkfs.f2fs -f "$ROOTPART"
+		mkfs.f2fs -f "$ROOTPART" -O extra_attr,inode_checksum,sb_checksum
 	;;
 	ext4)
 		mkfs.ext4 -F "$ROOTPART"
+		tune2fs -o discard "$ROOTPART"
 	;;
 esac
 

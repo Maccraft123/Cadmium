@@ -177,10 +177,11 @@ if [ $INSTMED != this ]; then
 
 	case "$FILESYSTEM" in
 		f2fs)
-			mkfs.f2fs -f $ROOTPART -t 0
+			mkfs.f2fs -f $ROOTPART -t 0 -O extra_attr,inode_checksum,sb_checksum
 		;;
 		ext4)
 			mkfs.ext4 -F $ROOTPART
+			tune2fs -o discard "$ROOTPART"
 		;;
 	esac
 

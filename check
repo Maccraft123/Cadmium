@@ -21,6 +21,7 @@ check_exe parted
 check_exe mkimage
 check_exe futility
 check_exe clang
+check_exe rsync
 
 if [ "$FAIL" = "true" ]; then
 	echo "Error: Some utilities were not found"

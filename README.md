@@ -70,3 +70,4 @@ Once you have this out, continue with instructions:
 - ```bsdtar``` for writing the archive file (from the ```libarchive-tools``` .deb package)
 - ```f2fs-tools``` for creating the filesystem used by Cadmium
 - ```parted``` to prepare gpt table to be modified by cgpt
+- ```rsync```

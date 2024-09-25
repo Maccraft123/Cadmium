@@ -15,12 +15,12 @@ if [ ! -f "$ROOTFS_TAR" ]; then
 fi
 tar xfp void-${ARCH_UNAME}.tar.xz -C $DESTDIR
 cp /etc/resolv.conf $DESTDIR/etc/resolv.conf
-chroot $DESTDIR $qemu /bin/xbps-install -Syu xbps
-chroot $DESTDIR $qemu /bin/xbps-install -yu
-chroot $DESTDIR $qemu /bin/xbps-install -y base-system dbus NetworkManager
-chroot $DESTDIR $qemu /bin/xbps-remove -y base-voidstrap
+chroot $DESTDIR /bin/xbps-install -Syu xbps
+chroot $DESTDIR /bin/xbps-install -yu
+chroot $DESTDIR /bin/xbps-install -y base-system dbus NetworkManager
+chroot $DESTDIR /bin/xbps-remove -y base-voidstrap
 
-chroot $DESTDIR $qemu ln -s /etc/sv/dbus /etc/runit/runsvdir/default/
-chroot $DESTDIR $qemu ln -s /etc/sv/NetworkManager /etc/runit/runsvdir/default/
+chroot $DESTDIR ln -s /etc/sv/dbus /etc/runit/runsvdir/default/
+chroot $DESTDIR ln -s /etc/sv/NetworkManager /etc/runit/runsvdir/default/
 
-chroot $DESTDIR $qemu ln -s /etc/sv/agetty-ttyAMA0 /etc/runit/runsvdir/default/
+chroot $DESTDIR ln -s /etc/sv/agetty-ttyAMA0 /etc/runit/runsvdir/default/

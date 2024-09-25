@@ -7,26 +7,6 @@ set -e
 source "$CADMIUMROOT/config"
 source "$CADMIUMROOT/flavor/$FLAV"
 
-if [ "$(uname -m)" = "$ARCH_UNAME" ]; then
-	echo "Running natively, not using qemu"
-else
-	# TODO: there's gotta be a better way to do that, also 64bit-ONLY machines
-	case "$ARCH_UNAME" in
-		armv7l)
-			if [ "$(uname -m)" = "aarch64" ]; then
-				echo "Running natively, not using qemu"
-			fi
-		;;
-		aarch64)
-			cp "$(which qemu-aarch64-static)" "$DESTDIR/qemu-aarch64-static"
-			qemu="/qemu-aarch64-static"
-			echo "Emulating with qemu"
-		;;
-		*)
-			exit 1
-		;;
-	esac
-fi
 
 if [ "$ROOTFS" = "arch" ]; then
 	export chroot="arch-chroot"

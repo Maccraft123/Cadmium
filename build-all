@@ -6,6 +6,15 @@ unset CXX
 
 "$CADMIUMROOT/check"
 
+if [ -z "$DROPTO" ]; then
+	if [ "$UID" != "0" ]; then
+		exec sudo env DROPTO="$(whoami)" "$CADMIUMROOT/build-all" $@
+	else
+		echo "Running this script as root without setting DROPTO to your usual user is deprecated"
+		echo "The ability to do so will be removed in future"
+	fi
+fi
+
 source "$CADMIUMROOT/config"
 source "$CADMIUMROOT/flavor/$FLAV"
 

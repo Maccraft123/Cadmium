@@ -22,9 +22,9 @@ set -e
 
 [ "$DEBUG" = "true" ] && set -x
 
-# Usage:
-# build-all <device>
-# build-all <file> <size>
+echo "Usage:"
+echo "To build Cadmium onto a block device: build-all <device>"
+echo "To build Cadmium onto a file: build-all <file> <size>"
 
 [ -z "$1" ] && exit 1
 

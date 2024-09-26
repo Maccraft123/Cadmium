@@ -1,0 +1,60 @@
+From 04e567d292a326a4e1d3ec8c9efd7f516dc89b72 Mon Sep 17 00:00:00 2001
+From: Maya Matuszczyk <maccraft123mc@gmail.com>
+Date: Tue, 24 Sep 2024 20:26:40 +0200
+Subject: [PATCH] arm64: dts: qcom: x1e80100-yoga: Add lid switch
+
+Signed-off-by: Maya Matuszczyk <maccraft123mc@gmail.com>
+---
+ .../dts/qcom/x1e80100-lenovo-yoga-slim7x.dts  | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/x1e80100-lenovo-yoga-slim7x.dts b/arch/arm64/boot/dts/qcom/x1e80100-lenovo-yoga-slim7x.dts
+index 1943bdbfb8c0..50afe55bea32 100644
+--- a/arch/arm64/boot/dts/qcom/x1e80100-lenovo-yoga-slim7x.dts
++++ b/arch/arm64/boot/dts/qcom/x1e80100-lenovo-yoga-slim7x.dts
+@@ -6,6 +6,7 @@
+ /dts-v1/;
+ 
+ #include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/gpio-keys.h>
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ 
+ #include "x1e80100.dtsi"
+@@ -15,6 +16,21 @@ / {
+ 	model = "Lenovo Yoga Slim 7x";
+ 	compatible = "lenovo,yoga-slim7x", "qcom,x1e80100";
+ 
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		pinctrl-0 = <&lid_switch_default>;
++		pinctrl-names = "default";
++
++		switch-lid {
++			gpios = <&tlmm 92 GPIO_ACTIVE_LOW>;
++			linux,input-type = <EV_SW>;
++			linux,code = <SW_LID>;
++			wakeup-source;
++			wakeup-event-action = <EV_ACT_DEASSERTED>;
++		};
++	};
++
+ 	pmic-glink {
+ 		compatible = "qcom,x1e80100-pmic-glink",
+ 			     "qcom,sm8550-pmic-glink",
+@@ -790,6 +806,12 @@ kybd_default: kybd-default-state {
+ 		bias-disable;
+ 	};
+ 
++	lid_switch_default: lid-int-n-state {
++		pins = "gpio92";
++		function = "gpio";
++		bias-disable;
++	};
++
+ 	nvme_reg_en: nvme-reg-en-state {
+ 		pins = "gpio18";
+ 		function = "gpio";
+-- 
+2.46.1
+

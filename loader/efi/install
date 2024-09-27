@@ -38,5 +38,7 @@ console-mode max" > "$CADMIUMROOT/tmp/boot/loader/loader.conf"
 "$CADMIUMROOT/loader/efi/fetch_sdboot" "$ARCH" "$CADMIUMROOT/tmp/boot/efi/boot/bootaa64.efi"
 "$CADMIUMROOT/loader/efi/fetch_dtbloader" "$CADMIUMROOT/tmp/boot/efi/systemd/drivers/dtbloaderaa64.efi"
 
+[ -e "$CADMIUMROOT/tmp/boot/dtbs" ] && rm -rf "$CADMIUMROOT/tmp/boot/dtbs"
+
 make -C "$CADMIUMROOT/tmp/linux-$ARCH/" INSTALL_DTBS_PATH="$CADMIUMROOT/tmp/boot/dtbs/" dtbs_install
 cp "$CADMIUMROOT/tmp/linux-$ARCH/arch/$ARCH/boot/Image" "$CADMIUMROOT/tmp/boot/"

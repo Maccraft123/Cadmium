@@ -2,7 +2,6 @@
 CADMIUMROOT="$(dirname $(dirname $(dirname $(realpath $0))))"
 
 set -e
-set -x
 
 echo "Packaging kernel for depthcharge machines"
 
@@ -47,7 +46,7 @@ $VBUTIL_KERNEL --pack vmlinux.kpart \
 	--bootloader bootloader.bin
 
 cp vmlinux.kpart "$CADMIUMROOT/tmp/"
-dd if="$vmlinux.kpart" of="$KERNPART" conv=fsync
+dd if="vmlinux.kpart" of="$KERNPART" conv=fsync
 
 $VBUTIL_KERNEL --pack vmlinux.kpart.p2 \
 	--version 1 \

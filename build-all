@@ -22,11 +22,13 @@ set -e
 
 [ "$DEBUG" = "true" ] && set -x
 
-echo "Usage:"
-echo "To build Cadmium onto a block device: build-all <device>"
-echo "To build Cadmium onto a file: build-all <file> <size>"
+if [ -z "$1" ]; then
+	echo "Usage:"
+	echo "To build Cadmium onto a block device: build-all <device>"
+	echo "To build Cadmium onto a file: build-all <file> <size>"
+	exit 1
+fi
 
-[ -z "$1" ] && exit 1
 
 # Just in case we got lingering mounts
 umount "$CADMIUMROOT/tmp" 2>/dev/null || true

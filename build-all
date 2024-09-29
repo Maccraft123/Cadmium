@@ -15,6 +15,10 @@ if [ -z "$DROPTO" ]; then
 	fi
 fi
 
+function drop_perms() {
+	setpriv --reuid="$DROPTO" --regid="$DROPTO" --init-groups --inh-caps=-all $@
+}
+
 source "$CADMIUMROOT/config"
 source "$CADMIUMROOT/flavor/$FLAV"
 
@@ -29,6 +33,7 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
+drop_perms git -C "$CADMIUMROOT" submodule update 2>/dev/null # FIXME: complains about missing files
 
 # Just in case we got lingering mounts
 umount "$CADMIUMROOT/tmp" 2>/dev/null || true

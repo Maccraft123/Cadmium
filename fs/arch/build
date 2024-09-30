@@ -14,6 +14,8 @@ if [ ! -f "$CADMIUMROOT/tmp/arch-$ARCH_ALARM.tar.gz" ]; then
 fi
 tar xfp $CADMIUMROOT/tmp/arch-${ARCH_ALARM}.tar.gz -C $DESTDIR
 
+sed -i s/CheckSpace/#CheckSpace/g $DESTDIR/etc/pacman.conf
+
 $chroot $DESTDIR /usr/bin/pacman-key --init
 $chroot $DESTDIR /usr/bin/pacman-key --populate archlinuxarm
 

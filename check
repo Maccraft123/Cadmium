@@ -14,6 +14,7 @@ function check_exe() {
 check_exe cgpt
 check_exe mkfs.ext4
 check_exe mkfs.f2fs
+check_exe mkfs.fat
 check_exe make
 check_exe bsdtar
 check_exe debootstrap

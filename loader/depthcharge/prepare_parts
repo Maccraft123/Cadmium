@@ -33,6 +33,6 @@ if [ -e ${DEVICE}p1 ]; then
 	P="p"
 fi
 
-KERNPART=${DEVICE}${P}1
-KERNPART_B=${DEVICE}${P}2
-ROOTPART=${DEVICE}${P}3
+export KERNPART=${DEVICE}${P}1
+export KERNPART_B=${DEVICE}${P}2
+export ROOTPART=${DEVICE}${P}3

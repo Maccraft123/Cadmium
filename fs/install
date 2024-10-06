@@ -2,11 +2,37 @@
 set -e
 dmesg --console-off # make kernel shut up
 
+CADMIUMROOT="/CdFiles"
+
+. $CADMIUMROOT/config
+. $CADMIUMROOT/fs/$ROOTFS/info
+
+# try finding out bootloader
+BOOTFW=unknown
+if cat /proc/cmdline | grep -s cros_secure >/dev/null 2>&1; then
+	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
+	BOOTFW=depthcharge
+	BOOTFW_PKGS="$FS_PKGS_CD_BOOTFW_DEPTHCHARGE"
+elif [ -d "/sys/firmware/efi" ]; then
+	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_EFI
+	BOOTFW=efi
+	BOOTFW_PKGS="$FS_PKGS_CD_BOOTFW_EFI"
+fi
+
+if [ "$BOOTFW" = "unknown" ]; then
+	echo "Seems the automatic bootloader detection failed"
+	echo "Bailing out, you're on your own"
+	exit 1
+fi
+
 echo "Welcome to Cadmium installer"
 echo "Choose your fate:"
 echo "1: Installation to internal memory"
-echo "2: Installation to this medium"
-echo "3: Drop to shell"
+if [ "$BOOTFW" != "depthcharge" ]; then
+	echo "2: Installation to internal memory, with dual-boot setup"
+fi
+echo "3: Installation to this medium"
+echo "4: Drop to shell"
 
 opt=inv
 until [ "$opt" != "inv" ]; do
@@ -15,11 +41,10 @@ done
 
 case $opt in
 	1) INSTMED="emmc" ;; # install medium
-	2) INSTMED="this" ;;
-	3) exit 0 ;;
+	2) INSTMED="dualboot" ;;
+	3) INSTMED="this" ;;
+	4) exit 0 ;;
 esac
-
-CADMIUMROOT="/CdFiles"
 
 # try finding current device in cadmium tree
 
@@ -85,27 +110,6 @@ case "$BASEBOARD" in
 		;;
 esac
 
-. $CADMIUMROOT/config
-. $CADMIUMROOT/fs/$ROOTFS/info
-
-# try finding out bootloader
-BOOTFW=unknown
-if cat /proc/cmdline | grep -s cros_secure >/dev/null 2>&1; then
-	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
-	BOOTFW=depthcharge
-	BOOTFW_PKGS="$FS_PKGS_CD_BOOTFW_DEPTHCHARGE"
-elif [ -d "/sys/firmware/efi" ]; then
-	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_EFI
-	BOOTFW=efi
-	BOOTFW_PKGS="$FS_PKGS_CD_BOOTFW_EFI"
-fi
-
-if [ "$BOOTFW" = "unknown" ]; then
-	echo "Seems the automatic bootloader detection failed"
-	echo "Bailing out, you're on your own"
-	exit 1
-fi
-
 export chroot="chroot"
 
 # gonna be using that device
@@ -117,7 +121,7 @@ export DESTDIR=/
 if [ $INSTMED != this ]; then
 	# setup partitions
 	case $BOOTFW in
-		emmc)
+		depthcharge)
 			dd if=/dev/zero of=$INTDEV bs=512k count=128 seek=$EMMC_OFFSET
 			parted --script $INTDEV mklabel gpt >/dev/null 2>&1 || true # ???
 			cgpt create $INTDEV
@@ -132,22 +136,41 @@ if [ $INSTMED != this ]; then
 			dd if=/dev/disk/by-partlabel/SDKernelA of=/dev/disk/by-partlabel/MMCKernelA
 			;;
 		efi)
+			if [ "$INSTMED" = "emmc" ]; then
+				parted -s "$INTDEV" mklabel gpt
+				parted -s "$INTDEV" mkpart ESP fat32 '1M' '65M'
+				parted -s "$INTDEV" mkpart Root '66M' '100%'
+				parted -s "$INTDEV" set 1 esp on
+				mkfs.fat -F 32 "${INTDEV}p1"
+			fi
+
 			# note that this only does dual-boot with windows
 			BOOTPART_NUM="$(parted -s -m $INTDEV print | grep esp | head -n1 | cut -d':' -f1)"
-			BOOTPART="/dev/nvme0n1p$BOOTPART_NUM"
+			BOOTPART="${INTDEV}p${BOOTPART_NUM}"
 			# FIXME FIXME FIXME: detect properly, check what's mounted on / and the same drive's esp partition is it
 			BOOTPART_EXT="/dev/sda1"
+
+			BIOS_VERSION="$(cat /sys/class/dmi/id/bios_version)"
+			if [ "$BIOS_VERSION" = "2023.10-libreboot-20240612" ]; then
+				echo "Found BIOS version with broken EFI variables, working around..."
+				CADMIUM_AS_DEFAULT=true
+			elif [ -z "$(efibootmgr | grep Cadmium)" ]; then
+				efibootmgr -c -d "$INTDEV" -p "$BOOTPART_NUM" -L "Cadmium" -l '\efi\systemd\systemd-bootaa64.efi'
+			fi
+
 			mkdir -p /mnt2
 			mount $BOOTPART_EXT /mnt2 -o ro
 			mount $BOOTPART /mnt
+			mkdir -p /mnt/efi
 			cp -r /mnt2/loader /mnt/loader
 			cp -r /mnt2/dtbs /mnt/dtbs
 			cp /mnt2/Image /mnt/Image
 			cp -r /mnt2/efi/systemd /mnt/efi/systemd
-			cp /mnt2/efi/boot/bootaa64.efi /mnt/efi/systemd/systemd-bootaa64.efi
-
-			if [ -z "$(efibootmgr | grep Cadmium)" ]; then
-				efibootmgr -c -d "$INTDEV" -p "$BOOTPART_NUM" -L "Cadmium" -l '\efi\systemd\systemd-bootaa64.efi'
+			if [ "$CADMIUM_AS_DEFAULT" = "true" ]; then
+				mkdir -p /mnt/efi/boot
+				cp /mnt2/efi/boot/bootaa64.efi /mnt/efi/boot/bootaa64.efi
+			else
+				cp /mnt2/efi/boot/bootaa64.efi /mnt/efi/systemd/systemd-bootaa64.efi
 			fi
 
 			ROOTPART="/dev/disk/by-partlabel/Root"

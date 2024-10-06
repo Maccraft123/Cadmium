@@ -15,6 +15,7 @@ FS_PKGS_CD_UI_BASE="firefox pipewire wireplumber alsa-utils xwayland"
 # bootloader
 FS_PKGS_CD_BOOTFW_UBOOT="u-boot-tools"
 FS_PKGS_CD_BOOTFW_DEPTHCHARGE="$FS_PKGS_CD_BOOTFW_UBOOT vboot-utils cgpt"
+FS_PKGS_CD_BOOTFW_EFI="dosfstools efibootmgr"
 
 # ui
 FS_SUPPORTED_UIS="gnome kde phosh sway lomiri"

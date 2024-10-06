@@ -1,1 +1,1 @@
-console=ttyMSM0,115200 console=ttyS0,115200 console=tty1 rootwait rw fbcon=logo-pos:center,logo-count:1 loglevel=7
+console=ttyMSM0,115200 console=ttyS2,115200 console=ttyS0,115200 console=tty1 rootwait rw fbcon=logo-pos:center,logo-count:1 loglevel=7

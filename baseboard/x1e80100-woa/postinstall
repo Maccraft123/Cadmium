@@ -6,6 +6,7 @@ if [ -z "$DESTDIR" ]; then
 	exit 1
 fi
 
+# Copy over firmware files from windows installation
 mkdir /windows
 mount /dev/disk/by-label/Windows /windows -t ntfs3 -r
 function umount_windows() {
@@ -19,17 +20,28 @@ BOARD_VENDOR="$(cat $DMI/board_vendor)"
 PRODUCT_NAME="$(cat $DMI/product_name)"
 
 FIRMWARES='qcadsp8380.mbn qccdsp8380.mbn adsp_dtbs.elf cdsp_dtbs.elf qcdxkmsuc8380.mbn'
+BT_FIRMWARES='hmtbtfw20.tlv hmtnv20.b112'
 FIRMWARE_PATHS=""
+BT_FIRMWARE_PATHS=""
 
 for FW in $FIRMWARES; do
 	# push latest version of firmware file
 	FIRMWARE_PATHS="$FIRMWARE_PATHS $(find /windows/Windows/System32/DriverStore/FileRepository/ -name $FW -exec ls -t {} + | head -n1)"
 done
 
-mkdir -p "/lib/firmware/qcom/x1e80100/$BOARD_VENDOR/$PRODUCT_NAME/"
+mkdir -p "$DESTDIR/lib/firmware/qcom/x1e80100/$BOARD_VENDOR/$PRODUCT_NAME/"
 for FILE in $FIRMWARE_PATHS; do
 	cp "$FILE" "$DESTDIR/lib/firmware/qcom/x1e80100/$BOARD_VENDOR/$PRODUCT_NAME/"
 done
 
-# autoload scmi-cpufreq, for some reason it isn't done automatically
+for FW in $BT_FIRMWARES; do
+	BT_FIRMWARE_PATHS="$BT_FIRMWARE_PATHS $(find /windows/Windows/System32/DriverStore/FileRepository/ -name $FW -exec ls -t {} + | head -n1)"
+done
+
+mkdir -p "$DESTDIR/lib/firmware/qca"
+for FILE in $BT_FIRMWARE_PATHS; do
+	cp "$FILE" "$DESTDIR/lib/firmware/qca/"
+done
+
+# autoload scmi-cpufreq
 echo "scmi-cpufreq" > "$DESTDIR/etc/modules-load.d/99-scmi-cpufreq.conf"

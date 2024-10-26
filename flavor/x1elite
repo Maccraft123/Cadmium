@@ -1,0 +1,11 @@
+#!/bin/false
+export ARCH=arm64
+export ARCH_UNAME=aarch64
+export ARCH_DEB=arm64
+export ARCH_ALARM=aarch64
+
+export LOADER=efi
+
+export KTREE="https://git.codelinaro.org/abel.vesa/linux.git"
+export KTREE_GIT_REV="x1e-next-20240930"
+export KTREE_NAME="x1e"

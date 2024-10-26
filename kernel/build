@@ -27,7 +27,7 @@ case $KTREE in
 		fi
 	;;
 	*.git)
-		PATCHSUFFIX="abelvesa_patch"
+		PATCHSUFFIX="$KTREE_NAME"
 		if [ ! -d "linux-$ARCH" -o "$(cat ktree)" != "mainline" ]; then
 			rm -rf "linux-$ARCH"
 			git clone "$KTREE" "linux-$ARCH"
@@ -44,6 +44,10 @@ echo "$KTREE" > "$CADMIUMROOT/tmp/ktree"
 
 if [ ! -e "./.cadmium-patched" ]; then
 	for x in $(ls $CADMIUMROOT/kernel/patches/*.$PATCHSUFFIX); do
+		echo "Applying $x"
+		patch -p1 --forward < $x
+	done
+	for x in $(ls $CADMIUMROOT/kernel/patches/*.common_patch); do
 		echo "Applying $x"
 		patch -p1 --forward < $x
 	done

@@ -15,24 +15,35 @@ function umount_windows() {
 }
 trap umount_windows EXIT
 
-DMI="/sys/class/dmi/id"
-BOARD_VENDOR="$(cat $DMI/board_vendor)"
-PRODUCT_NAME="$(cat $DMI/product_name)"
+FW_PATH="$DESTDIR/lib/firmware/"
 
-FIRMWARES='qcadsp8380.mbn qccdsp8380.mbn adsp_dtbs.elf cdsp_dtbs.elf qcdxkmsuc8380.mbn'
+GPU_PATH="$(cat /sys/firmware/devicetree/base/soc\@0/gpu\@3d00000/zap-shader/firmware-name)"
+GPU_NAME="$(basename $GPU_PATH)"
+
+ADSP_PATH1="$(head -z -n1 < /sys/firmware/devicetree/base/soc\@0/remoteproc\@30000000/firmware-name)"
+ADSP_NAME1="$(basename $ADSP_PATH1)"
+
+ADSP_PATH2="$(tail -z -n1 < /sys/firmware/devicetree/base/soc\@0/remoteproc\@30000000/firmware-name)"
+ADSP_NAME2="$(basename $ADSP_PATH2)"
+
+CDSP_PATH1="$(head -z -n1 < /sys/firmware/devicetree/base/soc\@0/remoteproc\@32300000/firmware-name)"
+CDSP_NAME1="$(basename $CDSP_PATH1)"
+
+CDSP_PATH2="$(tail -z -n1 < /sys/firmware/devicetree/base/soc\@0/remoteproc\@32300000/firmware-name)"
+CDSP_NAME2="$(basename $CDSP_PATH2)"
+
+function file_repo_path() {
+	find /windows/Windows/System32/DriverStore/FileRepository/ -name "$1" -exec ls -t {} + | head -n1
+}
+
+cp "$(file_repo_path $GPU_NAME)" "$FW_PATH/$GPU_PATH"
+cp "$(file_repo_path $ADSP_NAME1)" "$FW_PATH/$ADSP_PATH1"
+cp "$(file_repo_path $ADSP_NAME2)" "$FW_PATH/$ADSP_PATH2"
+cp "$(file_repo_path $CDSP_NAME1)" "$FW_PATH/$CDSP_PATH1"
+cp "$(file_repo_path $CDSP_NAME2)" "$FW_PATH/$CDSP_PATH2"
+
 BT_FIRMWARES='hmtbtfw20.tlv hmtnv20.b112'
-FIRMWARE_PATHS=""
 BT_FIRMWARE_PATHS=""
-
-for FW in $FIRMWARES; do
-	# push latest version of firmware file
-	FIRMWARE_PATHS="$FIRMWARE_PATHS $(find /windows/Windows/System32/DriverStore/FileRepository/ -name $FW -exec ls -t {} + | head -n1)"
-done
-
-mkdir -p "$DESTDIR/lib/firmware/qcom/x1e80100/$BOARD_VENDOR/$PRODUCT_NAME/"
-for FILE in $FIRMWARE_PATHS; do
-	cp "$FILE" "$DESTDIR/lib/firmware/qcom/x1e80100/$BOARD_VENDOR/$PRODUCT_NAME/"
-done
 
 for FW in $BT_FIRMWARES; do
 	BT_FIRMWARE_PATHS="$BT_FIRMWARE_PATHS $(find /windows/Windows/System32/DriverStore/FileRepository/ -name $FW -exec ls -t {} + | head -n1)"

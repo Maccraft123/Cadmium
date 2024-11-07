@@ -34,6 +34,11 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
+if [ -z "$2" -a ! -b "$1" ]; then
+	echo "$1 is not a block device"
+	exit 1
+fi
+
 drop_perms git -C "$CADMIUMROOT" submodule update 2>/dev/null # FIXME: complains about missing files
 
 # it deals with env vars, TODO: make it not

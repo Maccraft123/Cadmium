@@ -10,6 +10,8 @@ source $CADMIUMROOT/flavor/$FLAV
 mkdir -p $CADMIUMROOT/tmp
 cd $CADMIUMROOT/tmp
 
+[ -z "$KTREE" ] && export KTREE=mainline
+
 case $KTREE in
 	mainline)
 		PATCHSUFFIX="patch"
@@ -28,7 +30,7 @@ case $KTREE in
 	;;
 	*.git)
 		PATCHSUFFIX="$KTREE_NAME"
-		if [ ! -d "linux-$ARCH" -o "$(cat ktree)" != "mainline" ]; then
+		if [ ! -d "linux-$ARCH" -o "$(cat ktree)" != "$KTRE" ]; then
 			rm -rf "linux-$ARCH"
 			git clone "$KTREE" "linux-$ARCH"
 		else

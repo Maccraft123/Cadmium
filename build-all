@@ -53,6 +53,7 @@ case "$FILESYSTEM" in
 	;;
 	ext4)
 		mkfs.ext4 -F "$ROOTPART"
+		tune2fs -o discard "$ROOTPART"
 	;;
 esac
 

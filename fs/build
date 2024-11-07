@@ -46,9 +46,9 @@ if [ "$(date +'%V%y') $ROOTFS $ARCH" != "$(cat $CADMIUMROOT/tmp/cached-rootfs-in
 
 	# install qcom binaries for lazor
 	# TODO: trogdor units with lte modem probably wont work
-	mkdir -p "$DESTDIR/lib/firmware/rmtfs"
+	mkdir -p "$DESTDIR/var/lib/rmtfs"
 	for name in fs1 fs2 fsg fsc; do
-		dd if=/dev/zero bs=1M count=2 of="$DESTDIR/lib/firmware/rmtfs/modem_$name"
+		dd if=/dev/zero bs=1M count=2 of="$DESTDIR/var/lib/rmtfs/modem_$name"
 	done
 
 	# get rid of any root password

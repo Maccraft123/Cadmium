@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+if [ -z "$DESTDIR" ]; then
+	echo "DESTDIR variable is missing!"
+	exit 1
+fi
+
+cp /etc/systemd/system/rmtfs-dir.service "$DESTDIR/etc/systemd/system/rmtfs-dir.service"
+chroot "$DESTDIR" systemctl enable rmtfs-dir
+

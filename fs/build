@@ -51,6 +51,22 @@ if [ "$(date +'%V%y') $ROOTFS $ARCH" != "$(cat $CADMIUMROOT/tmp/cached-rootfs-in
 		dd if=/dev/zero bs=1M count=2 of="$DESTDIR/var/lib/rmtfs/modem_$name"
 	done
 
+	if [ -e "$DESTDIR/lib/systemd" ]; then
+		echo "[Unit]
+Description=Qualcomm remotefs service
+Requires=qrtr-ns.service
+After=qrtr-ns.service
+
+[Service]
+ExecStart=/usr/bin/rmtfs -s -o /var/lib/rmtfs
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target" > "$DESTDIR/etc/systemd/system/rmtfs-dir.service"
+		$chroot "$DESTDIR" systemctl enable rmtfs-dir
+	fi
+
 	# get rid of any root password
 	$chroot "$DESTDIR" passwd -d root
 

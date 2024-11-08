@@ -70,6 +70,7 @@ WantedBy=multi-user.target" > "$DESTDIR/etc/systemd/system/rmtfs-dir.service"
 	# get rid of any root password
 	$chroot "$DESTDIR" passwd -d root
 
+	echo "cadmium" > "$DESTDIR/etc/hostname"
 	echo "$(date +'%V%y') $ROOTFS $ARCH" > "$CADMIUMROOT/tmp/cached-rootfs-info"
 fi
 

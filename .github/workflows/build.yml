@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v2
@@ -15,10 +15,14 @@ jobs:
       - name: Run a multi-line script
         run: |
           cd $GITHUB_WORKSPACE
-          echo 'deb-src http://azure.archive.ubuntu.com/ubuntu/ jammy main restricted' | sudo tee -a /etc/apt/sources.list
+          echo 'deb-src http://azure.archive.ubuntu.com/ubuntu/ noble main universe restricted' | sudo tee -a /etc/apt/sources.list
+          echo 'deb-src http://azure.archive.ubuntu.com/ubuntu/ noble-updates main universe restricted' | sudo tee -a /etc/apt/sources.list
+          echo 'deb-src http://azure.archive.ubuntu.com/ubuntu/ noble-security main universe restricted' | sudo tee -a /etc/apt/sources.list
+          echo 'deb-src http://azure.archive.ubuntu.com/ubuntu/ noble-backports main universe restricted' | sudo tee -a /etc/apt/sources.list
+
           sudo apt update
           sudo apt build-dep linux
-          sudo apt install libarchive-tools curl wget f2fs-tools cgpt vboot-utils libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf qemu-user-static gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu 
+          sudo apt install libarchive-tools curl wget f2fs-tools cgpt vboot-utils libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf qemu-user-static gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu llvm clang
           env RELEASE=arm64-chromebook ./build-all ./cadmium-arm64-chromebook.img 8G
           env RELEASE=arm64-efi ./build-all ./cadmium-arm64-efi.img 8G
       - uses: actions/upload-artifact@v4.4.3

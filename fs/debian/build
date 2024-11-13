@@ -10,4 +10,4 @@ debootstrap --arch="$ARCH_DEB" "$SUITE" "$DESTDIR" https://deb.debian.org/debian
 
 chroot "$DESTDIR" apt update
 chroot "$DESTDIR" apt install -y qrtr-tools rmtfs
-chroot "$DESTDIR" systemctl disable rmtfs
+chroot "$DESTDIR" systemctl mask rmtfs

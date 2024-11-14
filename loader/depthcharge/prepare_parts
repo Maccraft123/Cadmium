@@ -21,9 +21,9 @@ parted --script $DEVICE mklabel gpt # cgpt dislikes if i don't do that, so do th
 # 73728 comes from: size of kernel partition(65536) + beginning of kernel partition(8192)
 # 139264 comes from: size of B kernel partition(65536) + beginning of B kernel partition(73728)
 cgpt create $DEVICE
-cgpt add -i 1 -t kernel -b 8192		-s 65536 -l SDKernelA -S 1 -T 2 -P 10 $DEVICE
-cgpt add -i 2 -t kernel -b 73728	-s 65536 -l SDKernelB -S 0 -T 2 -P 5 $DEVICE
-cgpt add -i 3 -t data -b 139264		-s $(expr $(cgpt show $DEVICE | grep 'Sec GPT table' | awk '{print $1}') - 139264) -l Root $DEVICE
+cgpt add -i 1 -t kernel -b 8192		-s 65536 -l ExtKernelA -S 1 -T 2 -P 10 $DEVICE
+cgpt add -i 2 -t kernel -b 73728	-s 65536 -l ExtKernelB -S 0 -T 2 -P 5 $DEVICE
+cgpt add -i 3 -t data -b 139264		-s $(expr $(cgpt show $DEVICE | grep 'Sec GPT table' | awk '{print $1}') - 139264) -l ExtRoot $DEVICE
 sync
 
 partx -a $DEVICE >/dev/null 2>&1 || true # fails if something else added partitions

@@ -194,6 +194,10 @@ if [ $INSTMED != this ]; then
 			umount /mnt2
 			umount /mnt
 			;;
+		*)
+			echo "Reached unreachable point"
+			exit 1
+			;;
 	esac
 
 	# force rescan partitions

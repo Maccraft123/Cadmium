@@ -6,6 +6,9 @@ if [ -z "$DESTDIR" ]; then
 	exit 1
 fi
 
+for name in fs1 fs2 fsg fsc; do
+	dd if=/dev/zero of="$DESTDIR/var/lib/rmtfs/modem_$name" bs=1M count=2
+done
+
 cp /etc/systemd/system/rmtfs-dir.service "$DESTDIR/etc/systemd/system/rmtfs-dir.service"
 chroot "$DESTDIR" systemctl enable rmtfs-dir
-

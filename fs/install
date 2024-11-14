@@ -88,7 +88,7 @@ else
 	BATCAPACITY="$(cat $BAT/capacity)"
 
 	if [ "$BATCAPACITY" -le 30 ]; then
-		echo "Looks like your device is about to discharge"
+		echo "Looks like your device is about to discharge, currently it sits at $BATCAPACITY %"
 		echo "Bailing out for safety reasons"
 		exit 1
 	fi

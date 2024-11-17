@@ -10,11 +10,9 @@ CADMIUMROOT="/CdFiles"
 # try finding out bootloader
 BOOTFW=unknown
 if cat /proc/cmdline | grep -s cros_secure >/dev/null 2>&1; then
-	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_DEPTHCHARGE
 	BOOTFW=depthcharge
 	BOOTFW_PKGS="$FS_PKGS_CD_BOOTFW_DEPTHCHARGE"
 elif [ -d "/sys/firmware/efi" ]; then
-	$FS_INST_PKG $FS_PKGS_CD_BOOTFW_EFI
 	BOOTFW=efi
 	BOOTFW_PKGS="$FS_PKGS_CD_BOOTFW_EFI"
 fi
@@ -99,6 +97,8 @@ sleep 4 # wait for wifi networks
 nmtui connect
 
 which ntpdate >/dev/null 2>&1 && ntpdate pool.ntp.org
+
+$FS_INST_PKG $BOOTFW_PKGS
 
 # try finding emmc
 case "$BASEBOARD" in

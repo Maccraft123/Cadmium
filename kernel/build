@@ -30,7 +30,7 @@ case $KTREE in
 	;;
 	*.git)
 		PATCHSUFFIX="$KTREE_NAME"
-		if [ ! -d "linux-$ARCH" -o "$(cat ktree)" != "$KTRE" ]; then
+		if [ ! -d "linux-$ARCH" -o "$(cat ktree)" != "$KTREE" ]; then
 			rm -rf "linux-$ARCH"
 			git clone "$KTREE" "linux-$ARCH"
 		else

@@ -20,7 +20,7 @@ FS_PKGS_CD_BOOTFW_EFI="dosfstools efibootmgr"
 # ui
 FS_SUPPORTED_UIS="gnome kde phosh sway lomiri"
 FS_PKGS_CD_UI_GNOME="gnome gdm3 xwayland"
-FS_PKGS_CD_UI_KDE="plasma-desktop kde-full krusader konsole plasma-nm muon kwin-x11 kwin-wayland sddm kinfocenter systemsettings powerdevil kde-config-sddm kde-config-screenlocker kde-config-gtk-style partitionmanager libkf5su-bin"
+FS_PKGS_CD_UI_KDE="plasma-desktop kde-full krusader konsole plasma-nm kwin-x11 kwin-wayland sddm kinfocenter systemsettings powerdevil kde-config-sddm kde-config-screenlocker kde-config-gtk-style partitionmanager libkf5su-bin"
 FS_PKGS_CD_UI_PHOSH="xfce4-terminal phosh phosh-tablet xwayland"
 FS_PKGS_CD_UI_SWAY="sway i3status xfce4-terminal dmenu xwayland grim slurp brightnessctl"
 FS_PKGS_CD_UI_LOMIRI="lomiri-desktop-session lomiri-calculator-app lomiri-clock-app lomiri-filemanager-app lomiri-gallery-app lomiri-mediaplayer-app lomiri-music-app morph-browser gdm3"

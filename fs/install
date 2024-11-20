@@ -123,15 +123,11 @@ if [ $INSTMED != this ]; then
 	case $BOOTFW in
 		depthcharge)
 			dd if=/dev/zero of=$INTDEV bs=512k count=128 seek=$EMMC_OFFSET
-			partx -d $INTDEV
 			parted --script $INTDEV mklabel gpt >/dev/null 2>&1 || true # ???
 			cgpt create $INTDEV
 			cgpt add -i 1 -t kernel -b $(expr 8192 + $EMMC_OFFSET)   -s 65536 -l IntKernelA -S 1 -T 2 -P 10  ${INTDEV}
 			cgpt add -i 2 -t kernel -b $(expr 73728 + $EMMC_OFFSET)  -s 65536 -l IntKernelB -S 0 -T 2 -P 5   ${INTDEV}	
 			cgpt add -i 3 -t data   -b $(expr 139264 + $EMMC_OFFSET) -s $(expr $(cgpt show ${INTDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l IntRoot ${INTDEV}
-			partx -a $INTDEV
-			udevadm trigger
-			# i sure do love confusing one-liners
 
 			ROOTPART=/dev/disk/by-partlabel/IntRoot
 			KERNPART=/dev/disk/by-partlabel/IntKernelA

@@ -306,7 +306,6 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 					echo "input type:touch map_to_output $WLR_DISP" > $DESTDIR/etc/sway/cadmium-shim.conf
 					echo "input type:tablet_tool map_to_output $WLR_DISP" >> $DESTDIR/etc/sway/cadmium-shim.conf
 					echo "input type:touchpad click_method clickfinger" >> $DESTDIR/etc/sway/cadmium-shim.conf
-					echo "output $WLR_DISP transform $DISP_ROTATION" >> $DESTDIR/etc/sway/cadmium-shim.conf
 
 					# and also keybinds
 					echo 'bindsym '$MODKEY'+F4 exec sh -c grim -g "$(slurp)" - | wl-copy' >> $DESTDIR/etc/sway/cadmium-shim.conf

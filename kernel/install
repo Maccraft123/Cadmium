@@ -13,7 +13,6 @@ shopt -s expand_aliases # needed for aliases
 set -e
 
 source $CADMIUMROOT/config
-source $CADMIUMROOT/board/$TARGET/boardinfo
 source $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 
 # set up alias areweontarget so "if areweontarget; then X" works fine

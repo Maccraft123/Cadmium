@@ -40,7 +40,7 @@ Thanks @LoganMD for the logo
 - Reboot
 Once you have this out, continue with instructions:
 
-- *Edit ./config to reflect your board*
+- *Edit ./config to reflect your laptop*
 - ``` ./build-all /dev/sdX ``` On a Linux machine(ChromeOS doesn't count(except in linux chroot)). For Debian rootfs, binfmt and debootstrap are needed to work correctly.
 - When ```build-all``` is ran like ```./build-all <file> <size>```, it builds Cadmium to <file> with size of <size>(8G should be fine)
 - Enable developer mode

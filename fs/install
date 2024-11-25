@@ -300,10 +300,22 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 						1) MODKEY=Mod4 ;;
 						2) MODKEY=Mod1 ;;
 					esac
-
-
 					# add sway config shim to cover up hardware differences between cadmium devices and whatever sway thinks is default
-					echo "input type:touch map_to_output $WLR_DISP" > $DESTDIR/etc/sway/cadmium-shim.conf
+					DSI_PATH="$(realpath /sys/class/drm/card*-DSI*)"
+					EDP_PATH="$(realpath /sys/class/drm/card*-eDP*)"
+					if [ -e "$DSI_PATH" ]; then
+						DISP="$DSI_PATH"
+					elif [ -e "$EDP_PATH" ]; then
+						DISP="$EDP_PATH"
+					else
+						echo "Failed finding the internal display"
+						echo "/sys/class/drm/:"
+						ls /sys/class/drm
+						exit 1
+					fi
+					DISP="$(basename $DISP | sed 's/card.-//')"
+
+					echo "input type:touch map_to_output $DISP" > $DESTDIR/etc/sway/cadmium-shim.conf
 					echo "input type:touchpad click_method clickfinger" >> $DESTDIR/etc/sway/cadmium-shim.conf
 
 					# and also keybinds

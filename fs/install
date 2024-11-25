@@ -61,7 +61,9 @@ if [ $TARGET = none ]; then
 	exit 1
 fi
 
-. $CADMIUMROOT/board/$TARGET/boardinfo
+if [ -e "$CADMIUMROOT/board/$TARGET/boardinfo" ]; then
+	. $CADMIUMROOT/board/$TARGET/boardinfo
+fi
 . $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 #echo "$SOC $BOARD $BASEBOARD"
 

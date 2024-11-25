@@ -304,7 +304,6 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 
 					# add sway config shim to cover up hardware differences between cadmium devices and whatever sway thinks is default
 					echo "input type:touch map_to_output $WLR_DISP" > $DESTDIR/etc/sway/cadmium-shim.conf
-					echo "input type:tablet_tool map_to_output $WLR_DISP" >> $DESTDIR/etc/sway/cadmium-shim.conf
 					echo "input type:touchpad click_method clickfinger" >> $DESTDIR/etc/sway/cadmium-shim.conf
 
 					# and also keybinds

@@ -22,21 +22,29 @@ source "$CADMIUMROOT/flavor/$FLAV"
 
 cd "$CADMIUMROOT/tmp/linux-$ARCH"
 
-[ "$ARCH" != arm ] && lz4 -z --best -f "arch/$ARCH/boot/Image" c_linux.lz4
-#[ "$ARCH" != arm ] && lzma -z -e "arch/$ARCH/boot/Image" -c > c_linux.lzma
-
-# TODO: generate
-cp "$CADMIUMROOT/kernel/$ARCH.kernel.its" kernel.its
-
+if [ "$ARCH" = "arm64" ]; then
+	COMPRESSION="lz4"
+	IMAGE="c_linux.lz4"
+	lz4 -z --best -f "arch/$ARCH/boot/Image" c_linux.lz4
+else
+	COMPRESSION="none"
+	IMAGE="arch/arm/boot/zImage"
+fi
 
 cp "$CADMIUMROOT/kernel/cmdline" cmdline
 cp "$CADMIUMROOT/kernel/cmdline" cmdline.p2
 echo ' root=PARTUUID=%U/PARTNROFF=2' >> cmdline
 echo ' root=PARTUUID=%U/PARTNROFF=1' >> cmdline.p2
 
-# make kernel partition
-# yes this is stolen from solidhal's prawnos
+# https://github.com/archlinuxarm/PKGBUILDs/blob/master/core/linux-aarch64/PKGBUILD
+for B in veyron elm gru kukui trogdor; do
+	DTBS="$DTBS $(find arch/$ARCH/boot/dts -name \*${B}\*.dtb)"
+done
+
+echo $DTBS | "$CADMIUMROOT/loader/depthcharge/generate_chromebook_its.sh" "$IMAGE" "$ARCH" "$COMPRESSION" > kernel.its
+
 mkimage -D "-I dts -O dtb -p 2048" -f kernel.its vmlinux.uimg
+
 dd if=/dev/zero of=bootloader.bin bs=512 count=1
 $VBUTIL_KERNEL --pack vmlinux.kpart \
 	--version 1 \

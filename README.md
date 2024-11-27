@@ -15,22 +15,22 @@ Thanks @LoganMD for the logo
 | Feature      | RK3288 | MT8173 | MT8183 | SC7180 | X1 Elite |
 | ------------ | ------ | ------ | ------ | ------ | -------- |
 | Display      | Y      | Y      | Y      | Y      | Y        |
-| OpenGL       | Y      | N      | 3.1    | Y      | 4.6      |
-| Vulkan       | N      | N      | N      | Y      | 1.3.211  |
-| Video decode | ?      | ?      | ?      | ?      | N        |
+| OpenGL       | Y      | N      | 3.1    | 4.6    | 4.6      |
+| Vulkan       | N      | N      | N      | Y      | Y        |
+| Video decode | ?      | ?      | ?      | Y      | N        |
 | USB Host     | Y      | Y      | Y      | Y      | Y        |
 | USB Device   | N      | N      | N      | N      | ?        |
 | KVM          | Y      | Y      | Y      | Y      | N        |
 | CPUFreq      | Y      | Y      | Y      | Y      | Y        |
 
-| Commercial name          | Codename       |  SOC     | Pen input | Internal Installation  | WiFi | Bluetooth | Audio | Suspend/Resume | Notes               |
-| ------------------------ | -------------- | -------- | --------- | ---------------------- | ---- | --------- | ----- | -------------- | ------------------- |
-| Asus Chromebook C100PA   | veyron-minnie  | RK3288   | N/A       | ?                      | ?    | ?         | ?     | Y              |                     |
-| Samsung Chromebook Plus  | gru-kevin      | RK3399   | ?         | ?                      | ?    | ?         | ?     | Y              | Libreboot available |
-| Lenovo Chromebook S330   | elm-hana       | MT8173   | N/A       | ?                      | ?    | ?         | ?     | Y              |                     |
-| Lenovo Chromebook Duet   | kukui-krane    | MT8183   | ?         | Y                      | Y    | ?         | Y     | Y              |                     |
-| Acer Chromebook Spin 513 | trogdor-lazor  | SC7180   | ?         | ?                      | ?    | ?         | ?     | Y              |                     |
-| Lenovo Yoga Slim 7x      | N/A            | X1 Elite | N/A?      | Dual-boot with Windows | Y    | Y         | N     | Only manual    | EFI booting         |
+| Commercial name          | Codename       |  SOC     | Pen input | Internal Installation  | WiFi | Bluetooth | Audio | Suspend/Resume | Notes                             |
+| ------------------------ | -------------- | -------- | --------- | ---------------------- | ---- | --------- | ----- | -------------- | --------------------------------- |
+| Asus Chromebook C100PA   | veyron-minnie  | RK3288   | N/A       | ?                      | ?    | ?         | ?     | Y              |                                   |
+| Samsung Chromebook Plus  | gru-kevin      | RK3399   | ?         | ?                      | ?    | ?         | ?     | Y              | Libreboot available               |
+| Lenovo Chromebook S330   | elm-hana       | MT8173   | N/A       | ?                      | ?    | ?         | ?     | Y              |                                   |
+| Lenovo Chromebook Duet   | kukui-krane    | MT8183   | ?         | Y                      | Y    | ?         | Y     | Y              |                                   |
+| Acer Chromebook Spin 513 | trogdor-lazor  | SC7180   | ?         | Y                      | Y    | ?         | Y     | Y              | Manual audio switching required   |
+| Lenovo Yoga Slim 7x      | N/A            | X1 Elite | N/A?      | Dual-boot with Windows | Y    | Y         | N     | Only manual    | EFI booting                       |
 
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV
 

@@ -11,6 +11,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: 'true'
 
       - name: Run a multi-line script
         run: |
@@ -22,7 +24,7 @@ jobs:
 
           sudo apt update
           sudo apt build-dep linux
-          sudo apt install libarchive-tools curl wget f2fs-tools cgpt vboot-utils libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf qemu-user-static gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu llvm clang
+          sudo apt install libarchive-tools curl wget f2fs-tools cgpt vboot-utils libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf qemu-user-static lld gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu llvm clang u-boot-tools debootstrap
           env RELEASE=arm64-chromebook ./build-all ./cadmium-arm64-chromebook.img 8G
           env RELEASE=arm64-efi ./build-all ./cadmium-arm64-efi.img 8G
       - uses: actions/upload-artifact@v4.4.3

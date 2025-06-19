@@ -13,3 +13,5 @@ done
 
 cp /etc/systemd/system/rmtfs-dir.service "$DESTDIR/etc/systemd/system/rmtfs-dir.service"
 chroot "$DESTDIR" systemctl enable rmtfs-dir
+chroot "$DESTDIR" systemctl unmask rmtfs
+chroot "$DESTDIR" systemctl enable rmtfs

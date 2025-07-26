@@ -14,11 +14,14 @@ if [ ! -f "$CADMIUMROOT/tmp/arch-$ARCH_ALARM.tar.gz" ]; then
 fi
 tar xfp $CADMIUMROOT/tmp/arch-${ARCH_ALARM}.tar.gz -C $DESTDIR
 
+sed -i s/CheckSpace/#CheckSpace/g $DESTDIR/etc/pacman.conf
+
 $chroot $DESTDIR /usr/bin/pacman-key --init
 $chroot $DESTDIR /usr/bin/pacman-key --populate archlinuxarm
 
-rm $DESTDIR/etc/resolv.conf # resolv.conf -> /run/systemd/resolve/resolv.conf not working in $chroot
-echo "nameserver 1.1.1.1" > $DESTDIR/etc/resolv.conf # TODO: make it configurable or fetch from host?
+#rm $DESTDIR/etc/resolv.conf # resolv.conf -> /run/systemd/resolve/resolv.conf not working in $chroot
+mkdir -p $DESTDIR/run/systemd/resolve/ # Should be overwritten by run mount when image is booted
+echo "nameserver 1.1.1.1" > $DESTDIR/run/systemd/resolve/resolv.conf # TODO: make it configurable or fetch from host?
 
 $chroot $DESTDIR /usr/bin/pacman -Syu --noconfirm networkmanager
 

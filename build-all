@@ -41,6 +41,22 @@ fi
 
 drop_perms git -C "$CADMIUMROOT" submodule update 2>/dev/null # FIXME: complains about missing files
 
+function undo_losetup() {
+	losetup -d "$DEVICE"
+}
+
+if [ -n "$2" ]; then # if $2 is set, it means that user wants a file
+	echo "Making file $1 with size of $2"
+	IMG="$(realpath $1)"
+	fallocate "$IMG" -l "$2"
+	DEVICE="$(losetup -f)"
+	losetup "$DEVICE" "$IMG"
+
+	trap undo_losetup EXIT
+else
+	DEVICE="$1"
+fi
+
 # it deals with env vars, TODO: make it not
 source "$CADMIUMROOT/loader/$LOADER/prepare_parts"
 
@@ -71,9 +87,6 @@ trap umount_root EXIT
 
 # install modules
 make -C "$CADMIUMROOT/tmp/linux-$ARCH" INSTALL_MOD_PATH="$CADMIUMROOT/tmp/root" modules_install
-
-# yes, this fails when device is pendrive or sth
-losetup -d "$DEVICE" 2>/dev/null || true
 
 sync # just to be sure
 

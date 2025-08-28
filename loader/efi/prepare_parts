@@ -2,16 +2,6 @@
 # we deal with env vars
 # so no /bin/bash
 
-if [ -n "$2" ]; then # if $2 is set, it means that user wants a file
-	echo "Making file $1 with size of $2"
-	IMG="$(realpath $1)"
-	fallocate "$IMG" -l "$2"
-	DEVICE="$(losetup -f)"
-	losetup "$DEVICE" "$IMG"
-else
-	DEVICE="$1"
-fi
-
 dd if=/dev/zero of=$DEVICE bs=1M count=64
 
 # make partition table

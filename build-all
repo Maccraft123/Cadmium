@@ -6,8 +6,6 @@ unset CXX
 
 set -e
 
-"$CADMIUMROOT/check"
-
 if [ -z "$DROPTO" ]; then
 	if [ "$UID" != "0" ]; then
 		mkdir -p "$CADMIUMROOT/tmp"
@@ -17,6 +15,8 @@ if [ -z "$DROPTO" ]; then
 		echo "The ability to do so will be removed in future"
 	fi
 fi
+
+"$CADMIUMROOT/check"
 
 function drop_perms() {
 	setpriv --reuid="$DROPTO" --regid="$DROPTO" --init-groups --inh-caps=-all $@

@@ -270,6 +270,8 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 			fi
 		done
 
+		# Remove obsolete ntpdate from the package list dynamically
+		FS_PKGS_CD_BASE="${FS_PKGS_CD_BASE//ntpdate/}"
 		$chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BASE
 
 		if [ "$UI_CHOICE" != "none" ]; then

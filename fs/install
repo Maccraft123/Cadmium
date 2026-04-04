@@ -98,7 +98,7 @@ nmcli device wifi rescan
 sleep 4 # wait for wifi networks
 nmtui connect
 
-which ntpdate >/dev/null 2>&1 && ntpdate pool.ntp.org
+systemctl restart systemd-timesyncd.service >/dev/null 2>&1 || true
 
 $FS_INST_PKG $BOOTFW_PKGS
 

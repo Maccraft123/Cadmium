@@ -61,9 +61,7 @@ if [ $TARGET = none ]; then
 	exit 1
 fi
 
-if [ -e "$CADMIUMROOT/board/$TARGET/boardinfo" ]; then
-	. $CADMIUMROOT/board/$TARGET/boardinfo
-fi
+. $CADMIUMROOT/board/$TARGET/boardinfo
 . $CADMIUMROOT/baseboard/$BASEBOARD/boardinfo
 #echo "$SOC $BOARD $BASEBOARD"
 
@@ -98,7 +96,8 @@ nmcli device wifi rescan
 sleep 4 # wait for wifi networks
 nmtui connect
 
-systemctl restart systemd-timesyncd.service >/dev/null 2>&1 || true
+
+which ntpdate >/dev/null 2>&1 && ntpdate pool.ntp.org || date -s "$(curl -sI https://deb.debian.org | grep -i ^date: | sed 's/^[Dd]ate: //g')" >/dev/null 2>&1 || true
 
 $FS_INST_PKG $BOOTFW_PKGS
 
@@ -130,6 +129,8 @@ if [ $INSTMED != this ]; then
 			cgpt add -i 1 -t kernel -b $(expr 8192 + $EMMC_OFFSET)   -s 65536 -l IntKernelA -S 1 -T 2 -P 10  ${INTDEV}
 			cgpt add -i 2 -t kernel -b $(expr 73728 + $EMMC_OFFSET)  -s 65536 -l IntKernelB -S 0 -T 2 -P 5   ${INTDEV}	
 			cgpt add -i 3 -t data   -b $(expr 139264 + $EMMC_OFFSET) -s $(expr $(cgpt show ${INTDEV} | grep 'Sec GPT table' | awk '{print $1}') - $(expr 139264 + $EMMC_OFFSET)) -l IntRoot ${INTDEV}
+			
+			udevadm trigger --settle --name-match=$INTDEV
 
 			ROOTPART=/dev/disk/by-partlabel/IntRoot
 			KERNPART=/dev/disk/by-partlabel/IntKernelA
@@ -270,8 +271,8 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 			fi
 		done
 
-		# Remove obsolete ntpdate from the package list dynamically
-		FS_PKGS_CD_BASE="${FS_PKGS_CD_BASE//ntpdate/}"
+		# Replace obsolete ntpdate with systemd-timesyncd to ensure time syncing works in the chroot
+		FS_PKGS_CD_BASE="${FS_PKGS_CD_BASE//ntpdate/systemd-timesyncd}"
 		$chroot $DESTDIR $FS_INST_PKG $FS_PKGS_CD_BASE
 
 		if [ "$UI_CHOICE" != "none" ]; then
@@ -302,25 +303,13 @@ if [ "$FS_HAS_OOBE" = "false" ]; then
 						1) MODKEY=Mod4 ;;
 						2) MODKEY=Mod1 ;;
 					esac
-					# add sway config shim to cover up hardware differences between cadmium devices and whatever sway thinks is default
-					DSI_PATH="$(realpath /sys/class/drm/card*-DSI*)"
-					EDP_PATH="$(realpath /sys/class/drm/card*-eDP*)"
-					if [ -e "$DSI_PATH" ]; then
-						DISP="$DSI_PATH"
-					elif [ -e "$EDP_PATH" ]; then
-						DISP="$EDP_PATH"
-					else
-						echo "Failed finding the internal display"
-						echo "/sys/class/drm/:"
-						ls /sys/class/drm
-						exit 1
-					fi
-					DISP="$(basename $DISP | sed 's/card.-//')"
 
-					echo "input type:touch map_to_output $DISP" > $DESTDIR/etc/sway/cadmium-shim.conf
+
+					# add sway config shim to cover up hardware differences between cadmium devices and whatever sway thinks is default
+					echo "input type:touch map_to_output $WLR_DISP" > $DESTDIR/etc/sway/cadmium-shim.conf
+					echo "input type:tablet_tool map_to_output $WLR_DISP" >> $DESTDIR/etc/sway/cadmium-shim.conf
 					echo "input type:touchpad click_method clickfinger" >> $DESTDIR/etc/sway/cadmium-shim.conf
-					echo "input type:touchpad tap enabled" >> $DESTDIR/etc/sway/cadmium-shim.conf
-					echo "input type:touchpad tap_button_map lrm" >> $DESTDIR/etc/sway/cadmium-shim.conf
+					echo "output $WLR_DISP transform $DISP_ROTATION" >> $DESTDIR/etc/sway/cadmium-shim.conf
 
 					# and also keybinds
 					echo 'bindsym '$MODKEY'+F4 exec sh -c grim -g "$(slurp)" - | wl-copy' >> $DESTDIR/etc/sway/cadmium-shim.conf

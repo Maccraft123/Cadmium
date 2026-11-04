@@ -47,7 +47,7 @@ esac
 # try finding current device in cadmium tree
 
 TARGET=none
-COMPATIBLE="$(cat /sys/firmware/devicetree/base/compatible)"
+COMPATIBLE="$(tr '\0' ' ' < /sys/firmware/devicetree/base/compatible)"
 for x in $(find $CADMIUMROOT/board/* -type d -printf '%f\n'); do
 	try=$(echo $COMPATIBLE | grep $x) || true
 	if [ -n "$try" ]; then
@@ -68,9 +68,10 @@ fi
 #echo "$SOC $BOARD $BASEBOARD"
 
 # don't even try installing if the device is about to die
+BAT=NOTFOUND
 for x in /sys/class/power_supply/*; do
 	echo "Trying path: $x"
-	if [ "$(cat $x/device/name)" = 'sbs-battery' -o "$(cat $x/device/name)" = 'bq27500' ]; then
+	if [ "$(cat $x/device/name 2>/dev/null)" = 'sbs-battery' -o "$(cat $x/device/name 2>/dev/null)" = 'bq27500' -o "$(cat $x/type 2>/dev/null)" = 'Battery' ]; then
 		echo "Found battery at $x"
 		BAT=$x
 	fi
@@ -80,7 +81,7 @@ if [ "$BASEBOARD" = "x1e80100-woa" ]; then
 	echo "WARNING: THIS DEVICE DOESN'T HAVE WORKING BATTERY READOUT ON USB BOOT"
 	echo "IF IT DISCHARGES DURING INSTALLATION DON'T BLAME ME"
 elif [ "$BAT" = "NOTFOUND" ]; then
-	. /CdFiles/info
+	. /CdFiles/info 2>/dev/null || true
 	echo "Debug info: R: $ROOTFS B: $BASEBOARD T: $BOARD"
 	echo "Uh oh, automatic battery detection failed"
 	echo "Make a photo of this screen and include it in issue on Cadmium Github page"

@@ -30,6 +30,8 @@ Thanks @LoganMD for the logo
 | Lenovo Chromebook S330   | elm-hana       | MT8173   | N/A       | ?                      | ?    | ?         | ?     | Y              |                                   |
 | Lenovo Chromebook Duet   | kukui-krane    | MT8183   | ?         | Y                      | Y    | ?         | Y     | Y              |                                   |
 | Acer Chromebook Spin 513 | trogdor-lazor  | SC7180   | ?         | Y                      | Y    | ?         | Y     | Y              | Manual audio switching required   |
+| Acer Chromebook Tab 10   | gru-scarlet    | RK3399   | ?         | ?                      | ?    | ?         | ?     | ?              | Display Y (KD097D04 panel, SKU 7) |
+| Lenovo IdeaPad Duet 3    | trogdor-wormdingler | SC7180 | ?        | ?                      | ?    | ?         | ?     | ?              | Needs REGULATOR_QCOM_REFGEN, display untested on hardware |
 | Lenovo Yoga Slim 7x      | N/A            | X1 Elite | N/A?      | Dual-boot with Windows | Y    | Y         | N     | Only manual    | EFI booting                       |
 
 ## Official discord server is at https://discord.gg/ZZbwyvKCmV
@@ -59,7 +61,7 @@ Once you have this out, continue with instructions:
 
 ## Dependencies on build machine, Debian is recommended
 - Recent Linux distribution
-- A working LLVM toolchain
+- A working LLVM toolchain. If your default `clang` can't build the kernel (for example a vendor fork, or one that is too new), build with `LLVM=-19 ./build-all ...` or `LLVM=/usr/lib/llvm-19/bin/ ./build-all ...`
 - Build dependencies for kernel compilation
 - ```debootstrap``` when Debian rootfs is used
 - ```qemu-user-static``` when build machine can't run binaries for the target machine, with binfmt support

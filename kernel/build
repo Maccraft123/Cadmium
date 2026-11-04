@@ -12,6 +12,11 @@ cd $CADMIUMROOT/tmp
 
 [ -z "$KTREE" ] && export KTREE=mainline
 
+# Which LLVM the kernel is built with. Defaults to whatever "clang" is first in
+# PATH; set LLVM=-19 (version suffix) or LLVM=/usr/lib/llvm-19/bin/ (directory)
+# if your default clang is too new or is a vendor fork that can't build Linux.
+LLVM_ARG="${LLVM:-1}"
+
 case $KTREE in
 	mainline)
 		PATCHSUFFIX="patch"
@@ -58,8 +63,8 @@ fi
 
 [ -f .config ] || cp "$CADMIUMROOT/kernel/config.$ARCH" .config
 
-make oldconfig LLVM=1
+make oldconfig LLVM=$LLVM_ARG
 #make nconfig LLVM=1 # if you want to customize config just uncomment this
 
 echo "Bulding kernel for $ARCH in $(pwd) with $THREADS threads"
-time make -j"$THREADS" LLVM=1
+time make -j"$THREADS" LLVM=$LLVM_ARG

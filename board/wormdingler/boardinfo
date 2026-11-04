@@ -1,0 +1,10 @@
+#!/bin/false
+
+# Lenovo IdeaPad Duet 3 Chromebook (wormdingler), SC7180 trogdor family.
+# The directory name is matched against the device tree's "compatible"
+# string (google,wormdingler-skuN) by fs/install.
+# arch missing? go to baseboard/$BASEBOARD/boardinfo
+
+export BASEBOARD=trogdor
+export BOARD=wormdingler
+export TYPE=tablet

@@ -95,9 +95,17 @@ else
 	fi
 fi
 
-nmcli device wifi rescan
-sleep 4 # wait for wifi networks
-nmtui connect
+# Wi-Fi is optional: wired (USB ethernet) is fine, and not every kernel has a driver for the radio
+if nmcli -t -f TYPE device | grep -qx wifi; then
+	nmcli device wifi rescan || true
+	sleep 4 # wait for wifi networks
+	nmtui connect
+fi
+
+if ! nm-online -q -t 30; then
+	echo "No network connection. Connect Wi-Fi (nmtui connect) or plug in a USB ethernet adapter, then run ./install again"
+	exit 1
+fi
 
 which ntpdate >/dev/null 2>&1 && ntpdate pool.ntp.org
 

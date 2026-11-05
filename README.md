@@ -30,7 +30,7 @@ Thanks @LoganMD for the logo
 | Lenovo Chromebook S330   | elm-hana       | MT8173   | N/A       | ?                      | ?    | ?         | ?     | Y              |                                   |
 | Lenovo Chromebook Duet   | kukui-krane    | MT8183   | ?         | Y                      | Y    | ?         | Y     | Y              |                                   |
 | Acer Chromebook Spin 513 | trogdor-lazor  | SC7180   | ?         | Y                      | Y    | ?         | Y     | Y              | Manual audio switching required   |
-| Acer Chromebook Tab 10   | gru-scarlet    | RK3399   | ?         | ?                      | Y    | ?         | Y     | ?              | Display Y (KD097D04 panel, SKU 7) |
+| Acer Chromebook Tab 10   | gru-scarlet    | RK3399   | ?         | ?                      | Y    | ?         | Y     | ?              | Display Y (KD097D04 panel, SKU 7), front camera Y, rear camera detected |
 | Lenovo IdeaPad Duet 3    | trogdor-wormdingler | SC7180 | ?        | ?                      | Y    | ?         | ?     | ?              | Display Y (needs REGULATOR_QCOM_REFGEN)                   |
 | Lenovo Yoga Slim 7x      | N/A            | X1 Elite | N/A?      | Dual-boot with Windows | Y    | Y         | N     | Only manual    | EFI booting                       |
 

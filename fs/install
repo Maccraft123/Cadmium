@@ -396,6 +396,11 @@ if [ -e "$CADMIUMROOT/baseboard/$BASEBOARD/postinstall" ]; then
 	"$CADMIUMROOT/baseboard/$BASEBOARD/postinstall"
 fi
 
+# per-board tweaks, run after the baseboard ones so they can undo or refine them
+if [ -e "$CADMIUMROOT/board/$BOARD/postinstall" ]; then
+	"$CADMIUMROOT/board/$BOARD/postinstall"
+fi
+
 if [ $INSTMED != this ]; then
 	umount -R $DESTDIR/proc $DESTDIR/sys $DESTDIR/dev 2>/dev/null || true
 	umount /mnt

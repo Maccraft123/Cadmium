@@ -142,8 +142,6 @@ if [ $INSTMED != this ]; then
 
 			ROOTPART=/dev/disk/by-partlabel/IntRoot
 			KERNPART=/dev/disk/by-partlabel/IntKernelA
-
-			dd if=/dev/disk/by-partlabel/ExtKernelA of=$KERNPART
 			;;
 		efi)
 			if [ "$INSTMED" = "emmc" ]; then
@@ -210,7 +208,21 @@ if [ $INSTMED != this ]; then
 	# force rescan partitions
 	sleep 1
 	partx -a $INTDEV >/dev/null 2>&1 || true
+	udevadm settle
 	sleep 1
+
+	# the by-partlabel links only exist once udev has seen the new partitions;
+	# writing to a missing one would silently create a regular file in /dev
+	for part in $ROOTPART $KERNPART; do
+		if [ ! -b "$part" ]; then
+			echo "Partition $part did not appear after repartitioning, bailing out"
+			exit 1
+		fi
+	done
+
+	if [ "$BOOTFW" = "depthcharge" ]; then
+		dd if=/dev/disk/by-partlabel/ExtKernelA of=$KERNPART bs=1M conv=fsync
+	fi
 
 	case "$FILESYSTEM" in
 		f2fs)
@@ -229,6 +241,17 @@ if [ $INSTMED != this ]; then
 		export chroot="arch-chroot";
 	fi
 	$CADMIUMROOT/fs/$ROOTFS/build $DESTDIR
+
+	if [ "$chroot" = "chroot" ]; then
+		# a plain chroot needs a real /proc, /sys and /dev, otherwise package
+		# maintainer scripts (gvfs, udisks2, ...) fail; arch-chroot does this itself
+		trap 'umount -R $DESTDIR/proc $DESTDIR/sys $DESTDIR/dev 2>/dev/null || true' EXIT
+		mount -t proc proc $DESTDIR/proc
+		mount --rbind /sys $DESTDIR/sys
+		mount --make-rslave $DESTDIR/sys
+		mount --rbind /dev $DESTDIR/dev
+		mount --make-rslave $DESTDIR/dev
+	fi
 
 	cp -r /CdFiles $DESTDIR/CdFiles
 
@@ -374,6 +397,7 @@ if [ -e "$CADMIUMROOT/baseboard/$BASEBOARD/postinstall" ]; then
 fi
 
 if [ $INSTMED != this ]; then
+	umount -R $DESTDIR/proc $DESTDIR/sys $DESTDIR/dev 2>/dev/null || true
 	umount /mnt
 fi
 echo "Done!"

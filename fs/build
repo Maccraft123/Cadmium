@@ -31,9 +31,6 @@ if [ "$(date +'%V%y') $ROOTFS $ARCH" != "$(cat $CADMIUMROOT/tmp/cached-rootfs-in
 	cp -r "$CADMIUMROOT"/fs/firmware/* "$DESTDIR/lib/firmware/"
 
 	mkdir "$DESTDIR/CdFiles"
-	cp -r "$CADMIUMROOT/fs" "$DESTDIR/CdFiles/fs"
-	cp -r "$CADMIUMROOT/baseboard" "$DESTDIR/CdFiles/baseboard"
-	cp -r "$CADMIUMROOT/fs/install" "$DESTDIR/root/install"
 
 	# TODO: autodetect/leave choice to user
 	echo "export ROOTFS=$ROOTFS" > "$DESTDIR/CdFiles/config"
@@ -72,6 +69,15 @@ WantedBy=multi-user.target" > "$DESTDIR/etc/systemd/system/rmtfs-dir.service"
 	echo "cadmium" > "$DESTDIR/etc/hostname"
 	echo "$(date +'%V%y') $ROOTFS $ARCH" > "$CADMIUMROOT/tmp/cached-rootfs-info"
 fi
+
+# The installer and its device data are small and change independently of the
+# rootfs, so refresh them on every run instead of only when the cache rebuilds.
+mkdir -p "$DESTDIR/CdFiles"
+rm -rf "$DESTDIR/CdFiles/fs" "$DESTDIR/CdFiles/baseboard" "$DESTDIR/CdFiles/board"
+cp -r "$CADMIUMROOT/fs" "$DESTDIR/CdFiles/fs"
+cp -r "$CADMIUMROOT/baseboard" "$DESTDIR/CdFiles/baseboard"
+cp -r "$CADMIUMROOT/board" "$DESTDIR/CdFiles/board"
+cp "$CADMIUMROOT/fs/install" "$DESTDIR/root/install"
 
 rsync -qaHAXS "$DESTDIR/" "$FINAL_DESTINATION"
 #cp -arx "$DESTDIR/" "$FINAL_DESTINATION"

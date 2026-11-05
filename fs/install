@@ -47,7 +47,7 @@ esac
 # try finding current device in cadmium tree
 
 TARGET=none
-COMPATIBLE="$(cat /sys/firmware/devicetree/base/compatible)"
+COMPATIBLE="$(tr '\0' ' ' < /sys/firmware/devicetree/base/compatible)"
 for x in $(find $CADMIUMROOT/board/* -type d -printf '%f\n'); do
 	try=$(echo $COMPATIBLE | grep $x) || true
 	if [ -n "$try" ]; then
@@ -68,9 +68,10 @@ fi
 #echo "$SOC $BOARD $BASEBOARD"
 
 # don't even try installing if the device is about to die
+BAT=NOTFOUND
 for x in /sys/class/power_supply/*; do
 	echo "Trying path: $x"
-	if [ "$(cat $x/device/name)" = 'sbs-battery' -o "$(cat $x/device/name)" = 'bq27500' ]; then
+	if [ "$(cat $x/device/name 2>/dev/null)" = 'sbs-battery' -o "$(cat $x/device/name 2>/dev/null)" = 'bq27500' -o "$(cat $x/type 2>/dev/null)" = 'Battery' ]; then
 		echo "Found battery at $x"
 		BAT=$x
 	fi
@@ -80,7 +81,7 @@ if [ "$BASEBOARD" = "x1e80100-woa" ]; then
 	echo "WARNING: THIS DEVICE DOESN'T HAVE WORKING BATTERY READOUT ON USB BOOT"
 	echo "IF IT DISCHARGES DURING INSTALLATION DON'T BLAME ME"
 elif [ "$BAT" = "NOTFOUND" ]; then
-	. /CdFiles/info
+	. /CdFiles/info 2>/dev/null || true
 	echo "Debug info: R: $ROOTFS B: $BASEBOARD T: $BOARD"
 	echo "Uh oh, automatic battery detection failed"
 	echo "Make a photo of this screen and include it in issue on Cadmium Github page"
@@ -94,9 +95,17 @@ else
 	fi
 fi
 
-nmcli device wifi rescan
-sleep 4 # wait for wifi networks
-nmtui connect
+# Wi-Fi is optional: wired (USB ethernet) is fine, and not every kernel has a driver for the radio
+if nmcli -t -f TYPE device | grep -qx wifi; then
+	nmcli device wifi rescan || true
+	sleep 4 # wait for wifi networks
+	nmtui connect
+fi
+
+if ! nm-online -q -t 30; then
+	echo "No network connection. Connect Wi-Fi (nmtui connect) or plug in a USB ethernet adapter, then run ./install again"
+	exit 1
+fi
 
 which ntpdate >/dev/null 2>&1 && ntpdate pool.ntp.org
 
@@ -133,8 +142,6 @@ if [ $INSTMED != this ]; then
 
 			ROOTPART=/dev/disk/by-partlabel/IntRoot
 			KERNPART=/dev/disk/by-partlabel/IntKernelA
-
-			dd if=/dev/disk/by-partlabel/ExtKernelA of=$KERNPART
 			;;
 		efi)
 			if [ "$INSTMED" = "emmc" ]; then
@@ -201,7 +208,21 @@ if [ $INSTMED != this ]; then
 	# force rescan partitions
 	sleep 1
 	partx -a $INTDEV >/dev/null 2>&1 || true
+	udevadm settle
 	sleep 1
+
+	# the by-partlabel links only exist once udev has seen the new partitions;
+	# writing to a missing one would silently create a regular file in /dev
+	for part in $ROOTPART $KERNPART; do
+		if [ ! -b "$part" ]; then
+			echo "Partition $part did not appear after repartitioning, bailing out"
+			exit 1
+		fi
+	done
+
+	if [ "$BOOTFW" = "depthcharge" ]; then
+		dd if=/dev/disk/by-partlabel/ExtKernelA of=$KERNPART bs=1M conv=fsync
+	fi
 
 	case "$FILESYSTEM" in
 		f2fs)
@@ -220,6 +241,17 @@ if [ $INSTMED != this ]; then
 		export chroot="arch-chroot";
 	fi
 	$CADMIUMROOT/fs/$ROOTFS/build $DESTDIR
+
+	if [ "$chroot" = "chroot" ]; then
+		# a plain chroot needs a real /proc, /sys and /dev, otherwise package
+		# maintainer scripts (gvfs, udisks2, ...) fail; arch-chroot does this itself
+		trap 'umount -R $DESTDIR/proc $DESTDIR/sys $DESTDIR/dev 2>/dev/null || true' EXIT
+		mount -t proc proc $DESTDIR/proc
+		mount --rbind /sys $DESTDIR/sys
+		mount --make-rslave $DESTDIR/sys
+		mount --rbind /dev $DESTDIR/dev
+		mount --make-rslave $DESTDIR/dev
+	fi
 
 	cp -r /CdFiles $DESTDIR/CdFiles
 
@@ -364,7 +396,13 @@ if [ -e "$CADMIUMROOT/baseboard/$BASEBOARD/postinstall" ]; then
 	"$CADMIUMROOT/baseboard/$BASEBOARD/postinstall"
 fi
 
+# per-board tweaks, run after the baseboard ones so they can undo or refine them
+if [ -e "$CADMIUMROOT/board/$BOARD/postinstall" ]; then
+	"$CADMIUMROOT/board/$BOARD/postinstall"
+fi
+
 if [ $INSTMED != this ]; then
+	umount -R $DESTDIR/proc $DESTDIR/sys $DESTDIR/dev 2>/dev/null || true
 	umount /mnt
 fi
 echo "Done!"

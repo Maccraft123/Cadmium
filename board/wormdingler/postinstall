@@ -1,0 +1,16 @@
+#!/bin/bash
+set -e
+
+if [ -z "$DESTDIR" ]; then
+	echo "DESTDIR variable is missing!"
+	exit 1
+fi
+
+# baseboard/trogdor/postinstall enables the Debian rmtfs.service next to
+# rmtfs-dir.service. On this board that breaks Wi-Fi: rmtfs.service runs
+# "rmtfs -r -P -s", which wants /dev/disk/by-partlabel/modemst1 (Chromebooks
+# have no such partitions), so the modem dies with "EFS: rmts_get_buffer api
+# failed", and it also holds the QRTR port that rmtfs-dir.service needs
+# ("bind: Address already in use"). With only rmtfs-dir.service the modem
+# starts and the Wi-Fi comes up.
+chroot "$DESTDIR" systemctl mask rmtfs

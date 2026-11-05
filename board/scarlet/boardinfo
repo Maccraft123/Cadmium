@@ -1,0 +1,10 @@
+#!/bin/false
+
+# Acer Chromebook Tab 10 (dru), RK3399 "scarlet" family.
+# The directory name is matched against the device tree's "compatible"
+# string (google,scarlet-revN-skuM) by fs/install.
+# arch missing? go to baseboard/$BASEBOARD/boardinfo
+
+export BASEBOARD=gru
+export BOARD=scarlet
+export TYPE=tablet

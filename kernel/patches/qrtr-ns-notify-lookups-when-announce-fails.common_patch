@@ -1,0 +1,39 @@
+net: qrtr: ns: notify lookups even if announcing a local server failed
+
+ctrl_cmd_new_server() returns early when broadcasting a newly registered
+local server fails, which skips the loop that notifies pending lookups
+about that server. On SC7180 (trogdor) this appears to leave the modem
+waiting for a local service (rmtfs): the modem stalls during start-up and
+its watchdog fires about 40 seconds later ("DOG detects stalled
+initialization"). The Wi-Fi firmware service is hosted by the modem, so
+ath10k_snoc does not get its QMI handshake until the modem happens to
+restart without hitting the failure.
+
+Notify lookups regardless of whether the broadcast succeeded, and print the
+error code of the failed announcement. With this change the Wi-Fi of a
+Lenovo IdeaPad Duet 3 (wormdingler) comes up on boot.
+
+diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
+index bcb090e..d88076b 100644
+--- a/net/qrtr/ns.c
++++ b/net/qrtr/ns.c
+@@ -488,13 +488,14 @@ static int ctrl_cmd_new_server(struct sockaddr_qrtr *from,
+ 
+ 	if (srv->node == qrtr_ns.local_node) {
+ 		ret = service_announce_new(&qrtr_ns.bcast_sq, srv);
+-		if (ret < 0) {
+-			pr_err("failed to announce new service\n");
+-			return ret;
+-		}
++		if (ret < 0)
++			pr_err("failed to announce new service: %d\n", ret);
+ 	}
+ 
+-	/* Notify any potential lookups about the new server */
++	/* Notify any potential lookups about the new server, even if the
++	 * broadcast failed, so that remote nodes waiting on this service
++	 * (e.g. the modem waiting for rmtfs) are not left stalled.
++	 */
+ 	list_for_each(li, &qrtr_ns.lookups) {
+ 		lookup = container_of(li, struct qrtr_lookup, li);
+ 		if (lookup->service && lookup->service != service)
